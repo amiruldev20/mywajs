@@ -10,9 +10,9 @@ GRUP DISKUSI [KLIK DISINI](https://chat.whatsapp.com/Htfi5uzYWOt0ekPu66YK4Y)
 
  > **Warning**: Library ini adalah pengembangan dari whatsapp-web.js
  
- > **Note**: Fitur akan terus dikembangan dan dipermudah
+ > **Note**: INI ADALAH REPO BARU DENGAN SEMUA FUNCTION YANG DIPERBARUI
  
- ##  Update Fitur
+ ##  LIST FUNCTION
 | Feature  | Status |
 | ------------- | ------------- |
 | Read Story  |  ✅  |
