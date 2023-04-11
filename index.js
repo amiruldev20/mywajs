@@ -18,7 +18,11 @@ module.exports = {
     // Function
     Chat: require('./src/func/Chat'),
     Message: require('./src/func/Message'),
-
+    PrivateChat: require('./src/func/PrivateChat'),
+    GroupChat: require('./src/func/GroupChat'),
+    PrivateContact: require('./src/func/PrivateContact'),
+    BusinessContact: require('./src/func/BusinessContact'),
+    
     // Auth
     LocalAuth: require('./src/auth/LocalAuth'),
 
