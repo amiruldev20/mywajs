@@ -5,7 +5,7 @@
 <img width="" src="https://img.shields.io/github/repo-size/amiruldev20/mywajs?color=green&label=Repo%20Size&style=for-the-badge&logo=appveyor">
 </p>
 
-GRUP DISKUSI [KLIK DISINI](https://chat.whatsapp.com/Htfi5uzYWOt0ekPu66YK4Y)
+GRUP DISKUSI [KLIK DISINI](https://chat.whatsapp.com/KujS5iG5TKfCnrRTlj4MfO)
 
 
  > **Warning**: Library ini adalah pengembangan dari whatsapp-web.js
