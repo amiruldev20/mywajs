@@ -693,9 +693,14 @@ NEW FUNCTION BY AMIRUL DEV
 /**
  * Get Version Whatsapp Web
 **/
-async WwebVersion() {
+async checkWaweb() {
 return await this.pupPage.evaluate(() => {
-return window.Debug.VERSION;
+var res = {
+version: window.Debug.VERSION,
+desktop_beta: window.Debug.DESKTOP_BETA,
+id: window.Debug.BUILD_ID
+}
+return res
 });
 }
 
