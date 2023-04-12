@@ -18,6 +18,7 @@ module.exports = {
     // Function
     Chat: require('./src/func/Chat'),
     Message: require('./src/func/Message'),
+    MessageMedia: require('./src/func/MessageMedia'),
     PrivateChat: require('./src/func/PrivateChat'),
     GroupChat: require('./src/func/GroupChat'),
     PrivateContact: require('./src/func/PrivateContact'),
