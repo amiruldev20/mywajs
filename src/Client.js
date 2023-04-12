@@ -681,11 +681,19 @@ return window.Store.AppState.logout();
 await this.authStrategy.logout();
 }
 
+
+
+
+
+/*
+NEW FUNCTION BY AMIRUL DEV
+*/
+
+
 /**
- * Returns the version of WhatsApp Web currently being run
- * @returns {Promise<string>}
- */
-async getWWebVersion() {
+ * Get Version Whatsapp Web
+**/
+async WwebVersion() {
 return await this.pupPage.evaluate(() => {
 return window.Debug.VERSION;
 });
