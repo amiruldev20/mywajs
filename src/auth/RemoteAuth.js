@@ -13,7 +13,7 @@ try {
 
 const path = require('path');
 const { Events } = require('./../util/Constants');
-const BaseAuthStrategy = require('./BaseAuthStrategy');
+const BaseAuthStrategy = require('./BaseAuth');
 
 /**
  * Remote-based authentication
