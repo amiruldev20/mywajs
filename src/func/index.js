@@ -11,14 +11,14 @@ module.exports = {
     BusinessContact: require('./BusinessContact'),
     Chat: require('./Chat'),
     ClientInfo: require('./ClientInfo'),
-    //Contact: require('./Contact'),
+    Contact: require('./Contact'),
     GroupChat: require('./GroupChat'),
-   // Location: require('./Location'),
+    Location: require('./Location'),
     Message: require('./Message'),
-   // MessageMedia: require('./MessageMedia'),
+    MessageMedia: require('./MessageMedia'),
     PrivateChat: require('./PrivateChat'),
     PrivateContact: require('./PrivateContact'),
-   /* GroupNotification: require('./GroupNotification'),
+    GroupNotification: require('./GroupNotification'),
     Label: require('./Label.js'),
     Order: require('./Order'),
     Product: require('./Product'),
@@ -27,5 +27,5 @@ module.exports = {
     List: require('./List'),
     Payment: require('./Payment'),
     Reaction: require('./Reaction'),
-    */
+    
 };

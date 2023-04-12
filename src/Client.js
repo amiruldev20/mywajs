@@ -18,7 +18,7 @@ const { WhatsWebURL, DefaultOptions, Events, WAState } = require('./util/Constan
 const { ExposeStore, LoadUtils } = require('./util/Injected');
 const ChatFactory = require('./factories/ChatFactory');
 const ContactFactory = require('./factories/ContactFactory');
-const { ClientInfo, Message, Chat, MessageMedia } = require('./func');
+const { ClientInfo, Message, Chat, MessageMedia, Contact, Location, GroupNotification, Label, Call, Buttons, List, Reaction, Chat } = require('./func');
 const LegacySessionAuth = require('./auth/LegacySessionAuth');
 const NoAuth = require('./auth/NoAuth');
 
