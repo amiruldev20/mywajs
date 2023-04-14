@@ -44,7 +44,6 @@
     "puppeteer": "latest",
     "qrcode-terminal": "latest",
     "syntax-error": "latest",
-    "wapi": "github:wppconnect-team/wppconnect",
     "wjs": "github:amiruldev20/wjs"
   },
   "devDependencies": {
