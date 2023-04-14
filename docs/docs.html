@@ -163,8 +163,12 @@ document.body.classList.add(localStorage.getItem("tsd-theme") || "os")
     <code>code: client.archiveChat(chatId)</code>
 </details>
 <details>
+    <summary>Unarchive Chat</summary>
+    <code>code: client.unarchiveChat(chatId)</code>
+</details>
+<details>
     <summary>Archive All Private Chat</summary>
-    <code>code: client.archiveAllPc()</code>
+    <code>code: client.archiveAll(type, act)<br>type: 'chat' or 'group'<br>act: true (archive), false (unarchive)</code>
 </details>
 <details>
     <summary>Kick Member</summary>
