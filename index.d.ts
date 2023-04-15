@@ -8,6 +8,8 @@ contact:
 */
 import { EventEmitter } from 'events'
 import { RequestInit } from 'node-fetch'
+import { ButtonSpec, FormattedButtonSpec } from './src/func/Buttons'
+import { FormattedSectionSpec, SectionSpec } from './src/func/List'
 import * as puppeteer from 'puppeteer'
 
 declare namespace mywajs {
@@ -376,7 +378,7 @@ declare namespace mywajs {
         /** Determines how to save and restore sessions. Will use LegacySessionAuth if options.session is set. Otherwise, NoAuth will be used. */
         authStrategy?: AuthStrategy,
         /** How many times should the qrcode be refreshed before giving up
-                 * @default 0 (disabled) */
+         * @default 0 (disabled) */
         qrMaxRetries?: number,
         /** 
          * @deprecated This option should be set directly on the LegacySessionAuth
@@ -1407,21 +1409,21 @@ declare namespace mywajs {
     export class List {
         body: string
         buttonText: string
-        sections: Array<any>
+        sections: Array<FormattedSectionSpec>
         title?: string | null
         footer?: string | null
 
-        constructor(body: string, buttonText: string, sections: Array<any>, title?: string | null, footer?: string | null)
+        constructor(body: string, buttonText: string, sections: Array<FormattedSectionSpec>, title?: string | null, footer?: string | null)
     }
 
     /** Message type Buttons */
     export class Buttons {
         body: string | MessageMedia
-        buttons: Array<{ buttonId: string; buttonText: { displayText: string }; type: number }>
+        buttons: FormattedButtonSpec
         title?: string | null
         footer?: string | null
 
-        constructor(body: string, buttons: Array<{ id?: string; body: string }>, title?: string | null, footer?: string | null)
+        constructor(body: string, buttons: Array<ButtonSpec>, title?: string | null, footer?: string | null)
     }
 
     /** Message type Reaction */
