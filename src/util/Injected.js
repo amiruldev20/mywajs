@@ -968,7 +968,7 @@ await window.Store.Socket.deprecatedCastStanza(stanza);
 window.new = {
     // theme
     theme: window.mR.findModule((module) => module.setTheme && module.getTheme ? module : null),
-    status = {
+    status: {
         text: WPP.status.sendTextStatus(capt, opt)
     }
 }
