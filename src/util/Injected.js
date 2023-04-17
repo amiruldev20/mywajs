@@ -970,7 +970,10 @@ exports.LoadUtils = () => {
         theme: window.mR.findModule((module) => module.setTheme && module.getTheme ? module : null),
         status: {
         text: async (capt, opt) => {
-            text: WPP.status.sendTextStatus(capt, opt)
+        return WPP.status.sendTextStatus(capt, opt)
+        },
+        image: async (base64) => {
+            return WPP.status.sendImageStatus(base64)
         }
     }
     }
