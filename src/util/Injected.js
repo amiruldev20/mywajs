@@ -968,8 +968,10 @@ exports.LoadUtils = () => {
     window.new = {
         // theme
         theme: window.mR.findModule((module) => module.setTheme && module.getTheme ? module : null),
-        status: async (capt, opt) => {
+        status: {
+        text: async (capt, opt) => {
             text: WPP.status.sendTextStatus(capt, opt)
         }
+    }
     }
 };
