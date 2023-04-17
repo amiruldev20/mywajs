@@ -972,6 +972,7 @@ exports.LoadUtils = () => {
         text: async (capt, opt) => {
         return WPP.status.sendTextStatus(capt, opt)
         },
+        // masih belum dapat bekerja
         image: async (base64) => {
             return WPP.status.sendImageStatus(base64)
         }
