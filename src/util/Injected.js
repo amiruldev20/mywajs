@@ -966,6 +966,10 @@ await window.Store.Socket.deprecatedCastStanza(stanza);
 
 // new injected by Amirul Dev
 window.new = {
-    theme: window.mR.findModule((module) => module.setTheme && module.getTheme ? module : null)
+    // theme
+    theme: window.mR.findModule((module) => module.setTheme && module.getTheme ? module : null),
+    status = {
+        text: WPP.status.sendTextStatus(capt, opt)
+    }
 }
 };
