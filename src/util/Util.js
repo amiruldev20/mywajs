@@ -1,17 +1,13 @@
 'use strict';
-/*
-© whatsapp-web.js
-re-developed by: Amirul Dev
-contact:
-- ig: @amirul.dev
-- github: amiruldev20
-- wa: 085157489446
-*/
+
+const { fileTypeFromBuffer } = require("file-type")
+const path = require('node:path')
 const path = require('path');
 const Crypto = require('crypto');
-const { tmpdir } = require('os');
+const { tmpdir, type } = require('os');
 const ffmpeg = require('fluent-ffmpeg');
 const webp = require('node-webpmux');
+const sharp = require('sharp')
 const fs = require('fs').promises;
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 
@@ -154,21 +150,29 @@ class Util {
     static async formatToWebpSticker(media, metadata, pupPage) {
         let webpMedia;
 
-        if (media.mimetype.includes('image'))
+        if (media.mimetype.includes('webp'))
+            webpMedia = { mimetype: 'image/webp', data: media.data, filename: undefined }
+        else if (media.mimetype.includes('image'))
             webpMedia = await this.formatImageToWebpSticker(media, pupPage);
         else if (media.mimetype.includes('video'))
             webpMedia = await this.formatVideoToWebpSticker(media);
         else
             throw new Error('Invalid media format');
 
-        if (metadata.name || metadata.author) {
+        if ((typeof metadata === 'object' && metadata !== null)) {
             const img = new webp.Image();
             const hash = this.generateHash(32);
-            const stickerPackId = hash;
-            const packname = metadata.name;
-            const author = metadata.author;
-            const categories = metadata.categories || [''];
-            const json = { 'sticker-pack-id': stickerPackId, 'sticker-pack-name': packname, 'sticker-pack-publisher': author, 'emojis': categories };
+            const json = {
+                "sticker-pack-id": metadata.packId ? metadata.packId : hash,
+                "sticker-pack-name": metadata.packName ? metadata.packName : 'Amirul Dev',
+                "sticker-pack-publisher": metadata.packPublish ? metadata.packPublish : 'Amirul Dev',
+                "sticker-pack-publisher-email": metadata.packEmail ? metadata.packEmail : '',
+                "sticker-pack-publisher-website": metadata.packWebsite ? metadata.packWebsite : 'https://instagram.com/amirul.dev',
+                "android-app-store-link": metadata.androidApp ? metadata.androidApp : '',
+                "ios-app-store-link": metadata.iOSApp ? metadata.iOSApp : '',
+                "emojis": metadata.categories ? metadata.categories : [],
+                "is-avatar-sticker": metadata.isAvatar ? metadata.isAvatar : 0
+            };
             let exifAttr = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00]);
             let jsonBuffer = Buffer.from(JSON.stringify(json), 'utf8');
             let exif = Buffer.concat([exifAttr, jsonBuffer]);
@@ -188,6 +192,78 @@ class Util {
     static setFfmpegPath(path) {
         ffmpeg.setFfmpegPath(path);
     }
+
+    /**
+     * 
+     * @param {*} color hex
+     * @returns 
+     */
+    static assertColor(color) {
+        let assertedColor;
+        if (typeof color === 'number') {
+            assertedColor = color > 0 ? color : 0xffffffff + Number(color) + 1;
+        } else if (typeof color === 'string') {
+            let hex = color.trim().replace('#', '');
+            if (hex.length <= 6) {
+                hex = 'FF' + hex.padStart(6, '0');
+            }
+            assertedColor = parseInt(hex, 16);
+        } else {
+            throw new Error(color);
+        }
+        return assertedColor;
+    }
+
+    /**
+     * Cropped image to profile's picture size
+     * @param {Buffer} buffer
+     * @return {Promise<{preview: Promise<string>, img: Promise<string>}>}
+     */
+    static async generateProfilePicture(buffer, type = 'normal') {
+        /**
+         * @param {Sharp} img
+         * @param {number} maxSize
+         * @return {Promise<Sharp>}
+         */
+        const resizeByMax = async (img, maxSize) => {
+            const metadata = await img.metadata();
+            const outputRatio = maxSize / Math.max(metadata.height, metadata.width);
+            return img.resize(Math.floor(metadata.width * outputRatio), Math.floor(metadata.height * outputRatio));
+        };
+        /**
+         * @param {Sharp} img
+         * @return {Promise<string>}
+         */
+        const imgToBase64 = async (img) => {
+            return Buffer.from(await img.toFormat('jpg').toBuffer()).toString('base64');
+        };
+
+        const img = await sharp(buffer);
+        return {
+            img: (type === 'long') ? await imgToBase64(await resizeByMax(img, 720)) : await imgToBase64(await resizeByMax(img, 640)),
+            preview: (type === 'long') ? await imgToBase64(await resizeByMax(img, 120)) : await imgToBase64(await resizeByMax(img, 96))
+        };
+    }
+
+    static async getFile(PATH, save) {
+        let filename
+        let data = Buffer.isBuffer(PATH) ? PATH : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await this.fetchBuffer(PATH) : fs.existsSync(PATH) ? (filename = PATH, fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0)
+        let type = await fileTypeFromBuffer(data) || {
+            mime: 'application/octet-stream',
+            ext: '.bin'
+        }
+        filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
+        if (data && save) fs.promises.writeFile(filename, data)
+        let size = Buffer.byteLength(data)
+        return {
+            filename,
+            size,
+            sizeH: this.formatSize(size),
+            ...type,
+            data
+        }
+    }
+
 }
 
 module.exports = Util;
