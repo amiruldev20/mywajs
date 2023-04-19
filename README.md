@@ -17,6 +17,9 @@ DOKUMENTASI [KLIK DISINI](https://amiruldev20.github.io/mywajs)
  ##  FUNCTION EXTRA
 | Feature  | Status |
 | ------------- | ------------- |
+| Convert ES Module To CommonJS | ✅ |
+| Convert CommonJS To ES Module | ✅ |
+| Save Contact | ⏳ |
 | Read Story  |  ✅  |
 | Call Number |  ✅  |
 | Call Groups |  ✅  |
