@@ -14,7 +14,7 @@ DOKUMENTASI [KLIK DISINI](https://amiruldev20.github.io/mywajs)
  
  > **Note**: INI ADALAH REPO BARU DENGAN SEMUA FUNCTION YANG DIPERBARUI
  
- ##  LIST FUNCTION
+ ##  FUNCTION EXTRA
 | Feature  | Status |
 | ------------- | ------------- |
 | Read Story  |  ✅  |
@@ -26,6 +26,6 @@ DOKUMENTASI [KLIK DISINI](https://amiruldev20.github.io/mywajs)
 | Reject Call | ✅ |
 | Accept Call | ⏳ |
 | Upload Story Text  |  ✅  |
-| Upload Story Image |  ✅  |
+| Upload Story Image |  ⏳  |
 | Upload Story Video |  ⏳  |
 | Upload Story VN  |   ⏳  |

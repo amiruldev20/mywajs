@@ -27,7 +27,7 @@
   "bugs": {
     "url": "https://github.com/amiruldev20/mywajs/issues"
   },
-  "homepage": "https://wwebjs.dev/",
+  "homepage": "https://amiruldev20.github.io/mywajs/",
   "dependencies": {
     "@pedroslopez/moduleraid": "^5.0.2",
     "fluent-ffmpeg": "^2.1.2",
