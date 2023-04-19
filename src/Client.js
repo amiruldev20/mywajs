@@ -911,8 +911,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      * @returns 
      */
     async addMemb(from, jid) {
-        var chat = await this.getChatId(from)
-        return chat.addParticipants([jid])
+       await this.pupPage.evaluate(async (from, jid) => {
+        return WPP.group.addParticipants(from, jid)
+       })
     }
 
     /**
