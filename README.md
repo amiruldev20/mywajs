@@ -20,6 +20,8 @@ DOKUMENTASI [KLIK DISINI](https://amiruldev20.github.io/mywajs)
 | Convert ES Module To CommonJS | ✅ |
 | Convert CommonJS To ES Module | ✅ |
 | Save Contact | ⏳ |
+| Code Fixed Beta | ✅ |
+| Change Language Code Beta | ✅ |
 | Read Story  |  ✅  |
 | Call Number |  ✅  |
 | Call Groups |  ✅  |
