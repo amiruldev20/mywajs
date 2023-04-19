@@ -226,6 +226,22 @@ document.body.classList.add(localStorage.getItem("tsd-theme") || "os")
     <summary>Check Whatsapp Account</summary>
     <code>code: client.isWA(jid)</code>
 </details>
+<details>
+    <summary>Create Group</summary>
+    <code>code: client.createGroup(name, participants)<br>example: client.createGroup('MywaJS', ["number1@c.us", "number2@c.us"])</code>
+</details>
+<details>
+    <summary>Get Blocked Contact</summary>
+    <code>code: client.getBlocked()</code>
+</details>
+<details>
+    <summary>Set Profile Pict</summary>
+    <code>code: client.setProfilePict(buffer, jid)<br>example: client.setProfilePict(buffer, client.wid._serialize)</code>
+</details>
+<details>
+    <summary>Delete Profile Pict</summary>
+    <code>code: client.delMyPict()</code>
+</details>
 </div>
 </div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
