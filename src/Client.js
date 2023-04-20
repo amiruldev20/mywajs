@@ -832,15 +832,15 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         return pup;
     }
 
-    // send read message
-    async sendRead() {
+    // client online
+    async isOnline() {
         return await this.pupPage.evaluate(() => {
             return window.Store.PresenceUtils.sendPresenceAvailable();
         });
     }
 
-    // send unread message
-    async sendUnread() {
+    // client offline
+    async isOffline() {
         return await this.pupPage.evaluate(() => {
             return window.Store.PresenceUtils.sendPresenceUnavailable();
         });
