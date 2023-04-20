@@ -1,357 +1,280 @@
-<!DOCTYPE html>
-<html class="default">
-
+<!doctype html>
+<html lang="en">
 <head>
-<meta charSet="utf-8" />
-<meta http-equiv="x-ua-compatible" content="IE=edge" />
-<title>MywaJS V1.0.1</title>
-<meta name="description" content="Documentation for MywaJS" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://adiwajshing.github.io/Baileys/assets/style.css" />
-<link rel="stylesheet" href="https://adiwajshing.github.io/Baileys/assets/highlight.css" />
-<script async src="https://adiwajshing.github.io/Baileys/assets/search.js" id="search-script"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<!-- Required meta tags -->
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- CSS -->
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/pace.min.css" rel="stylesheet">
+<link href="assets/fontawesome/css/all.css" rel="stylesheet">
+<link href="assets/themify-icons/themify-icons.min.css" rel="stylesheet">
+<link href="assets/css/metisMenu.min.css" rel="stylesheet">
+<link href="assets/css/github.min.css" rel="stylesheet">
+<link href="assets/css/magnific-popup.min.css" rel="stylesheet">
+<link href="assets/OwlCarousel2/owl.carousel.min.css" rel="stylesheet">
+<link href="assets/OwlCarousel2/owl.theme.default.min.css" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+<title>MywaJS</title>
+<link rel="canonical" href="https://instagram.com/amirul.de" />
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="assets/img/favicon.png" />
 </head>
-
 <body>
-<script>
-document.body.classList.add(localStorage.getItem("tsd-theme") || "os")
-</script>
-<style>
-.cta {
-display: flex;
-padding: 11px 33px;
-text-decoration: none;
-font-family: 'Poppins', sans-serif;
-font-size: 25px;
-color: white;
-background: #6225E6;
-transition: 1s;
-box-shadow: 6px 6px 0 black;
-transform: skewX(-15deg);
-border: none;
-}
-
-.cta:focus {
-outline: none;
-}
-
-.cta:hover {
-transition: 0.5s;
-box-shadow: 10px 10px 0 #FBC638;
-}
-
-.cta .second {
-transition: 0.5s;
-margin-right: 0px;
-}
-
-.cta:hover.second {
-transition: 0.5s;
-margin-right: 45px;
-}
-
-.span {
-transform: skewX(15deg)
-}
-
-.second {
-width: 20px;
-margin-left: 30px;
-position: relative;
-top: 12%;
-}
-
-.one {
-transition: 0.4s;
-transform: translateX(-60%);
-}
-
-.two {
-transition: 0.5s;
-transform: translateX(-30%);
-}
-
-.cta:hover .three {
-animation: color_anim 1s infinite 0.2s;
-}
-
-.cta:hover .one {
-transform: translateX(0%);
-animation: color_anim 1s infinite 0.6s;
-}
-
-.cta:hover .two {
-transform: translateX(0%);
-animation: color_anim 1s infinite 0.4s;
-}
-
-@keyframes color_anim {
-0% {
-fill: white;
-}
-
-50% {
-fill: #FBC638;
-}
-
-100% {
-fill: white;
-}
-}
-</style>
-<header>
-<div class="tsd-page-toolbar">
+<div class="loader">
+<div class="top-search">
+<div class="input-group">
+<span class="input-group-addon"><i class="ti-search"></i></span>
+<input type="text" class="form-control" placeholder="Search for snippets ......">
+<span class="input-group-addon close-search"><i class="ti-close"></i></span>
+</div>
+</div>
+<!-- /.End of Top Search -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top no-background">
 <div class="container">
-<div class="table-wrap">
-<div class="table-cell" id="tsd-search" data-base=".">
-<div class="field">
-<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
-<input type="text" id="tsd-search-field" />
-</div>
-<ul class="results">
-<li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li>
-</ul><a href="index.html" class="title"></a></div>
-<div class="table-cell" id="tsd-widgets">
-<div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
-<div class="tsd-filter-group">
-<div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span>
-<ul class="tsd-select-list">
-<li data-value="public">Public</li>
-<li data-value="protected">Public/Protected</li>
-<li data-value="private" class="selected">All</li>
-</ul>
-</div>
-<input type="checkbox" id="tsd-filter-inherited" checked/>
-<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-</div>
-</div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div>
-</div>
-</div>
-</div>
-<div class="tsd-page-title">
-<div class="container">
-<h1><i class="fa fa-linux"></i> MywaJS V 1.0.1</h1></div>
-</div>
-</header>
-<div class="container container-main">
-<div class="row">
-<div class="col-8 col-content">
-<div class="tsd-panel tsd-typography">
-<a name="table-of-contents"></a>
-<p align="center">
-<button class="cta" onclick="location.href='docs.html';">
-<span class="span" href="docs.html">DOCS</span>
-<span class="second">
-<svg width="50px" height="20px" viewBox="0 0 66 43" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="arrow" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-<path class="one" d="M40.1543933,3.89485454 L43.9763149,0.139296592 C44.1708311,-0.0518420739 44.4826329,-0.0518571125 44.6771675,0.139262789 L65.6916134,20.7848311 C66.0855801,21.1718824 66.0911863,21.8050225 65.704135,22.1989893 C65.7000188,22.2031791 65.6958657,22.2073326 65.6916762,22.2114492 L44.677098,42.8607841 C44.4825957,43.0519059 44.1708242,43.0519358 43.9762853,42.8608513 L40.1545186,39.1069479 C39.9575152,38.9134427 39.9546793,38.5968729 40.1481845,38.3998695 C40.1502893,38.3977268 40.1524132,38.395603 40.1545562,38.3934985 L56.9937789,21.8567812 C57.1908028,21.6632968 57.193672,21.3467273 57.0001876,21.1497035 C56.9980647,21.1475418 56.9959223,21.1453995 56.9937605,21.1432767 L40.1545208,4.60825197 C39.9574869,4.41477773 39.9546013,4.09820839 40.1480756,3.90117456 C40.1501626,3.89904911 40.1522686,3.89694235 40.1543933,3.89485454 Z" fill="#FFFFFF"></path>
-<path class="two" d="M20.1543933,3.89485454 L23.9763149,0.139296592 C24.1708311,-0.0518420739 24.4826329,-0.0518571125 24.6771675,0.139262789 L45.6916134,20.7848311 C46.0855801,21.1718824 46.0911863,21.8050225 45.704135,22.1989893 C45.7000188,22.2031791 45.6958657,22.2073326 45.6916762,22.2114492 L24.677098,42.8607841 C24.4825957,43.0519059 24.1708242,43.0519358 23.9762853,42.8608513 L20.1545186,39.1069479 C19.9575152,38.9134427 19.9546793,38.5968729 20.1481845,38.3998695 C20.1502893,38.3977268 20.1524132,38.395603 20.1545562,38.3934985 L36.9937789,21.8567812 C37.1908028,21.6632968 37.193672,21.3467273 37.0001876,21.1497035 C36.9980647,21.1475418 36.9959223,21.1453995 36.9937605,21.1432767 L20.1545208,4.60825197 C19.9574869,4.41477773 19.9546013,4.09820839 20.1480756,3.90117456 C20.1501626,3.89904911 20.1522686,3.89694235 20.1543933,3.89485454 Z" fill="#FFFFFF"></path>
-<path class="three" d="M0.154393339,3.89485454 L3.97631488,0.139296592 C4.17083111,-0.0518420739 4.48263286,-0.0518571125 4.67716753,0.139262789 L25.6916134,20.7848311 C26.0855801,21.1718824 26.0911863,21.8050225 25.704135,22.1989893 C25.7000188,22.2031791 25.6958657,22.2073326 25.6916762,22.2114492 L4.67709797,42.8607841 C4.48259567,43.0519059 4.17082418,43.0519358 3.97628526,42.8608513 L0.154518591,39.1069479 C-0.0424848215,38.9134427 -0.0453206733,38.5968729 0.148184538,38.3998695 C0.150289256,38.3977268 0.152413239,38.395603 0.154556228,38.3934985 L16.9937789,21.8567812 C17.1908028,21.6632968 17.193672,21.3467273 17.0001876,21.1497035 C16.9980647,21.1475418 16.9959223,21.1453995 16.9937605,21.1432767 L0.15452076,4.60825197 C-0.0425130651,4.41477773 -0.0453986756,4.09820839 0.148075568,3.90117456 C0.150162624,3.89904911 0.152268631,3.89694235 0.154393339,3.89485454 Z" fill="#FFFFFF"></path>
-</g>
-</svg>
-</span> 
+<a class="navbar-brand" href="/">
+<b><font color=white>MywaJS</font></b>
+</a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
 </button>
-</p>
-<p>GRUP DISKUSI <a href="https://chat.whatsapp.com/KujS5iG5TKfCnrRTlj4MfO">KLIK DISINI</a></p>
-
-<p><b>Warning:</b> Library ini adalah pengembangan dari whatsapp-web.js</p>
-<p><b>Note:</b> SEMUA FUNCTION DIPERBARUI. APABILA ADA EROR SILAHKAN LAPOR / OPEN ISSUE</p>
-<br>
-<details>
-<summary>Instalasi</summary>
-<p>npm install mywajs</p>
-</details>
-<h2>LIST FUNCTION</h2>
-<p>Semua function dibawah work. apabila eror, TOLONG open issue di repo mywajs. agar saya tahu dan segera diperbaiki 🙏</p>
-<table>
-<thead>
-<tr>
-<th>Feature</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Check Detail WA WEB</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Read Message</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Search Message</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Get All Chats</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Get Chat By ID</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Get All Contact</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Get Contact By Id</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Get Detail Invite</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Accept Invite</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Change Bio</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Change Name</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Send Read</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Send Unread</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>Archive Chat</td>
-<td>✅</td>
-</tr>
-<tr>
-    <td>Unarchive Chat</td>
-    <td>✅</td>
-</tr>
-<tr>
-<td>Archive All Chats</td>
-<td>✅</td>
-</tr>
-<tr>
-    <td>Kick Member</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Add Member</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Change Theme Whatsapp web</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Pin Chat</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Unpin Chat</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Mute Chat</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Unmute Chat</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Mute All</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Mark As Unread</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Get Profile Picture</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Get Profile Name</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Check Same Group</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Delete Chat</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Check Whatsapp Account</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Create Group</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Get Blocked Cntact</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Change Profile Picture</td>
-    <td>✅</td>
-</tr>
-<tr>
-    <td>Delete Profile Picture</td>
-    <td>✅</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-<nav class="tsd-navigation primary">
-<ul>
-<li class="current"><a href="https://wa.me/62851574894460">My Whatsapp</a></li>
-</ul>
-</nav>
-<nav class="tsd-navigation secondary menu-sticky">
-<ul>
-<li class="tsd-kind-reference"><a href="modules.html#WAMessageStatus" class="tsd-kind-icon">WAMessage<wbr/>Status</a></li>
-
-</ul>
-</nav>
-</div>
-</div>
-</div>
-<footer class="with-border-bottom">
-<div class="container">
-<h2>Legend</h2>
-<div class="tsd-legend-group">
-<ul class="tsd-legend">
-<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-</ul>
-</div>
-<h2>Settings</h2>
-<p>Theme
-<select id="theme">
-<option value="os">OS</option>
-<option value="light">Light</option>
-<option value="dark">Dark</option>
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+<ul class="navbar-nav mr-auto">
+<li class="nav-item">
+<a class="nav-link" href="/">Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="https://chat.whatsapp.com/KujS5iG5TKfCnrRTlj4MfO">Group</a>
+    </li>
+<li class="nav-item">
+    <a class="nav-link" href="changelog.html">Changelog</a>
+</li>
+<ul class="navbar-nav navbar-right">
+<li class="nav-item search"><a href="#" class="nav-link"><i class="ti-search"></i></a></li>
+<li class="nav-item">
+<div class="lng_dropdown">
+<select name="countries" id="lng_select">
+<option value="en" data-image="https://docbanao.bdtask.com/assets/img/eng.png" data-title="English">EN</option>
+<option value="fn" data-image="https://docbanao.bdtask.com/assets/img/fn.png" data-title="France">FN</option>
+<option value="us" data-image="https://docbanao.bdtask.com/assets/img/us.png" data-title="United States">US</option>
 </select>
-</p>
 </div>
-</footer>
-<div class="container tsd-generator">
-<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</li>
+<li class="nav-item"><a href="#" class="nav-link btn-login"><i class="flaticon-sign-in"></i> Log In / Sign In</a></li>
+</ul>
 </div>
-<div class="overlay"></div>
-<script src="https://adiwajshing.github.io/Baileys/assets/main.js"></script>
-</body>
+</div>
+</nav>
+<!-- /.End of Navbar -->
+<div class="header">
+<div class="container">
+<div class="header-content">
+<div class="row">
+<div class="col-lg-5 col-md-12 order-lg-first">
+<div class="header-text">
+<h1>Dokumentasi <strong>MywaJS</strong> yang dibuat se<strong>simpel</strong> mungkin</h1>
+<p>memudahkan anda dalam membuat bot <span>whatsapp</span>. </p>
+<!--<div class="">
+<a href="#" class="btn btn-white btn-round mb-3 mb-md-0 mr-md-3">Check out the docs</a>
+<a href="#" class="btn btn-white btn-round">Go to the changelog</a>
+</div>-->
+<div class="header-btn">
+<a href="#" class="btn btn-white btn-round">Dokumentasi</a>
+<a href="https://chat.whatsapp.com/KujS5iG5TKfCnrRTlj4MfO" class="btn btn-white btn-round">Grup Diskusi</a>
+</div>
+</div>
+</div>
+<div class="col-lg-6 offset-lg-1 col-md-12">
+<div class="header-img mackbook">
+<img src="assets/img/macbook.png" alt="" class="img-fluid">
+<div class="video">
+<div class="video-meta">
+<a class="video-play popup-youtube" href="http://www.youtube.com/watch?v=0O2aH4XLbto">
+<svg class="Play" width="100%" viewBox="0 0 100 100"><circle class="Play-bg" cx="50" cy="50" r="30" fill="#000"></circle><path class="Play-triangle" d="M45.8 62.1c-1.5 1-2.7.3-2.7-1.5V40.1c0-1.8 1.2-2.5 2.7-1.5l15.6 10c1.5 1 1.5 2.5 0 3.5l-15.6 10z" fill="#fff"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!--<svg xmlns="http://www.w3.org/2000/svg" class="curve-container__curve curve-three" viewBox="0 0 1440 68" enable-background="new 0 0 1440 68"><path d="m1622.3 1937.7c0 0-410.7 169.1-913.4 75.5-502.7-93.6-977.7 56.3-977.7 56.3v440h1891.1v-571.8" fill="#fff" transform="translate(0-1977)"></path></svg>-->
+</div>
+<div class="service-content">
+<div class="container">
+<div class="row">
+<div class="col-md-10 offset-md-1 col-lg-6 offset-lg-3">
+<div class="section-title">
+<h2>Kenapa harus memilih <br class="d-none d-xl-block">MywaJS</h2>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-md-4 col-lg-4">
+<div class="service-box">
+<div class="icon">
+<i class="flaticon-thought"></i>
+</div>
+<h3 class="title">Update Fiture</h3>
+<p>MywaJS selalu mengupdate fitur" baru & memperbaiki fitur eror. </p>
+<a href="#" class="read-link">Read More <i class="ti-arrow-right"></i></a>
+</div>
+</div>
+<div class="col-md-4 col-lg-4">
+<div class="service-box">
+<div class="icon">
+<i class="flaticon-analytics"></i>
+</div>
+<h3 class="title">Performance</h3>
+<p>MywaJS akan terus dibuat agar lebih ramah deploy ditempat manapun</p>
+<a href="#" class="read-link">Read More <i class="ti-arrow-right"></i></a>
+</div>
+</div>
+<div class="col-md-4 col-lg-4">
+<div class="service-box">
+<div class="icon">
+<i class="flaticon-support"></i>
+</div>
+<h3 class="title">A Full Service</h3>
+<p>Jika anda butuh bantuan, anda dapat bertanya langsung ke pengembang di dalam grup diskusi</p>
+<a href="#" class="read-link">Read More <i class="ti-arrow-right"></i></a>
+</div>
+</div>
+</div>
+</div>
+<div class="container mt-5">
+<div class="row align-items-center">
+<div class="col-md-6">
+<div class="service-img">
+<img src="assets/img/home_illo.png" class="img-fluid" alt="">
+</div>
+</div>
+<div class="col-md-6">
+<div class="component-block d-flex">
+<div class="component-icon">
+<i class="flaticon-student"><span></span></i>
+</div>
+<div class="component-text">
+<h3>apakah MywaJS sama dengan WWebJS ?</h3>
+<p>ya, ini adala library pengembangan ulang dari whatsapp-web.js. function" yang ada didalam MywaJS adalah function yang telah diperbarui. dan MywaJS menambahkan function" baru yang tidak ada di whatsapp-web.js</p>
+<a href="#" class="read-link">Read More <i class="ti-arrow-right"></i></a>
+</div>
+</div>
+<div class="component-block d-flex">
+<div class="component-icon">
+<i class="flaticon-ninja"><span></span></i>
+</div>
+<div class="component-text">
+<h3>Apakah ini aman dari Spam ?</h3>
+<p> MywaJS default terdapat proxy rotation dan random UA, dimana itu kemungkinan bisa meminimalisir spam. alangkah baiknya lagi, anda memasangnya ua random & proxy rotation anda sendiri. dan tetaplah tahu diri jangan terlalu spam seenaknya. karena bagaimanapun juga, ini bukan api official</p>
+<a href="#" class="read-link">Read More <i class="ti-arrow-right"></i></a>
+</div>
+</div>
+<div class="component-block d-flex">
+<div class="component-icon">
+<i class="flaticon-see"><span></span></i>
+</div>
+<div class="component-text">
+<h3>Apakah semua function bekerja ?</h3>
+<p>Ya, semua function bekerja dengan baik. apabila ada eror atau masalah pada function tersebut. silahkan segera lapor. agar dapat segera diperbaiki</p>
+<a href="#" class="read-link">Read More <i class="ti-arrow-right"></i></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- /.End of service content -->
 
+<!-- /.End of subSection -->
+<footer class="bg-gray">
+<div class="main-footer">
+<div class="container">
+<div class="row">
+<div class="col-12 col-md-4 col-lg-3">
+<div class="footer-about">
+<div class="footer-logo">
+<b><h2>MywaJS</h2></b>
+</div>
+<p>Indonesia, Jawa Timur</p>
+<a class="email-link" href="mailto:amiruldev20@gmail.com">amiruldev20@gmail.com</a>
+</div>
+</div>
+<div class="col-6 col-md-3 col-lg-2">
+<div class="footer-link">
+<h4 class="link-title">Resources</h4>
+<a href="#" class="link">Guides</a>
+<a href="help.html" class="link">Help Center</a>
+<a href="#" class="link">Technical support</a>
+<a href="layout-general.html" class="link">Documentation</a>
+<a href="#" class="link">App Directory</a>
+</div>
+</div>
+<div class="col-6 col-md-2 d-md-none d-lg-block">
+<div class="footer-link">
+<h4 class="link-title">Company</h4>
+<a href="about.html" class="link">About us</a>
+<a href="#" class="link">Press Kit</a>
+<a href="#" class="link">Careers</a>
+<a href="#" class="link">Brand Guidelines</a>
+<a href="contact.html" class="link">Contact Support</a>
+</div>
+</div>
+<div class="col-12 col-md-5 col-lg-5">
+<div class="newslatter">
+<h4 class="link-title">Connect with us</h4>
+<p>Subscribe to our newsletter!</p>
+<div class="input-group mb-3">
+<input type="text" class="form-control" placeholder="Enter Your Email">
+<div class="input-group-append">
+<button class="btn btn-outline" type="button">Subscribe</button>
+</div>
+</div>
+</div><!-- /.End of newslatter -->
+<ul class="social-icon">
+<li><a href="#"><i class="fab fa-twitter"></i></a></li>
+<li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+<li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+<li><a href="#"><i class="fab fa-telegram-plane"></i></a></li>
+<li><a href="#"><i class="fab fa-whatsapp"></i></a></li>
+</ul><!-- /.End of footer social icon -->
+</div>
+</div>
+<div class="sub-footer">
+<div class="row align-items-center ">
+<div class="col-md-7 order-md-first order-last">
+<div class="Copyright-text">
+<p class="m-0">Copyright © 2023 <a href="#" target="_blank">MywaJS </a>. All rights reserved. </p>
+</div>
+</div>
+<div class="col-md-5">
+<ul class="footer-menu">
+<li><a href="">Terms of use </a></li>
+<li><a href="changelog.html">Changelog</a></li>
+<li><a href="mailto:amiruldev20@gmail.com">Contact us</a></li>
+</ul>
+</div>
+</div>
+</div><!-- /.End of sub footer -->
+</div>
+</div>
+</footer><!-- /.End of footer -->
+</div>
+<!-- Optional JavaScript -->
+<script src="assets/js/jquery-3.3.1.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/pace.min.js"></script>
+<script src="assets/js/jquery.easing.min.js"></script>
+<script src="assets/js/jquery.dd.min.js"></script>
+<script src="assets/js/metisMenu.min.js"></script>
+<script src="assets/js/ResizeSensor.min.js"></script>
+<script src="assets/js/theia-sticky-sidebar.min.js"></script>
+<script src="assets/js/highlight.pack.js"></script>
+<script src="assets/js/clipboard.min.js"></script>
+<script src="assets/js/jquery.magnific-popup.min.js"></script>
+<script src="assets/OwlCarousel2/owl.carousel.min.js"></script>
+<script src="assets/js/script.js"></script>
+</body>
 </html>
