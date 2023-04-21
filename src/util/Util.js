@@ -1,7 +1,7 @@
 'use strict';
 
-const fileType = require("file-type");
-const fileTypeFromBuffer = fileType.fromBuffer;
+const fileType = (await import('file-type')).default
+const fileTypeFromBuffer = fileType.fileTypeFromBuffer
 const path = require('path');
 const Crypto = require('crypto');
 const { tmpdir, type } = require('os');
