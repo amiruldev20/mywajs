@@ -1039,7 +1039,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      * @param {*} contactId 
      * @returns 
      */
-    async sameGroup(contactId) {
+    async checkSameGroup(contactId) {
         const commonGroups = await this.pupPage.evaluate(async (contactId) => {
             let contact = window.Store.Contact.get(contactId);
             if (!contact) {
@@ -1071,7 +1071,7 @@ ${util.format(chats)}`
      * @param {*} jid 
      * @returns 
      */
-    async delChat(jid) {
+    async deleteChat(jid) {
         var pup = await this.pupPage.evaluate(async (jid) => {
             var res = WPP.chat.delete(jid)
             return {
