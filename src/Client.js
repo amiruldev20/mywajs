@@ -1127,7 +1127,7 @@ ${util.format(chats)}`
      * @param {*} id 
      * @returns 
      */
-    async isWA(id) {
+    async isWhatsapp(id) {
         var cek = Boolean(await this.getNumberId(id))
         var name = await this.getName(id)
         return {
@@ -1186,7 +1186,7 @@ ${util.format(chats)}`
      * @param {*} type 
      * @returns 
      */
-    async setProfilePict(chatId, content, type = 'normal') {
+    async updateProfilePict(chatId, content, type = 'normal') {
         let data
         if ((Buffer.isBuffer(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || fs.existsSync(content))) {
             let media = await Util.getFile(content)
@@ -1203,7 +1203,7 @@ ${util.format(chats)}`
     }
 
     // delete profile picture
-    async delMyPict() {
+    async deleteProfilePict() {
         await this.pupPage.evaluate(() => {
             return WPP.profile.removeMyProfilePicture()
         })
