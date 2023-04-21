@@ -894,29 +894,6 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     }
 
     /**
-     * Kick Member
-     * @param {*} from 
-     * @param {*} jid 
-     * @returns 
-     */
-    async kickMemb(from, jid) {
-        var chat = await this.getChatId(from)
-        return chat.removeParticipants([jid])
-    }
-
-    /**
-     * Add Member
-     * @param {*} from 
-     * @param {*} jid 
-     * @returns 
-     */
-    async addMemb(from, jid) {
-       await this.pupPage.evaluate(async (from, jid) => {
-        return WPP.group.addParticipants(from, jid)
-       })
-    }
-
-    /**
      * Set Theme Whatsapp Web
      * @param {*} act 
      */
