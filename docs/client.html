@@ -127,7 +127,7 @@ v2.0.0
 <code>PARAM:</code>
 <br>
 - chatId<br>
-<pre class="snippet"><code class="html">client.readMsg(chatId)
+<pre class="snippet"><code class="html">client.readMessage(chatId)
 </code></pre>
 
 <h2 id="code-blocks"><span>Search Message<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
@@ -137,7 +137,7 @@ v2.0.0
 - text<br>
 - options<br>
 #options: page, limit
-<pre class="snippet"><code class="html">client.searchMsg(text, options)
+<pre class="snippet"><code class="html">client.searchMessage(text, options)
 </code></pre>
 
 <h2 id="code-blocks"><span>Get All Chats<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
@@ -189,7 +189,7 @@ v2.0.0
 <code>PARAM:</code>
 <br>
 - text
-<pre class="snippet"><code class="html">client.setBio(text)
+<pre class="snippet"><code class="html">client.updateBio(text)
 </code></pre>
 
 <h2 id="code-blocks"><span>Update Name<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
@@ -197,7 +197,7 @@ v2.0.0
 <code>PARAM:</code>
 <br>
 - text
-<pre class="snippet"><code class="html">client.setName(text)
+<pre class="snippet"><code class="html">client.updateName(text)
 </code></pre>
 
 <h2 id="code-blocks"><span>Send Presence Available<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
@@ -244,7 +244,7 @@ boolean: true = archive, false = unarchive
 <br>
 - type<br>
 #type: 'dark' or 'light'
-<pre class="snippet"><code class="html">client.setTheme(type)
+<pre class="snippet"><code class="html">client.updateTheme(type)
 </code></pre>
 
 <h2 id="code-blocks"><span>Pin Chat<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
@@ -264,12 +264,72 @@ boolean: true = archive, false = unarchive
 </code></pre>
 
 <h2 id="code-blocks"><span>Mute Chat<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
-<p>bisukan chat</p>
 <code>PARAM:</code>
 <br>
 - chatId
 <pre class="snippet"><code class="html">client.muteChat(chatId)
 </code></pre>
+
+<h2 id="code-blocks"><span>Unmute Chat<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<code>PARAM:</code>
+<br>
+- chatId
+<pre class="snippet"><code class="html">client.unmuteChat(chatId)
+</code></pre>
+
+<h2 id="code-blocks"><span>Mute All<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<code>PARAM:</code>
+<br>
+- type<br>
+- boolean<br>
+#type: 'chat' or 'group'<br>
+#boolean: true (archive), false (unarchive)
+<pre class="snippet"><code class="html">client.muteAll(type, boolean)
+</code></pre>
+
+<h2 id="code-blocks"><span>Mark As Unread<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<code>PARAM:</code>
+<br>
+- chatId
+<pre class="snippet"><code class="html">client.markChatUnread(chatId)
+</code></pre>
+
+<h2 id="code-blocks"><span>Get Profile Picture<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>mengambil url foto profil</p>
+<code>PARAM:</code>
+<br>
+- jid
+<pre class="snippet"><code class="html">client.getProfilePict(jid)
+</code></pre>
+
+<h2 id="code-blocks"><span>Get Name<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>mengambil detail nama</p>
+<code>PARAM:</code>
+<br>
+- jid
+<pre class="snippet"><code class="html">client.getName(jid)
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

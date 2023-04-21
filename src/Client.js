@@ -707,7 +707,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      * @param {*} chatId 
      * @returns 
      */
-    async readMsg(chatId) {
+    async readMessage(chatId) {
         const result = await this.pupPage.evaluate(async (chatId) => {
             return window.WWebJS.sendSeen(chatId);
 
@@ -721,7 +721,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      * @param {*} options 
      * @returns 
      */
-    async searchMsg(query, options = {}) {
+    async searchMessage(query, options = {}) {
         const messages = await this.pupPage.evaluate(async (query, page, count, remote) => {
             const { messages } = await window.Store.Msg.search(query, page, count, remote);
             return messages.map(msg => window.WWebJS.getMessageModel(msg));
@@ -804,7 +804,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      * @param {*} status 
      * @returns 
      */
-    async setBio(status) {
+    async updateBio(status) {
         var pup = await this.pupPage.evaluate(async status => {
             var res = await window.Store.StatusUtils.setMyStatus(status);
             return {
@@ -820,7 +820,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      * @param {*} name 
      * @returns 
      */
-    async setName(name) {
+    async updateName(name) {
         var pup = await this.pupPage.evaluate(async (name) => {
             var res = await WPP.profile.setMyProfileName(name)
             return {
@@ -897,7 +897,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      * Set Theme Whatsapp Web
      * @param {*} act 
      */
-    async setTheme(act) {
+    async updateTheme(act) {
         var pup = await this.pupPage.evaluate(async (act) => {
             var res = window.new.theme[0].setTheme(act)
             return {
