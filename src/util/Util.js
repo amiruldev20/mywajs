@@ -1,6 +1,5 @@
 'use strict';
-const fileType = require("file-type");
-const fileTypeFromBuffer = fileType.fromBuffer;
+const file = require("file-type");
 const path = require('path');
 const Crypto = require('crypto');
 const { tmpdir, type } = require('os');
@@ -247,7 +246,7 @@ class Util {
     static async getFile(PATH, save) {
         let filename
         let data = Buffer.isBuffer(PATH) ? PATH : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await this.fetchBuffer(PATH) : fs.existsSync(PATH) ? (filename = PATH, fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0)
-        let type = await fileTypeFromBuffer(data) || {
+        let type = await file.fromBuffer(data) || {
             mime: 'application/octet-stream',
             ext: '.bin'
         }
