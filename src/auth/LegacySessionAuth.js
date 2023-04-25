@@ -1,13 +1,15 @@
 'use strict';
 /*
-© whatsapp-web.js
-re-developed by: Amirul Dev
+MywaJS
+Pengembangan ulang whatsapp-web.js
+menggunakan wjs + playwright
 contact:
-- ig: @amirul.dev
-- github: amiruldev20
-- wa: 085157489446
+email: amiruldev20@gmail.com
+ig: amirul.dev
+wa: 62851574894460
+tq to: pedro & edgard & dika
 */
-const BaseAuthStrategy = require('./BaseAuth');
+import BaseAuthStrategy from './BaseAuthStrategy.js'
 
 /**
  * Legacy session auth strategy
@@ -76,4 +78,4 @@ class LegacySessionAuth extends BaseAuthStrategy {
     }
 }
 
-module.exports = LegacySessionAuth;
+export default LegacySessionAuth;

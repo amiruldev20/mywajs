@@ -1,19 +1,28 @@
 'use strict';
-
+/*
+MywaJS
+Pengembangan ulang whatsapp-web.js
+menggunakan wjs + playwright
+contact:
+email: amiruldev20@gmail.com
+ig: amirul.dev
+wa: 62851574894460
+tq to: pedro & edgard & dika
+*/
 /* Require Optional Dependencies */
 try {
-    var fs = require('fs-extra');
-    var unzipper = require('unzipper');
-    var archiver = require('archiver');
+    var fs = (await import('fs-extra'));
+    var unzipper = (await import('unzipper'));
+    var archiver = (await import('archiver'));
 } catch {
     fs = undefined;
     unzipper = undefined;
     archiver = undefined;
 }
 
-const path = require('path');
-const { Events } = require('./../util/Constants');
-const BaseAuthStrategy = require('./BaseAuth');
+import path from 'path';
+import { Events } from '../util/Constants.js';
+import BaseAuthStrategy from './BaseAuthStrategy.js';
 
 /**
  * Remote-based authentication
@@ -46,11 +55,11 @@ class RemoteAuth extends BaseAuthStrategy {
     }
 
     async beforeBrowserInitialized() {
-        const puppeteerOpts = this.client.options.puppeteer;
+        const playwrightOpts = this.client.options.playwright;
         const sessionDirName = this.clientId ? `RemoteAuth-${this.clientId}` : 'RemoteAuth';
         const dirPath = path.join(this.dataPath, sessionDirName);
 
-        if (puppeteerOpts.userDataDir && puppeteerOpts.userDataDir !== dirPath) {
+        if (playwrightOpts.userDataDir && playwrightOpts.userDataDir !== dirPath) {
             throw new Error('RemoteAuth is not compatible with a user-supplied userDataDir.');
         }
 
@@ -59,8 +68,8 @@ class RemoteAuth extends BaseAuthStrategy {
 
         await this.extractRemoteSession();
 
-        this.client.options.puppeteer = {
-            ...puppeteerOpts,
+        this.client.options.playwright = {
+            ...playwrightOpts,
             userDataDir: dirPath
         };
     }
@@ -201,4 +210,4 @@ class RemoteAuth extends BaseAuthStrategy {
     }
 }
 
-module.exports = RemoteAuth;
+export default RemoteAuth;

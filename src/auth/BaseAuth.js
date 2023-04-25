@@ -1,23 +1,21 @@
 'use strict';
-/* 
-© whatsapp-web.js
-re-developed by: Amirul Dev
+/*
+MywaJS
+Pengembangan ulang whatsapp-web.js
+menggunakan wjs + playwright
 contact:
-- ig: @amirul.dev
-- github: amiruldev20
-- wa: 085157489446
+email: amiruldev20@gmail.com
+ig: amirul.dev
+wa: 62851574894460
+tq to: pedro & edgard & dika
 */
-
-/**
- * Base class which all authentication strategies extend
- */
 class BaseAuthStrategy {
-    constructor() {}
+    constructor() { }
     setup(client) {
         this.client = client;
     }
-    async beforeBrowserInitialized() {}
-    async afterBrowserInitialized() {}
+    async beforeBrowserInitialized() { }
+    async afterBrowserInitialized() { }
     async onAuthenticationNeeded() {
         return {
             failed: false,
@@ -25,11 +23,11 @@ class BaseAuthStrategy {
             failureEventPayload: undefined
         };
     }
-    async getAuthEventPayload() {}
-    async afterAuthReady() {}
-    async disconnect() {}
-    async destroy() {}
-    async logout() {}
+    async getAuthEventPayload() { }
+    async afterAuthReady() { }
+    async disconnect() { }
+    async destroy() { }
+    async logout() { }
 }
 
-module.exports = BaseAuthStrategy;
+export default BaseAuthStrategy;
