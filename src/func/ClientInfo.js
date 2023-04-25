@@ -1,15 +1,6 @@
 'use strict';
-/*
-© whatsapp-web.js
-re-developed by: Amirul Dev
-contact:
-- ig: @amirul.dev
-- github: amiruldev20
-- wa: 085157489446
-*/
 
-
-const Base = require('./Base');
+import Base from './Base.js';
 
 /**
  * Current connection information
@@ -70,11 +61,11 @@ class ClientInfo extends Base {
      * @deprecated
      */
     async getBatteryStatus() {
-        return await this.client.pupPage.evaluate(() => {
+        return await this.client.playPage.evaluate(() => {
             const { battery, plugged } = window.Store.Conn;
             return { battery, plugged };
         });
     }
 }
 
-module.exports = ClientInfo;
+export default ClientInfo;

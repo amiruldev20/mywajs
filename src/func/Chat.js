@@ -1,15 +1,7 @@
 'use strict';
-/*
-© whatsapp-web.js
-re-developed by: Amirul Dev
-contact:
-- ig: @amirul.dev
-- github: amiruldev20
-- wa: 085157489446
-*/
 
-const Base = require('./Base');
-const Message = require('./Message');
+import Base from './Base.js';
+import Message from './Message.js';
 
 /**
  * Represents a Chat on WhatsApp
@@ -83,12 +75,6 @@ class Chat extends Base {
          */
         this.muteExpiration = data.muteExpiration;
 
-        /**
-         * Last message fo chat
-         * @type {Message}
-         */
-        this.lastMessage = data.lastMessage ? new Message(super.client, data.lastMessage) : undefined;
-        
         return super._patch(data);
     }
 
@@ -115,7 +101,7 @@ class Chat extends Base {
      * @returns {Promise<Boolean>} result
      */
     async clearMessages() {
-        return this.client.pupPage.evaluate(chatId => {
+        return this.client.playPage.evaluate(chatId => {
             return window.WWebJS.sendClearChat(chatId);
         }, this.id._serialized);
     }
@@ -125,7 +111,7 @@ class Chat extends Base {
      * @returns {Promise<Boolean>} result
      */
     async delete() {
-        return this.client.pupPage.evaluate(chatId => {
+        return this.client.playPage.evaluate(chatId => {
             return window.WWebJS.sendDeleteChat(chatId);
         }, this.id._serialized);
     }
@@ -176,6 +162,21 @@ class Chat extends Base {
     }
 
     /**
+     * temporary this chat forever, unless a date is specified
+     * @param {?Date} ephemeralDuration Date at which the Chat will be temporary
+     */
+    async ephemeral(ephemeralDuration) {
+        return this.client.setEphemeral(this.id._serialized, ephemeralDuration)
+    }
+
+    /**
+     * Unmutes this chat
+     */
+    async unmute() {
+        return this.client.muteChat(this.id._serialized, false);
+    }
+
+    /**
      * Mark this chat as unread
      */
     async markUnread(){
@@ -190,7 +191,7 @@ class Chat extends Base {
      * @returns {Promise<Array<Message>>}
      */
     async fetchMessages(searchOptions) {
-        let messages = await this.client.pupPage.evaluate(async (chatId, searchOptions) => {
+        let messages = await this.client.playPage.evaluate(async ({ chatId, searchOptions }) => {
             const msgFilter = (m) => {
                 if (m.isNotification) {
                     return false; // dont include notification messages
@@ -219,7 +220,7 @@ class Chat extends Base {
 
             return msgs.map(m => window.WWebJS.getMessageModel(m));
 
-        }, this.id._serialized, searchOptions);
+        }, { chatId: this.id._serialized, searchOptions });
 
         return messages.map(m => new Message(this.client, m));
     }
@@ -228,7 +229,7 @@ class Chat extends Base {
      * Simulate typing in chat. This will last for 25 seconds.
      */
     async sendStateTyping() {
-        return this.client.pupPage.evaluate(chatId => {
+        return this.client.playPage.evaluate(chatId => {
             window.WWebJS.sendChatstate('typing', chatId);
             return true;
         }, this.id._serialized);
@@ -238,7 +239,7 @@ class Chat extends Base {
      * Simulate recording audio in chat. This will last for 25 seconds.
      */
     async sendStateRecording() {
-        return this.client.pupPage.evaluate(chatId => {
+        return this.client.playPage.evaluate(chatId => {
             window.WWebJS.sendChatstate('recording', chatId);
             return true;
         }, this.id._serialized);
@@ -248,7 +249,7 @@ class Chat extends Base {
      * Stops typing or recording in chat immediately.
      */
     async clearState() {
-        return this.client.pupPage.evaluate(chatId => {
+        return this.client.playPage.evaluate(chatId => {
             window.WWebJS.sendChatstate('stop', chatId);
             return true;
         }, this.id._serialized);
@@ -271,4 +272,4 @@ class Chat extends Base {
     }
 }
 
-module.exports = Chat;
+export default Chat;

@@ -1,14 +1,7 @@
 'use strict';
-/*
-© whatsapp-web.js
-re-developed by: Amirul Dev
-contact:
-- ig: @amirul.dev
-- github: amiruldev20
-- wa: 085157489446
-*/
-const PrivateChat = require('../func/PrivateChat');
-const GroupChat = require('../func/GroupChat');
+
+import PrivateChat from '../func/PrivateChat.js';
+import GroupChat from '../func/GroupChat.js';
 
 class ChatFactory {
     static create(client, data) {
@@ -20,4 +13,4 @@ class ChatFactory {
     }
 }
 
-module.exports = ChatFactory;
+export default ChatFactory;

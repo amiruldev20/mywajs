@@ -1,7 +1,7 @@
 'use strict';
 
-const PrivateContact = require('../func/PrivateContact');
-const BusinessContact = require('../func/BusinessContact');
+import PrivateContact from '../func/PrivateContact.js';
+import BusinessContact from '../func/BusinessContact.js';
 
 class ContactFactory {
     static create(client, data) {
@@ -13,4 +13,4 @@ class ContactFactory {
     }
 }
 
-module.exports = ContactFactory;
+export default ContactFactory;
