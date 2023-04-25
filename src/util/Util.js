@@ -1,12 +1,21 @@
 'use strict';
-const file = require("file-type");
-const path = require('path');
-const Crypto = require('crypto');
-const { tmpdir, type } = require('os');
-const ffmpeg = require('fluent-ffmpeg');
-const webp = require('node-webpmux');
-const sharp = require('sharp')
-const fs = require('fs').promises;
+/*
+MywaJS
+Pengembangan ulang whatsapp-web.js
+menggunakan wjs + playwright
+contact:
+email: amiruldev20@gmail.com
+ig: amirul.dev
+wa: 62851574894460
+tq to: pedro & edgard & dika
+*/
+import path from 'path';
+import Crypto from "crypto";
+import { tmpdir } from 'os';
+import ffmpeg from 'fluent-ffmpeg';
+import webp from 'node-webpmux';
+import sharp from 'sharp';
+import fs from 'fs/promises';
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 
 /**
@@ -53,7 +62,7 @@ class Util {
      * 
      * @returns {Promise<MessageMedia>} media in webp format
      */
-    static async formatImageToWebpSticker(media, pupPage) {
+    static async formatImageToWebpSticker(media, playPage) {
         if (!media.mimetype.includes('image'))
             throw new Error('media is not a image');
 
@@ -61,7 +70,7 @@ class Util {
             return media;
         }
 
-        return pupPage.evaluate((media) => {
+        return playPage.evaluate((media) => {
             return window.WWebJS.toStickerData(media);
         }, media);
     }
@@ -145,13 +154,13 @@ class Util {
      * 
      * @returns {Promise<MessageMedia>} media in webp format
      */
-    static async formatToWebpSticker(media, metadata, pupPage) {
+    static async formatToWebpSticker(media, metadata, playPage) {
         let webpMedia;
 
         if (media.mimetype.includes('webp'))
             webpMedia = { mimetype: 'image/webp', data: media.data, filename: undefined }
         else if (media.mimetype.includes('image'))
-            webpMedia = await this.formatImageToWebpSticker(media, pupPage);
+            webpMedia = await this.formatImageToWebpSticker(media, playPage);
         else if (media.mimetype.includes('video'))
             webpMedia = await this.formatVideoToWebpSticker(media);
         else
@@ -162,10 +171,10 @@ class Util {
             const hash = this.generateHash(32);
             const json = {
                 "sticker-pack-id": metadata.packId ? metadata.packId : hash,
-                "sticker-pack-name": metadata.packName ? metadata.packName : 'Amirul Dev',
-                "sticker-pack-publisher": metadata.packPublish ? metadata.packPublish : 'Amirul Dev',
+                "sticker-pack-name": metadata.packName ? metadata.packName : 'Dika Ardnt.',
+                "sticker-pack-publisher": metadata.packPublish ? metadata.packPublish : 'Dika Ardnt.',
                 "sticker-pack-publisher-email": metadata.packEmail ? metadata.packEmail : '',
-                "sticker-pack-publisher-website": metadata.packWebsite ? metadata.packWebsite : 'https://instagram.com/amirul.dev',
+                "sticker-pack-publisher-website": metadata.packWebsite ? metadata.packWebsite : 'https://instagram.com/cak_haho',
                 "android-app-store-link": metadata.androidApp ? metadata.androidApp : '',
                 "ios-app-store-link": metadata.iOSApp ? metadata.iOSApp : '',
                 "emojis": metadata.categories ? metadata.categories : [],
@@ -217,7 +226,7 @@ class Util {
      * @param {Buffer} buffer
      * @return {Promise<{preview: Promise<string>, img: Promise<string>}>}
      */
-    static async generateProfilePicture(buffer, type = 'normal') {
+    static async generateProfilePicture(buffer, type = 'normal'){
         /**
          * @param {Sharp} img
          * @param {number} maxSize
@@ -225,7 +234,7 @@ class Util {
          */
         const resizeByMax = async (img, maxSize) => {
             const metadata = await img.metadata();
-            const outputRatio = maxSize / Math.max(metadata.height, metadata.width);
+            const outputRatio = maxSize/Math.max(metadata.height, metadata.width);
             return img.resize(Math.floor(metadata.width * outputRatio), Math.floor(metadata.height * outputRatio));
         };
         /**
@@ -235,44 +244,13 @@ class Util {
         const imgToBase64 = async (img) => {
             return Buffer.from(await img.toFormat('jpg').toBuffer()).toString('base64');
         };
-
+        
         const img = await sharp(buffer);
         return {
             img: (type === 'long') ? await imgToBase64(await resizeByMax(img, 720)) : await imgToBase64(await resizeByMax(img, 640)),
             preview: (type === 'long') ? await imgToBase64(await resizeByMax(img, 120)) : await imgToBase64(await resizeByMax(img, 96))
         };
     }
-
-    static async getFile(PATH, save) {
-        let filename
-        let data = Buffer.isBuffer(PATH) ? PATH : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await this.fetchBuffer(PATH) : fs.existsSync(PATH) ? (filename = PATH, fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0)
-        let type = await file.fromBuffer(data) || {
-            mime: 'application/octet-stream',
-            ext: '.bin'
-        }
-        filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
-        if (data && save) fs.promises.writeFile(filename, data)
-        let size = Buffer.byteLength(data)
-        return {
-            filename,
-            size,
-            sizeH: this.formatSize(size),
-            ...type,
-            data
-        }
-    }
-
-    static formatSize(bytes) {
-        if (bytes >= 1000000000) { bytes = (bytes / 1000000000).toFixed(2) + " GB"; }
-        else if (bytes >= 1000000) { bytes = (bytes / 1000000).toFixed(2) + " MB"; }
-        else if (bytes >= 1000) { bytes = (bytes / 1000).toFixed(2) + " KB"; }
-        else if (bytes > 1) { bytes = bytes + " bytes"; }
-        else if (bytes == 1) { bytes = bytes + " byte"; }
-        else { bytes = "0 bytes"; }
-        return bytes;
-        }
-
-
 }
 
-module.exports = Util;
+export default Util

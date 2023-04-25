@@ -1,7 +1,15 @@
 'use strict';
-
-// Exposes the internal Store to the WhatsApp Web client
-exports.ExposeStore = (moduleRaidStr) => {
+/*
+MywaJS
+Pengembangan ulang whatsapp-web.js
+menggunakan wjs + playwright
+contact:
+email: amiruldev20@gmail.com
+ig: amirul.dev
+wa: 62851574894460
+tq to: pedro & edgard & dika
+*/
+export const ExposeStore = (moduleRaidStr) => {
     eval('var moduleRaid = ' + moduleRaidStr);
     // eslint-disable-next-line no-undef
     window.mR = moduleRaid();
@@ -32,21 +40,26 @@ exports.ExposeStore = (moduleRaidStr) => {
     window.Store.SendDelete = window.mR.findModule('sendDelete')[0];
     window.Store.SendMessage = window.mR.findModule('addAndSendMsgToChat')[0];
     window.Store.SendSeen = window.mR.findModule('sendSeen')[0];
+    window.Store.SendVote = window.mR.findModule('sendVote')[0];
     window.Store.User = window.mR.findModule('getMaybeMeUser')[0];
+    window.Store.Theme = window.mR.findModule((module) => (module.getTheme && module.setTheme) ? module : null)[0];
     window.Store.UploadUtils = window.mR.findModule((module) => (module.default && module.default.encryptAndUpload) ? module.default : null)[0].default;
     window.Store.UserConstructor = window.mR.findModule((module) => (module.default && module.default.prototype && module.default.prototype.isServer && module.default.prototype.isUser) ? module.default : null)[0].default;
     window.Store.Validators = window.mR.findModule('findLinks')[0];
     window.Store.VCard = window.mR.findModule('vcardFromContactModel')[0];
+    window.Store.VCardParse = window.mR.findModule('WA_BIZ_NAME')[0];
     window.Store.WidFactory = window.mR.findModule('createWid')[0];
     window.Store.ProfilePic = window.mR.findModule('profilePicResync')[0];
     window.Store.PresenceUtils = window.mR.findModule('sendPresenceAvailable')[0];
     window.Store.ChatState = window.mR.findModule('sendChatStateComposing')[0];
-    window.Store.GroupParticipants = window.mR.findModule('promoteParticipants')[1];
+    window.Store.GroupParticipants = window.mR.findModule('promoteParticipants')[0];
     window.Store.JoinInviteV4 = window.mR.findModule('sendJoinGroupViaInviteV4')[0];
     window.Store.findCommonGroups = window.mR.findModule('findCommonGroups')[0].findCommonGroups;
+    window.Store.findMessage = window.mR.findModule('msgFindQuery')[1];
     window.Store.StatusUtils = window.mR.findModule('setMyStatus')[0];
     window.Store.ConversationMsgs = window.mR.findModule('loadEarlierMsgs')[0];
     window.Store.sendReactionToMsg = window.mR.findModule('sendReactionToMsg')[0].sendReactionToMsg;
+    window.Store.ChangeEphemeralDuration = window.mR.findModule('changeEphemeralDuration')[0].changeEphemeralDuration;
     window.Store.createOrUpdateReactionsModule = window.mR.findModule('createOrUpdateReactions')[0];
     window.Store.EphemeralFields = window.mR.findModule('getEphemeralFields')[0];
     window.Store.ReplyUtils = window.mR.findModule('canReplyMsg').length > 0 && window.mR.findModule('canReplyMsg')[0];
@@ -54,6 +67,23 @@ exports.ExposeStore = (moduleRaidStr) => {
     window.Store.QuotedMsg = window.mR.findModule('getQuotedMsgObj')[0];
     window.Store.Socket = window.mR.findModule('deprecatedSendIq')[0];
     window.Store.SocketWap = window.mR.findModule('wap')[0];
+    window.Store.SearchContext = window.mR.findModule('getSearchContext')[0].getSearchContext;
+    window.Store.DrawerManager = window.mR.findModule('DrawerManager')[0].DrawerManager;
+    window.Store.Functions = {
+        ...window.mR.findModule('randomHex')[0]
+    }
+    window.Store.WebSocket = {
+        ...window.mR.findModule('smax')[0],
+        ...window.mR.findModule('getFanOutList')[0],
+        ...window.mR.findModule('ensureE2ESessions')[0],
+        ...window.mR.findModule('encryptMsgProtobuf')[0],
+        ...window.mR.findModule('sendSmaxStanza')[0]
+    };
+    window.Store.MultiDevice = {
+        ...window.mR.findModule('getADVEncodedIdentity')[0],
+        ...window.mR.findModule('waNoiseInfo')[0],
+        ...window.mR.findModule('waSignalStore')[0].waSignalStore
+    };
     window.Store.StickerTools = {
         ...window.mR.findModule('toWebpSticker')[0],
         ...window.mR.findModule('addWebpMetadata')[0]
@@ -212,42 +242,45 @@ exports.ExposeStore = (moduleRaidStr) => {
 
         return proto;
     });
-    /**
+
     setTimeout(() => {
-    window.injectToFunction({
-    index: 0,
-    name: 'createMsgProtobuf',
-    property: 'createMsgProtobuf'
-    }, (func, args) => {
-    const proto = func(...args);
-    if (proto.templateMessage) {
-    proto.viewOnceMessage = {
-    message: {
-    templateMessage: proto.templateMessage,
-    },
-    };
-    delete proto.templateMessage;
-    }
-    if (proto.buttonsMessage) {
-    proto.viewOnceMessage = {
-    message: {
-    buttonsMessage: proto.buttonsMessage,
-    },
-    };
-    delete proto.buttonsMessage;
-    }
-    if (proto.listMessage) {
-    proto.viewOnceMessage = {
-    message: {
-    listMessage: proto.listMessage,
-    },
-    };
-    delete proto.listMessage;
-    }
-    return proto;
-    });
+        window.injectToFunction({
+            index: 0,
+            name: 'createMsgProtobuf',
+            property: 'createMsgProtobuf'
+        }, (func, args) => {
+            const proto = func(...args);
+            if (proto.templateMessage) {
+                /*
+                proto.viewOnceMessage = {
+                    message: {
+                        templateMessage: proto.templateMessage,
+                    },
+                };
+                delete proto.templateMessage;
+                */
+            }
+            /*
+            if (proto.buttonsMessage) {
+                proto.viewOnceMessage = {
+                    message: {
+                        buttonsMessage: proto.buttonsMessage,
+                    },
+                };
+                delete proto.buttonsMessage;
+            }
+            if (proto.listMessage) {
+                proto.viewOnceMessage = {
+                    message: {
+                        listMessage: proto.listMessage,
+                    },
+                };
+                delete proto.listMessage;
+            }
+            */
+            return proto;
+        });
     }, 100);
-    */
 
     window.injectToFunction({
         index: 0,
@@ -346,6 +379,60 @@ exports.ExposeStore = (moduleRaidStr) => {
         return func(...args);
     });
 
+    window.injectToFunction({
+        index: 0,
+        name: 'createFanoutMsgStanza',
+        property: 'createFanoutMsgStanza',
+    }, async (func, args) => {
+        const [, proto] = args;
+
+        let buttonNode = null;
+
+        if (proto.buttonsMessage) {
+            buttonNode = window.Store.WebSocket.smax('buttons');
+        } else if (proto.listMessage) {
+            const listType = proto.listMessage.listType || 0;
+
+            const types = ['unknown', 'single_select', 'product_list'];
+
+            buttonNode = window.Store.WebSocket.smax('list', {
+                v: '2',
+                type: types[listType],
+            });
+        }
+
+        const node = await func(...args);
+
+        if (!buttonNode) return node
+
+        const content = node.content || []
+
+        let bizNode = content.find((c) => c.tag === 'biz');
+
+        if (!bizNode) {
+            bizNode = window.Store.WebSocket.smax(
+                'biz',
+                { native_flow_name: 'wa_payment_learn_more' },
+                null
+            );
+            content.push(bizNode);
+        }
+
+        let hasButtonNode = false;
+
+        if (Array.isArray(bizNode.content)) {
+            hasButtonNode = !!bizNode.content.find((c) => c.tag === buttonNode?.tag);
+        } else {
+            bizNode.content = [];
+        }
+
+        if (!hasButtonNode) {
+            bizNode.content.push(buttonNode);
+        }
+
+        return node;
+    })
+
     // TODO remove these once everybody has been updated to WWebJS with legacy sessions removed
     const _linkPreview = window.mR.findModule('queryLinkPreview');
     if (_linkPreview && _linkPreview[0] && _linkPreview[0].default) {
@@ -365,11 +452,10 @@ exports.ExposeStore = (moduleRaidStr) => {
     }
 };
 
-exports.LoadUtils = () => {
-    window.WWebJS = {};
+export const LoadUtils = () => {
+    window.WWebJS = { ...WPP };
 
-    // {id: message id; type: buttonType; mediaType: mediaType} - TODO: clean
-    window.WWebJS.pendingBypass = [];
+    window.WWebJS.pendingBypass = []
 
     window.WWebJS.sendSeen = async (chatId) => {
         let chat = window.Store.Chat.get(chatId);
@@ -381,6 +467,92 @@ exports.LoadUtils = () => {
 
     };
 
+    window.WWebJS.prepareRawMessage = async (chatId, message, options = {}) => {
+        const chatWid = window.Store.WidFactory.createWid(chatId)
+        const chat = await window.Store.Chat.find(chatWid)
+
+        const meUser = window.Store.User.getMaybeMeUser()
+        const isMD = window.Store.MDBackend
+
+        const newMsgId = new window.Store.MsgKey({
+            from: meUser,
+            to: chat.id,
+            id: window.Store.MsgKey.newId(),
+            participant: isMD && chat.id.isGroup() || chat.id.isStatusV3() ? meUser : undefined,
+            selfDir: 'out'
+        })
+
+        message = {
+            t: parseInt(new Date().getTime() / 1000),
+            id: newMsgId,
+            from: meUser,
+            to: chat.id,
+            self: 'out',
+            isNewMsg: true,
+            local: true,
+            ack: 0,
+            ...message
+        }
+
+        if (options.messageId) {
+            message.id = new window.Store.MsgKey({
+                from: meUser,
+                to: chat.id,
+                id: options.messageId,
+                participant: isMD && chat.id.isGroup() || chat.id.isStatusV3() ? meUser : undefined,
+                selfDir: 'out'
+            })
+
+
+            delete options.messageId
+        }
+
+        if (options.mentions) {
+            message.mentionedJidList = options.mentions.map(cId => window.Store.Contact.get(cId).id);
+
+            delete options.mentions
+        }
+
+        let quotedMsg = {}
+        if (options.quoted) {
+            if (typeof options.quoted === 'string') quotedMsg = window.Store.Msg.get(options.quoted)
+            if (typeof options.quoted === 'object') quotedMsg = window.Store.Msg.get(options.quoted.id ? options.quoted.id._serialized : options.quoted._serialized)
+
+            quotedMsg = quotedMsg.msgContextInfo(chat.id)
+
+            delete options.quoted
+        }
+
+        let extraOptions = {}
+        if (options.extra) {
+            extraOptions = options.extra
+
+            delete options.extra
+        }
+
+        message = {
+            ...message,
+            ...quotedMsg,
+            ...extraOptions
+        }
+
+        return message
+    }
+
+    window.WWebJS.sendRawMessage = async (chatId, rawMessage, options = {}) => {
+        const chatWid = window.Store.WidFactory.createWid(chatId)
+        const chat = await window.Store.Chat.find(chatWid)
+
+        rawMessage = window.WWebJS.prepareRawMessage(chatId, rawMessage, options)
+
+        if (options.sendSeen) {
+            window.WWebJS.sendSeen(chatId);
+        }
+
+        await window.Store.SendMessage.addAndSendMsgToChat(chat, rawMessage)
+        return rawMessage
+    }
+
     window.WWebJS.prepareMessageButtons = (buttonsOptions) => {
         const returnObject = {};
         if (!buttonsOptions.buttons) {
@@ -390,63 +562,63 @@ exports.LoadUtils = () => {
         returnObject.title = buttonsOptions.title;
         returnObject.footer = buttonsOptions.footer;
 
-        /**
-        if (false) {
-        returnObject.isFromTemplate = true;
-        returnObject.hydratedButtons = buttonsOptions.buttons;
-        returnObject.buttons = new window.Store.TemplateButtonCollection();
-        
-        returnObject.buttons.add(
-        returnObject.hydratedButtons.map((button, index) => {
-        const i = `${null != button.index ? button.index : index}`;
-        
-        if (button.urlButton) {
-        return new window.Store.TemplateButtonModel({
-        id: i,
-        displayText: button.urlButton?.displayText,
-        url: button.urlButton?.url,
-        subtype: 'url',
-        });
+        /**if (buttonsOptions.useTemplateButtons) {
+            returnObject.isFromTemplate = true;
+            returnObject.hydratedButtons = buttonsOptions.buttons;
+            returnObject.buttons = new window.Store.TemplateButtonCollection();
+
+            returnObject.buttons.add(
+                returnObject.hydratedButtons.map((button, index) => {
+                    const i = `${null != button.index ? button.index : index}`;
+
+                    if (button.urlButton) {
+                        return new window.Store.TemplateButtonModel({
+                            id: i,
+                            displayText: button.urlButton?.displayText,
+                            url: button.urlButton?.url,
+                            subtype: 'url',
+                        });
+                    }
+
+                    if (button.callButton) {
+                        return new window.Store.TemplateButtonModel({
+                            id: i,
+                            displayText: button.callButton.displayText,
+                            phoneNumber: button.callButton.phoneNumber,
+                            subtype: 'call',
+                        });
+                    }
+
+                    return new window.Store.TemplateButtonModel({
+                        id: i,
+                        displayText: button.quickReplyButton?.displayText,
+                        selectionId: button.quickReplyButton?.id,
+                        subtype: 'quick_reply',
+                    });
+                })
+            );
         }
-        
-        if (button.callButton) {
-        return new window.Store.TemplateButtonModel({
-        id: i,
-        displayText: button.callButton.displayText,
-        phoneNumber: button.callButton.phoneNumber,
-        subtype: 'call',
-        });
-        }
-        
-        return new window.Store.TemplateButtonModel({
-        id: i,
-        displayText: button.quickReplyButton?.displayText,
-        selectionId: button.quickReplyButton?.id,
-        subtype: 'quick_reply',
-        });
-        })
-        );
-        }
-        else {
-        }
-        **/
+        else {*/
         returnObject.isDynamicReplyButtonsMsg = true;
 
         returnObject.dynamicReplyButtons = buttonsOptions.buttons.map((button, index) => ({
-            buttonId: button.quickReplyButton.id.toString() || `${index}`,
+            buttonId: button.quickReplyButton?.id?.toString() || `${index}`,
             buttonText: { displayText: button.quickReplyButton?.displayText },
             type: 1,
         }));
 
         // For UI only
+
         returnObject.replyButtons = new window.Store.ButtonCollection();
         returnObject.replyButtons.add(returnObject.dynamicReplyButtons.map((button) => new window.Store.ReplyButtonModel({
             id: button.buttonId,
             displayText: button.buttonText?.displayText || undefined,
         })));
 
+
+        //}
         return returnObject;
-    }
+    };
 
     window.WWebJS.sendMessage = async (chat, content, options = {}) => {
         let attOptions = {};
@@ -459,6 +631,7 @@ exports.LoadUtils = () => {
                     forceGif: options.sendVideoAsGif
                 });
 
+            attOptions.caption = options.caption ? options.caption : ''
             content = options.sendMediaAsSticker ? undefined : attOptions.preview;
 
             delete options.attachment;
@@ -515,11 +688,11 @@ exports.LoadUtils = () => {
         } else if (options.parseVCards && typeof (content) === 'string' && content.startsWith('BEGIN:VCARD')) {
             delete options.parseVCards;
             try {
-                const parsed = window.Store.VCard.parseVcard(content);
+                const parsed = window.Store.VCardParse.parseVcard(content);
                 if (parsed) {
                     vcardOptions = {
                         type: 'vcard',
-                        vcardFormattedName: window.Store.VCard.vcardGetNameFromParsed(parsed)
+                        vcardFormattedName: window.Store.VCardParse.vcardGetNameFromParsed(parsed)
                     };
                 }
             } catch (_) {
@@ -534,7 +707,7 @@ exports.LoadUtils = () => {
             if (!window.Store.MDBackend) {
                 const link = window.Store.Validators.findLink(content);
                 if (link) {
-                    const preview = await window.Store.Wap.queryLinkPreview(link.url);
+                    const preview = await window.WWebJS.whatsapp.functions.fetchLinkPreview(link.url);
                     preview.preview = true;
                     preview.subtype = 'url';
                     options = { ...options, ...preview };
@@ -576,24 +749,13 @@ exports.LoadUtils = () => {
         }
 
         const meUser = window.Store.User.getMaybeMeUser();
-        const isMD = window.Store.MDBackend;
 
-        const newMsgId = new window.Store.MsgKey({
-            from: meUser,
-            to: chat.id,
-            id: window.Store.MsgKey.newId(),
-            participant: isMD && chat.id.isGroup() ? meUser : undefined,
-            selfDir: 'out',
-        });
+        const newMsgId = window.WWebJS.chat.generateMessageID(chat);
 
         const extraOptions = options.extraOptions || {};
         delete options.extraOptions;
 
         const ephemeralFields = window.Store.EphemeralFields.getEphemeralFields(chat);
-
-        if (buttonOptions || listOptions) {
-            window.WWebJS.pendingBypass.push({ id: newMsgId, type: buttonOptions ? 'buttons' : 'list', mediaType: listOptions.type == "list" ? "list" : undefined })
-        }
 
         const message = {
             ...options,
@@ -607,6 +769,7 @@ exports.LoadUtils = () => {
             t: parseInt(new Date().getTime() / 1000),
             isNewMsg: true,
             type: 'chat',
+            createChat: true,
             ...ephemeralFields,
             ...locationOptions,
             ...attOptions,
@@ -747,6 +910,10 @@ exports.LoadUtils = () => {
             msg.id = Object.assign({}, msg.id, { remote: msg.id.remote._serialized });
         }
 
+        if (msg.type == 'poll_creation') {
+            msg.pollVotes = window.Store.PollVote.getForParent([msg.id._serialized]).map(a => a.serialize())[0];
+        }
+
         delete msg.pendingAckUpdate;
 
         return msg;
@@ -754,6 +921,7 @@ exports.LoadUtils = () => {
 
 
     window.WWebJS.getChatModel = async chat => {
+
         let res = chat.serialize();
         res.isGroup = chat.isGroup;
         res.formattedTitle = chat.formattedTitle;
@@ -889,7 +1057,7 @@ exports.LoadUtils = () => {
         return false;
     };
 
-    window.WWebJS.sendChatstate = async (state, chatId) => {
+    window.WWebJS.sendChatstate = async (chatId, state) => {
         if (window.Store.MDBackend) {
             chatId = window.Store.WidFactory.createWid(chatId);
         }
@@ -964,18 +1132,117 @@ exports.LoadUtils = () => {
         await window.Store.Socket.deprecatedCastStanza(stanza);
     };
 
-    // new injected by Amirul Dev
-    window.new = {
-        // theme
-        theme: window.mR.findModule((module) => module.setTheme && module.getTheme ? module : null),
-        status: {
-            text: async (capt, opt) => {
-                return WPP.status.sendTextStatus(capt, opt)
-            },
-            // masih belum dapat bekerja
-            image: async (base64) => {
-                return WPP.status.sendImageStatus(base64)
+    window.WWebJS.votePoll = async (pollCreationMessageId, selectedOptions) => {
+        const msg = window.Store.Msg.get(pollCreationMessageId);
+        if (msg.type !== 'poll_creation') throw 'Quoted message is not a poll creation message!';
+        let localIdSet = new Set();
+        msg.pollOptions.map(a => {
+            for (const option of selectedOptions) {
+                if (a.name == option) localIdSet.add(a.localId);
             }
+        });
+        await window.Store.SendVote.sendVote(msg, localIdSet);
+    };
+
+    window.WWebJS.cropAndResizeImage = async (media, options = {}) => {
+        if (!media.mimetype.includes('image'))
+            throw new Error('Media is not an image');
+
+        if (options.mimetype && !options.mimetype.includes('image'))
+            delete options.mimetype;
+
+        options = Object.assign({ size: 720, mimetype: media.mimetype, quality: .75, asDataUrl: false }, options);
+
+        const img = await new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = `data:${media.mimetype};base64,${media.data}`;
+        });
+
+        const sl = Math.min(img.width, img.height);
+        const sx = Math.floor((img.width - sl) / 2);
+        const sy = Math.floor((img.height - sl) / 2);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = options.size;
+        canvas.height = options.size;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, sx, sy, sl, sl, 0, 0, options.size, options.size);
+
+        const dataUrl = canvas.toDataURL(options.mimetype, options.quality);
+
+        if (options.asDataUrl)
+            return dataUrl;
+
+        return Object.assign(media, {
+            mimetype: options.mimeType,
+            data: dataUrl.replace(`data:${options.mimeType};base64,`, '')
+        });
+    };
+
+    window.WWebJS.setPicture = async (chatid, media, type = 'normal') => {
+        const thumbnail = (type === 'long') ? await window.WWebJS.cropAndResizeImage(media, { asDataUrl: true, mimetype: 'image/jpeg', size: 120 }) : await window.WWebJS.cropAndResizeImage(media, { asDataUrl: true, mimetype: 'image/jpeg', size: 96 });;
+        const profilePic = (type === 'long') ? await window.WWebJS.cropAndResizeImage(media, { asDataUrl: true, mimetype: 'image/jpeg', size: 720 }) : await window.WWebJS.cropAndResizeImage(media, { asDataUrl: true, mimetype: 'image/jpeg', size: 640 });;
+
+        const chatWid = window.Store.WidFactory.createWid(chatid);
+        try {
+            const collection = window.Store.ProfilePicThumb.get(chatid);
+            if (!collection.canSet()) return;
+
+            const res = await window.Store.GroupUtils.sendSetPicture(chatWid, profilePic, thumbnail);
+            return res ? res.status === 200 : false;
+        } catch (err) {
+            if (err.name === 'ServerStatusCodeError') return false;
+            throw err;
         }
+    };
+
+    window.WWebJS.deletePicture = async (chatid) => {
+        const chatWid = window.Store.WidFactory.createWid(chatid);
+        try {
+            const collection = window.Store.ProfilePicThumb.get(chatid);
+            if (!collection.canDelete()) return;
+
+            const res = await window.Store.GroupUtils.requestDeletePicture(chatWid);
+            return res ? res.status === 200 : false;
+        } catch (err) {
+            if (err.name === 'ServerStatusCodeError') return false;
+            throw err;
+        }
+    };
+
+    window.WWebJS.downloadFile = async (url) => {
+        return new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest()
+            xhr.onload = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        let reader = new FileReader()
+                        reader.readAsDataURL(xhr.response)
+                        reader.onload = function (e) {
+                            resolve(reader.result.substr(reader.result.indexOf(',') + 1))
+                        }
+                    } else {
+                        console.error(xhr.statusText)
+                    }
+                } else {
+                    resolve(false)
+                }
+            }
+            xhr.open('GET', url, true)
+            xhr.responseType = 'blob'
+            xhr.send(null)
+        })
+    }
+
+    window.WWebJS.getChatOnline = async (chatId) => {
+        const chat = window.Store.Chat.get(chatId);
+        if (!chat) {
+            return false;
+        }
+        await chat.presence.subscribe();
+        return chat.presence.attributes.isOnline;
     }
 };

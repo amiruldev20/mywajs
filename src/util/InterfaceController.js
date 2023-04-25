@@ -1,12 +1,4 @@
 'use strict';
-/*
-© whatsapp-web.js
-re-developed by: Amirul Dev
-contact:
-- ig: @amirul.dev
-- github: amiruldev20
-- wa: 085157489446
-*/
 
 /**
  * Interface Controller
@@ -14,7 +6,7 @@ contact:
 class InterfaceController {
 
     constructor(props) {
-        this.pupPage = props.pupPage;
+        this.playPage = props.playPage;
     }
 
     /**
@@ -22,7 +14,7 @@ class InterfaceController {
      * @param {string} chatId ID of the chat window that will be opened
      */
     async openChatWindow(chatId) {
-        await this.pupPage.evaluate(async chatId => {
+        await this.playPage.evaluate(async chatId => {
             let chatWid = window.Store.WidFactory.createWid(chatId);
             let chat = await window.Store.Chat.find(chatWid);
             await window.Store.Cmd.openChatAt(chat);
@@ -34,7 +26,7 @@ class InterfaceController {
      * @param {string} chatId ID of the chat drawer that will be opened
      */
     async openChatDrawer(chatId) {
-        await this.pupPage.evaluate(async chatId => {
+        await this.playPage.evaluate(async chatId => {
             let chat = await window.Store.Chat.get(chatId);
             await window.Store.Cmd.openDrawerMid(chat);
         }, chatId);
@@ -45,7 +37,7 @@ class InterfaceController {
      * @param {string} chatId ID of the chat search that will be opened
      */
     async openChatSearch(chatId) {
-        await this.pupPage.evaluate(async chatId => {
+        await this.playPage.evaluate(async chatId => {
             let chat = await window.Store.Chat.get(chatId);
             await window.Store.Cmd.chatSearch(chat);
         }, chatId);
@@ -56,9 +48,11 @@ class InterfaceController {
      * @param {string} msgId ID of the message that will be scrolled to
      */
     async openChatWindowAt(msgId) {
-        await this.pupPage.evaluate(async msgId => {
+        await this.playPage.evaluate(async msgId => {
             let msg = await window.Store.Msg.get(msgId);
-            await window.Store.Cmd.openChatAt(msg.chat, msg.chat.getSearchContext(msg));
+            let chat = await window.Store.Chat.find(msg.id.remote);
+            let searchContext = await window.Store.SearchContext(chat, msg);
+            await window.Store.Cmd.openChatAt(chat, searchContext);
         }, msgId);
     }
 
@@ -67,7 +61,7 @@ class InterfaceController {
      * @param {string} msgId ID of the message drawer that will be opened
      */
     async openMessageDrawer(msgId) {
-        await this.pupPage.evaluate(async msgId => {
+        await this.playPage.evaluate(async msgId => {
             let msg = await window.Store.Msg.get(msgId);
             await window.Store.Cmd.msgInfoDrawer(msg);
         }, msgId);
@@ -77,8 +71,8 @@ class InterfaceController {
      * Closes the Right Drawer
      */
     async closeRightDrawer() {
-        await this.pupPage.evaluate(async () => {
-            await window.Store.Cmd.closeDrawerRight();
+        await this.playPage.evaluate(async () => {
+            await window.Store.DrawerManager.closeDrawerRight();
         });
     }
 
@@ -86,8 +80,8 @@ class InterfaceController {
      * Get all Features
      */
     async getFeatures() {
-        return await this.pupPage.evaluate(() => {
-            if(!window.Store.Features) throw new Error('This version of Whatsapp Web does not support features');
+        return await this.playPage.evaluate(() => {
+            if (!window.Store.Features) throw new Error('This version of Whatsapp Web does not support features');
             return window.Store.Features.F;
         });
     }
@@ -97,8 +91,8 @@ class InterfaceController {
      * @param {string} feature status to check
      */
     async checkFeatureStatus(feature) {
-        return await this.pupPage.evaluate((feature) => {
-            if(!window.Store.Features) throw new Error('This version of Whatsapp Web does not support features');
+        return await this.playPage.evaluate((feature) => {
+            if (!window.Store.Features) throw new Error('This version of Whatsapp Web does not support features');
             return window.Store.Features.supportsFeature(feature);
         }, feature);
     }
@@ -108,8 +102,8 @@ class InterfaceController {
      * @param {string[]} features to be enabled
      */
     async enableFeatures(features) {
-        await this.pupPage.evaluate((features) => {
-            if(!window.Store.Features) throw new Error('This version of Whatsapp Web does not support features');
+        await this.playPage.evaluate((features) => {
+            if (!window.Store.Features) throw new Error('This version of Whatsapp Web does not support features');
             for (const feature in features) {
                 window.Store.Features.setFeature(features[feature], true);
             }
@@ -121,8 +115,8 @@ class InterfaceController {
      * @param {string[]} features to be disabled
      */
     async disableFeatures(features) {
-        await this.pupPage.evaluate((features) => {
-            if(!window.Store.Features) throw new Error('This version of Whatsapp Web does not support features');
+        await this.playPage.evaluate((features) => {
+            if (!window.Store.Features) throw new Error('This version of Whatsapp Web does not support features');
             for (const feature in features) {
                 window.Store.Features.setFeature(features[feature], false);
             }
@@ -130,4 +124,4 @@ class InterfaceController {
     }
 }
 
-module.exports = InterfaceController;
+export default InterfaceController

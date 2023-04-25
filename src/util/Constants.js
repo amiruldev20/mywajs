@@ -1,28 +1,28 @@
 'use strict';
 /*
-© whatsapp-web.js
-re-developed by: Amirul Dev
+MywaJS
+Pengembangan ulang whatsapp-web.js
+menggunakan wjs + playwright
 contact:
-- ig: @amirul.dev
-- github: amiruldev20
-- wa: 085157489446
+email: amiruldev20@gmail.com
+ig: amirul.dev
+wa: 62851574894460
+tq to: pedro & edgard & dika
 */
-exports.WhatsWebURL = 'https://web.whatsapp.com/';
+export const WhatsWebURL = 'https://web.whatsapp.com/';
 
-exports.DefaultOptions = {
-    product: 'firefox',
-    puppeteer: {
+export const DefaultOptions = {
+    playwright: {
         headless: true,
-        defaultViewport: null
+        viewport: null,
+        bypassCSP: false
     },
     authTimeoutMs: 0,
     qrMaxRetries: 0,
     takeoverOnConflict: false,
     takeoverTimeoutMs: 0,
-    userAgent: 'MozillMozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36a/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36',
-    ffmpegPath: 'ffmpeg',
-    ignoreHTTPSErrors: true,
-    bypassCSP: false
+    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36',
+    ffmpegPath: 'ffmpeg'
 };
 
 /**
@@ -30,7 +30,7 @@ exports.DefaultOptions = {
  * @readonly
  * @enum {number}
  */
-exports.Status = {
+export const Status = {
     INITIALIZING: 0,
     AUTHENTICATING: 1,
     READY: 3
@@ -41,24 +41,21 @@ exports.Status = {
  * @readonly
  * @enum {string}
  */
-exports.Events = {
+export const Events = {
     AUTHENTICATED: 'authenticated',
     AUTHENTICATION_FAILURE: 'auth_failure',
     READY: 'ready',
-    CHAT_REMOVED: 'chat_removed',
-    CHAT_ARCHIVED: 'chat_archived',
     MESSAGE_RECEIVED: 'message',
     MESSAGE_CREATE: 'message_create',
     MESSAGE_REVOKED_EVERYONE: 'message_revoke_everyone',
     MESSAGE_REVOKED_ME: 'message_revoke_me',
     MESSAGE_ACK: 'message_ack',
-    UNREAD_COUNT: 'unread_count',
     MESSAGE_REACTION: 'message_reaction',
     MEDIA_UPLOADED: 'media_uploaded',
     CONTACT_CHANGED: 'contact_changed',
+    GROUP_ADMIN_CHANGED: 'group_admin_changed',
     GROUP_JOIN: 'group_join',
     GROUP_LEAVE: 'group_leave',
-    GROUP_ADMIN_CHANGED: 'group_admin_changed',
     GROUP_UPDATE: 'group_update',
     QR_RECEIVED: 'qr',
     LOADING_SCREEN: 'loading_screen',
@@ -66,7 +63,9 @@ exports.Events = {
     STATE_CHANGED: 'change_state',
     BATTERY_CHANGED: 'change_battery',
     INCOMING_CALL: 'call',
-    REMOTE_SESSION_SAVED: 'remote_session_saved'
+    REMOTE_SESSION_SAVED: 'remote_session_saved',
+    POLL_VOTE: 'poll_vote',
+    POLL_CREATION: 'poll_creation'
 };
 
 /**
@@ -74,7 +73,7 @@ exports.Events = {
  * @readonly
  * @enum {string}
  */
-exports.MessageTypes = {
+export const MessageTypes = {
     TEXT: 'chat',
     AUDIO: 'audio',
     VOICE: 'ptt',
@@ -110,6 +109,8 @@ exports.MessageTypes = {
     PROTOCOL: 'protocol',
     REACTION: 'reaction',
     TEMPLATE_BUTTON_REPLY: 'template_button_reply',
+    POLL_VOTE: 'poll_vote',
+    POLL_CREATION: 'poll_creation'
 };
 
 /**
@@ -117,7 +118,7 @@ exports.MessageTypes = {
  * @readonly
  * @enum {string}
  */
-exports.GroupNotificationTypes = {
+export const GroupNotificationTypes = {
     ADD: 'add',
     INVITE: 'invite',
     REMOVE: 'remove',
@@ -134,7 +135,7 @@ exports.GroupNotificationTypes = {
  * @readonly
  * @enum {string}
  */
-exports.ChatTypes = {
+export const ChatTypes = {
     SOLO: 'solo',
     GROUP: 'group',
     UNKNOWN: 'unknown'
@@ -145,7 +146,7 @@ exports.ChatTypes = {
  * @readonly
  * @enum {string}
  */
-exports.WAState = {
+export const WAState = {
     CONFLICT: 'CONFLICT',
     CONNECTED: 'CONNECTED',
     DEPRECATED_VERSION: 'DEPRECATED_VERSION',
@@ -165,7 +166,7 @@ exports.WAState = {
  * @readonly
  * @enum {number}
  */
-exports.MessageAck = {
+export const MessageAck = {
     ACK_ERROR: -1,
     ACK_PENDING: 0,
     ACK_SERVER: 1,
