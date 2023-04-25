@@ -9,7 +9,7 @@ ig: amirul.dev
 wa: 62851574894460
 tq to: pedro & edgard & dika
 */
-import BaseAuthStrategy from './BaseAuthStrategy.js';
+import BaseAuthStrategy from './BaseAuth.js';
 /**
  * No session restoring functionality
  * Will need to authenticate via QR code every time
