@@ -11,7 +11,7 @@ tq to: pedro & edgard & dika
 */
 import path from 'path';
 import fs from 'fs';
-import BaseAuthStrategy from './BaseAuthStrategy.js';
+import BaseAuthStrategy from './BaseAuth.js';
 
 /**
  * Local directory-based authentication
