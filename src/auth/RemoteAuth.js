@@ -22,7 +22,7 @@ try {
 
 import path from 'path';
 import { Events } from '../util/Constants.js';
-import BaseAuthStrategy from './BaseAuthStrategy.js';
+import BaseAuthStrategy from './BaseAuth.js';
 
 /**
  * Remote-based authentication
