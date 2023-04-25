@@ -1,6 +1,6 @@
 'use strict';
 
-const Util = require('../util/Util');
+import Util from '../util/Util.js';
 
 /**
  * Section spec used in List constructor
@@ -47,13 +47,13 @@ class List {
          * @type {string}
          */
         this.buttonText = buttonText;
-
+        
         /**
          * title of message
          * @type {string}
          */
         this.title = title;
-
+        
 
         /**
          * footer of message
@@ -66,23 +66,23 @@ class List {
          * @type {Array<any>}
          */
         this.sections = this._format(sections);
-
+        
     }
-
+    
     /**
      * Creates section array from simple array
      * @param {Array<SectionSpec>} sections
      * @returns {Array<FormattedSectionSpec>}
      */
     _format(sections) {
-        if (!sections.length) {
+        if(!sections.length) {
             throw '[LT02] List without sections';
         }
-        if (sections.length > 1 && sections.filter(section => (typeof section.title == 'undefined') || section.title == '').length > 1) {
+        if(sections.length > 1 && sections.filter(section => (typeof section.title == 'undefined' )|| section.title == '' ).length > 1) {
             throw '[LT05] You can\'t have more than one empty title.';
         }
         return sections.map((section, index) => {
-            if (!section.rows.length) {
+            if(!section.rows.length) {
                 throw '[LT03] Section without rows';
             }
             return {
@@ -100,7 +100,7 @@ class List {
             };
         });
     }
-
+    
 }
 
-module.exports = List;
+export default List;

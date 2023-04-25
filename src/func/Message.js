@@ -1,14 +1,12 @@
 'use strict';
 
-const Base = require('./Base');
-/*
-const MessageMedia = require('./MessageMedia');
-const Location = require('./Location');
-const Order = require('./Order');
-const Payment = require('./Payment');
-const Reaction = require('./Reaction');
-*/
-const {MessageTypes} = require('../util/Constants');
+import Base from './Base.js';
+import MessageMedia from './MessageMedia.js';
+import Location from './Location.js';
+import Order from './Order.js';
+import Payment from './Payment.js';
+import { MessageTypes } from '../util/Constants.js';
+import PollVote from './PollVote.js';
 
 /**
  * Represents a Message on WhatsApp
@@ -52,7 +50,7 @@ class Message extends Base {
          * Message content
          * @type {string}
          */
-        this.body = this.hasMedia ? data.caption || '' : data.body || '';
+        this.body = this.hasMedia ? data.caption || '' : data.body || data.pollName || '';
 
         /**
          * Message type
@@ -111,7 +109,7 @@ class Message extends Base {
          * Indicates if the message is a status update
          * @type {boolean}
          */
-        this.isStatus = data.isStatusV3;
+        this.isStatus = data?.isStatusV3 || data.id.remote === 'status@broadcast';
 
         /**
          * Indicates if the message was starred
@@ -135,13 +133,7 @@ class Message extends Base {
          * Indicates if the message was sent as a reply to another message.
          * @type {boolean}
          */
-        this.hasQuotedMsg = data.quotedMsg ? true : false;
-
-        /**
-         * Indicates whether there are reactions to the message
-         * @type {boolean}
-         */
-        this.hasReaction = data.hasReaction ? true : false;
+        this.hasQuotedMsg = (data.quotedMsg && data.quotedStanzaID && data.quotedParticipant) ? true : false;
 
         /**
          * Indicates the duration of the message in seconds
@@ -262,7 +254,7 @@ class Message extends Base {
      * @returns {Promise<Message>}
      */
     async reload() {
-        const newData = await this.client.pupPage.evaluate((msgId) => {
+        const newData = await this.client.playPage.evaluate((msgId) => {
             const msg = window.Store.Msg.get(msgId);
             if(!msg) return null;
             return window.WWebJS.getMessageModel(msg);
@@ -313,7 +305,7 @@ class Message extends Base {
     async getQuotedMessage() {
         if (!this.hasQuotedMsg) return undefined;
 
-        const quotedMsg = await this.client.pupPage.evaluate((msgId) => {
+        const quotedMsg = await this.client.playPage.evaluate((msgId) => {
             const msg = window.Store.Msg.get(msgId);
             const quotedMsg = window.Store.QuotedMsg.getQuotedMsgObj(msg);
             return window.WWebJS.getMessageModel(quotedMsg);
@@ -351,12 +343,12 @@ class Message extends Base {
      * @return {Promise}
      */
     async react(reaction){
-        await this.client.pupPage.evaluate(async (messageId, reaction) => {
+        await this.client.playPage.evaluate(async ({ messageId, reaction }) => {
             if (!messageId) { return undefined; }
             
             const msg = await window.Store.Msg.get(messageId);
             await window.Store.sendReactionToMsg(msg, reaction);
-        }, this.id._serialized, reaction);
+        }, { messageId: this.id._serialized, reaction });
     }
 
     /**
@@ -376,12 +368,12 @@ class Message extends Base {
     async forward(chat) {
         const chatId = typeof chat === 'string' ? chat : chat.id._serialized;
 
-        await this.client.pupPage.evaluate(async (msgId, chatId) => {
+        await this.client.playPage.evaluate(async ({ msgId, chatId }) => {
             let msg = window.Store.Msg.get(msgId);
             let chat = window.Store.Chat.get(chatId);
 
             return await chat.forwardMessages([msg]);
-        }, this.id._serialized, chatId);
+        }, { msgId: this.id._serialized, chatId });
     }
 
     /**
@@ -393,26 +385,9 @@ class Message extends Base {
             return undefined;
         }
 
-        const result = await this.client.pupPage.evaluate(async (msgId) => {
-            const msg = window.Store.Msg.get(msgId);
-            if (!msg) {
-                return undefined;
-            }
-            if (msg.mediaData.mediaStage != 'RESOLVED') {
-                // try to resolve media
-                await msg.downloadMedia({
-                    downloadEvenIfExpensive: true,
-                    rmrReason: 1
-                });
-            }
-
-            if (msg.mediaData.mediaStage.includes('ERROR') || msg.mediaData.mediaStage === 'FETCHING') {
-                // media could not be downloaded
-                return undefined;
-            }
-
+        const result = await this.client.playPage.evaluate(async (msg) => {
             try {
-                const decryptedMedia = await window.Store.DownloadManager.downloadAndMaybeDecrypt({
+                const decryptedMedia = await (window.Store.DownloadManager?.downloadAndMaybeDecrypt || window.Store.DownloadManager?.downloadAndDecrypt)({
                     directPath: msg.directPath,
                     encFilehash: msg.encFilehash,
                     filehash: msg.filehash,
@@ -431,12 +406,12 @@ class Message extends Base {
                     filesize: msg.size
                 };
             } catch (e) {
-                if(e.status && e.status === 404) return undefined;
-                throw e;
+                if (e.status && e.status === 404) return undefined
+                throw e
             }
-        }, this.id._serialized);
+        }, this)
 
-        if (!result) return undefined;
+        if (!result) return undefined
         return new MessageMedia(result.mimetype, result.data, result.filename, result.filesize);
     }
 
@@ -445,28 +420,29 @@ class Message extends Base {
      * @param {?boolean} everyone If true and the message is sent by the current user or the user is an admin, will delete it for everyone in the chat.
      */
     async delete(everyone) {
-        await this.client.pupPage.evaluate((msgId, everyone) => {
-            const msg = window.Store.Msg.get(msgId);
-            const chat = msg && (msg.chat || window.Store.Chat.get(msg.id.remote._serialized));
-
+        await this.client.playPage.evaluate(async ({ msgId, everyone }) => {
+            let msg = window.Store.Msg.get(msgId);
+            let chat = await window.Store.Chat.find(msg.id.remote || msg.chat);
+            
             const canRevoke = window.Store.MsgActionChecks.canSenderRevokeMsg(msg) || window.Store.MsgActionChecks.canAdminRevokeMsg(msg);
             if (everyone && canRevoke) {
-                return window.Store.Cmd.sendRevokeMsgs(chat, [msg], { type: msg.id.fromMe ? 'Sender' : 'Admin' });
+                return window.Store.Cmd.sendRevokeMsgs(chat, [msg], { clearMedia: true, type: msg.id.fromMe ? 'Sender' : 'Admin' });
             }
 
             return window.Store.Cmd.sendDeleteMsgs(chat, [msg], true);
-        }, this.id._serialized, everyone);
+        }, { msgId: this.id._serialized, everyone });
     }
 
     /**
      * Stars this message
      */
     async star() {
-        await this.client.pupPage.evaluate((msgId) => {
+        await this.client.playPage.evaluate(async (msgId) => {
             let msg = window.Store.Msg.get(msgId);
-
+            
             if (window.Store.MsgActionChecks.canStarMsg(msg)) {
-                return window.Store.Cmd.sendStarMsgs(msg.chat, [msg], false);
+                let chat = await window.Store.Chat.find(msg.id.remote);
+                return window.Store.Cmd.sendStarMsgs(chat, [msg], false);
             }
         }, this.id._serialized);
     }
@@ -475,14 +451,16 @@ class Message extends Base {
      * Unstars this message
      */
     async unstar() {
-        await this.client.pupPage.evaluate((msgId) => {
+        await this.client.playPage.evaluate(async (msgId) => {
             let msg = window.Store.Msg.get(msgId);
 
             if (window.Store.MsgActionChecks.canStarMsg(msg)) {
-                return window.Store.Cmd.sendUnstarMsgs(msg.chat, [msg], false);
+                let chat = await window.Store.Chat.find(msg.id.remote);
+                return window.Store.Cmd.sendUnstarMsgs(chat, [msg], false);
             }
         }, this.id._serialized);
     }
+
 
     /**
      * Message Info
@@ -500,11 +478,11 @@ class Message extends Base {
      * @returns {Promise<?MessageInfo>}
      */
     async getInfo() {
-        const info = await this.client.pupPage.evaluate(async (msgId) => {
+        const info = await this.client.playPage.evaluate(async (msgId) => {
             const msg = window.Store.Msg.get(msgId);
             if (!msg) return null;
 
-            return await window.Store.MessageInfo.sendQueryMsgInfo(msg.id);
+            return await window.Store.MessageInfo.sendQueryMsgInfo(msg);
         }, this.id._serialized);
 
         return info;
@@ -516,9 +494,9 @@ class Message extends Base {
      */
     async getOrder() {
         if (this.type === MessageTypes.ORDER) {
-            const result = await this.client.pupPage.evaluate((orderId, token, chatId) => {
+            const result = await this.client.playPage.evaluate(({ orderId, token, chatId }) => {
                 return window.WWebJS.getOrderDetail(orderId, token, chatId);
-            }, this.orderId, this.token, this._getChatId());
+            }, { orderId: this.orderId, token: this.token, chatId: this._getChatId()});
             if (!result) return undefined;
             return new Order(this.client, result);
         }
@@ -530,7 +508,7 @@ class Message extends Base {
      */
     async getPayment() {
         if (this.type === MessageTypes.PAYMENT) {
-            const msg = await this.client.pupPage.evaluate(async (msgId) => {
+            const msg = await this.client.playPage.evaluate(async (msgId) => {
                 const msg = window.Store.Msg.get(msgId);
                 if(!msg) return null;
                 return msg.serialize();
@@ -540,43 +518,33 @@ class Message extends Base {
         return undefined;
     }
 
-
     /**
-     * Reaction List
-     * @typedef {Object} ReactionList
-     * @property {string} id Original emoji
-     * @property {string} aggregateEmoji aggregate emoji
-     * @property {boolean} hasReactionByMe Flag who sent the reaction
-     * @property {Array<Reaction>} senders Reaction senders, to this message
+     * Refresh the current poll votes
+     * @returns {Promise<void>}
      */
-
-    /**
-     * Gets the reactions associated with the given message
-     * @return {Promise<ReactionList[]>}
-     */
-    async getReactions() {
-        if (!this.hasReaction) {
-            return undefined;
-        }
-
-        const reactions = await this.client.pupPage.evaluate(async (msgId) => {
-            const msgReactions = await window.Store.Reactions.find(msgId);
-            if (!msgReactions || !msgReactions.reactions.length) return null;
-            return msgReactions.reactions.serialize();
+    async refreshPollVotes() {
+        if (this.type !== MessageTypes.POLL_CREATION) throw 'Invalid usage! Can only be used with a pollCreation message';
+        const pollVotes = await this.client.playPage.evaluate((parentMsgId) => {
+            return window.Store.PollVote.getForParent([parentMsgId]).map(a => a.serialize())[0];
         }, this.id._serialized);
-
-        if (!reactions) {
-            return undefined;
-        }
-
-        return reactions.map(reaction => {
-            reaction.senders = reaction.senders.map(sender => {
-                sender.timestamp = Math.round(sender.timestamp / 1000);
-                return new Reaction(this.client, sender);
-            });
-            return reaction;
+        this.pollVotes = pollVotes.map((pollVote) => {
+            return new PollVote(this.client, {...pollVote, pollCreationMessage: this});
         });
+        return;
+    }
+
+    /**
+     * Vote to the poll.
+     * @param {Array<string>} selectedOptions Array of options selected.
+     * @returns {Promise<void>}
+     */
+    async vote(selectedOptions) {
+        if (this.type !== MessageTypes.POLL_CREATION) throw 'Invalid usage! Can only be used with a pollCreation message';
+        
+        return await this.client.playPage.evaluate(({ creationMsgId, selectedOptions }) => {
+            window.WWebJS.votePoll(creationMsgId, selectedOptions);
+        }, { creationMsgId: this.id._serialized, selectedOptions });
     }
 }
 
-module.exports = Message;
+export default Message;
