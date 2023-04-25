@@ -1,26 +1,34 @@
 'use strict';
 /*
-© whatsapp-web.js
-re-developed by: Amirul Dev
+MywaJS
+Pengembangan ulang whatsapp-web.js
+menggunakan wjs + playwright
 contact:
-- ig: @amirul.dev
-- github: amiruldev20
-- wa: 085157489446
+email: amiruldev20@gmail.com
+ig: amirul.dev
+wa: 62851574894460
+tq to: pedro & edgard & dika
 */
-const EventEmitter = require('events');
-const puppeteer = require('puppeteer');
+import EventEmitter from 'events';
+import playwright from 'playwright'
+import moduleRaid from '@pedroslopez/moduleraid/moduleraid.js';
+import { createRequire } from 'module';
 
-const moduleRaid = require('@pedroslopez/moduleraid/moduleraid');
 
-const Util = require('./util/Util');
-const InterfaceController = require('./util/InterfaceController');
-const { WhatsWebURL, DefaultOptions, Events, WAState } = require('./util/Constants');
-const { ExposeStore, LoadUtils } = require('./util/Injected');
-const ChatFactory = require('./factories/ChatFactory');
-const ContactFactory = require('./factories/ContactFactory');
-const { ClientInfo, Message, MessageMedia, Contact, Location, GroupNotification, Label, Call, Buttons, List, Reaction, Chat } = require('./func');
-const LegacySessionAuth = require('./auth/LegacySessionAuth');
-const NoAuth = require('./auth/NoAuth');
+import Util from './util/Util.js';
+import InterfaceController from './util/InterfaceController.js';
+import { WhatsWebURL, DefaultOptions, Events, WAState } from './util/Constants.js';
+import { ExposeStore, LoadUtils } from './util/Injected.js';
+import ChatFactory from './factories/ChatFactory.js';
+import ContactFactory from './factories/ContactFactory.js';
+import { PollVote, ClientInfo, Message, MessageMedia, Contact, Location, GroupNotification, Label, Call, Buttons, List, Reaction } from './func/index.js';
+import LegacySessionAuth from './auth/LegacySessionAuth.js';
+import NoAuth from './auth/NoAuth.js';
+import { getUrlInfo } from './util/LinkPreview.js'
+
+
+const require = createRequire(import.meta.url)
+
 
 /**
  * Starting point for interacting with the WhatsApp Web API
@@ -30,7 +38,7 @@ const NoAuth = require('./auth/NoAuth');
  * @param {number} options.authTimeoutMs - Timeout for authentication selector in puppeteer
  * @param {object} options.puppeteer - Puppeteer launch options. View docs here: https://github.com/puppeteer/puppeteer/
  * @param {number} options.qrMaxRetries - How many times should the qrcode be refreshed before giving up
- * @param {string} options.restartOnAuthFail- @deprecated This option should be set directly on the LegacySessionAuth.
+ * @param {string} options.restartOnAuthFail  - @deprecated This option should be set directly on the LegacySessionAuth.
  * @param {object} options.session - @deprecated Only here for backwards-compatibility. You should move to using LocalAuth, or set the authStrategy to LegacySessionAuth explicitly. 
  * @param {number} options.takeoverOnConflict - If another whatsapp web session is detected (another browser), take over the session in the current browser
  * @param {number} options.takeoverTimeoutMs - How much time to wait before taking over the session
@@ -84,7 +92,7 @@ class Client extends EventEmitter {
         this.authStrategy.setup(this);
 
         this.pupBrowser = null;
-        this.pupPage = null;
+        this.playPage = null;
 
         Util.setFfmpegPath(this.options.ffmpegPath);
     }
@@ -93,54 +101,60 @@ class Client extends EventEmitter {
      * Sets up events and requirements, kicks off authentication request
      */
     async initialize() {
-        let [browser, page] = [null, null];
+        let [browser, context, page] = [null, null];
 
         await this.authStrategy.beforeBrowserInitialized();
 
-        const puppeteerOpts = this.options.puppeteer;
-        if (puppeteerOpts && puppeteerOpts.browserWSEndpoint) {
-            browser = await puppeteer.connect(puppeteerOpts);
-            page = await browser.newPage();
+        const playwrightOpts = this.options.playwright;
+        if (playwrightOpts && playwrightOpts.wsEndpoint) {
+            browser = await playwright.chromium.connect(playwrightOpts.wsEndpoint, { timeout: 0, ...playwrightOpts });
+            page = await context.newPage();
         } else {
-            const browserArgs = [...(puppeteerOpts.args || [])];
+            const browserArgs = [...(playwrightOpts.args || [])];
             if (!browserArgs.find(arg => arg.includes('--user-agent'))) {
                 browserArgs.push(`--user-agent=${this.options.userAgent}`);
             }
 
-            browser = await puppeteer.launch({ ...puppeteerOpts, args: browserArgs });
+            browser = await playwright.chromium.launchPersistentContext(playwrightOpts.userDataDir, {
+                ...playwrightOpts,
+                args: browserArgs,
+                timeout: 0
+            });
             page = (await browser.pages())[0];
         }
 
-        await page.setUserAgent(this.options.userAgent);
-        if (this.options.bypassCSP) await page.setBypassCSP(true);
+        if (this.options.userAgent) {
+            await page.setExtraHTTPHeaders({
+                'User-Agent': this.options.userAgent
+            })
+        }
 
         this.pupBrowser = browser;
-        this.pupPage = page;
+        this.playPage = page;
 
         await this.authStrategy.afterBrowserInitialized();
 
         await page.goto(WhatsWebURL, {
-            waitUntil: 'load',
+            waitUntil: 'domcontentloaded',
             timeout: 0,
             referer: 'https://whatsapp.com/'
         });
+
         await page.addScriptTag({
             path: require.resolve('wjs')
         })
 
         await page.waitForFunction(() => window.WPP?.isReady)
 
-        await page.evaluate(() => {
+        await page.evaluate((markOnlineAvailable) => {
             WPP.chat.defaultSendMessageOptions.createChat = true
-            WPP.conn.setKeepAlive(false)
-        })
+            if (markOnlineAvailable) WPP.conn.setKeepAlive(markOnlineAvailable)
+        }, this.options.markOnlineAvailable)
             .catch(() => false)
 
-        //if (this.options.markOnlineAvailable) WPP.conn.markAvailable(true)
-
         await page.evaluate(`function getElementByXpath(path) {
-return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-}`);
+            return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+          }`);
 
         let lastPercent = null,
             lastPercentMessage = null;
@@ -300,8 +314,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         await page.waitForFunction(() => {
             return (
                 typeof window.WWebJS !== 'undefined' &&
-                typeof window.Store !== 'undefined' &&
-                window.WPP.isReady
+                typeof window.Store !== 'undefined'
             )
         })
             .catch(() => false);
@@ -474,15 +487,6 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
         });
 
-        await page.exposeFunction('onChatUnreadCountEvent', async (data) => {
-            const chat = await this.getChatById(data.id);
-
-            /**
-             * Emitted when the chat unread count changes
-             */
-            this.emit(Events.UNREAD_COUNT, chat);
-        });
-
         await page.exposeFunction('onMessageMediaUploadedEvent', (msg) => {
 
             const message = new Message(this, msg);
@@ -511,7 +515,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
                 if (state === WAState.CONFLICT) {
                     setTimeout(() => {
-                        this.pupPage.evaluate(() => window.Store.AppState.takeover());
+                        this.playPage.evaluate(() => window.Store.AppState.takeover());
                     }, this.options.takeoverTimeoutMs);
                 }
             }
@@ -562,6 +566,19 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             this.emit(Events.INCOMING_CALL, cll);
         });
 
+        await page.exposeFunction('onPollVote', (vote) => {
+            const vote_ = new PollVote(this, vote);
+            /**
+             * Emitted when a poll vote is received
+             * @event Client#poll_vote
+             * @param {object} vote
+             * @param {string} vote.sender Sender of the vote
+             * @param {number} vote.senderTimestampMs Timestamp the vote was sent
+             * @param {Array<string>} vote.selectedOptions Options selected
+             */
+            this.emit(Events.POLL_VOTE, vote_);
+        });
+
         await page.exposeFunction('onReaction', (reactions) => {
             for (const reaction of reactions) {
                 /**
@@ -583,26 +600,6 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             }
         });
 
-        await page.exposeFunction('onRemoveChatEvent', (chat) => {
-            /**
-             * Emitted when a chat is removed
-             * @event Client#chat_removed
-             * @param {Chat} chat
-             */
-            this.emit(Events.CHAT_REMOVED, new Chat(this, chat));
-        });
-
-        await page.exposeFunction('onArchiveChatEvent', (chat, currState, prevState) => {
-            /**
-             * Emitted when a chat is archived/unarchived
-             * @event Client#chat_archived
-             * @param {Chat} chat
-             * @param {boolean} currState
-             * @param {boolean} prevState
-             */
-            this.emit(Events.CHAT_ARCHIVED, new Chat(this, chat), currState, prevState);
-        });
-
         await page.evaluate(() => {
             window.Store.Msg.on('change', (msg) => { window.onChangeMessageEvent(window.WWebJS.getMessageModel(msg)); });
             window.Store.Msg.on('change:type', (msg) => { window.onChangeMessageTypeEvent(window.WWebJS.getMessageModel(msg)); });
@@ -611,9 +608,16 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             window.Store.Msg.on('remove', (msg) => { if (msg.isNewMsg) window.onRemoveMessageEvent(window.WWebJS.getMessageModel(msg)); });
             window.Store.AppState.on('change:state', (_AppState, state) => { window.onAppStateChangedEvent(state); });
             window.Store.Conn.on('change:battery', (state) => { window.onBatteryStateChangedEvent(state); });
-            window.Store.Call.on('add', (call) => { window.onIncomingCall(call); });
-            window.Store.Chat.on('remove', async (chat) => { window.onRemoveChatEvent(await window.WWebJS.getChatModel(chat)); });
-            window.Store.Chat.on('change:archive', async (chat, currState, prevState) => { window.onArchiveChatEvent(await window.WWebJS.getChatModel(chat), currState, prevState); });
+            window.Store.Call.on('add', (call) => {
+                if (call.isGroup) {
+                    window.onIncomingCall(call)
+                }
+            });
+            window.Store.Call.on('change:_state change:state', (call) => {
+                if (call.getState() === 'INCOMING_RING') {
+                    window.onIncomingCall(call);
+                };
+            });
             window.Store.Msg.on('add', (msg) => {
                 if (msg.isNewMsg) {
                     if (msg.type === 'ciphertext') {
@@ -624,7 +628,11 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     }
                 }
             });
-            window.Store.Chat.on('change:unreadCount', (chat) => { window.onChatUnreadCountEvent(chat); });
+
+            window.Store.PollVote.on('add', (vote) => {
+                if (vote.parentMsgKey) vote.pollCreationMessage = window.Store.Msg.get(vote.parentMsgKey).serialize();
+                window.onPollVote(vote);
+            });
 
             {
                 const module = window.Store.createOrUpdateReactionsModule;
@@ -651,7 +659,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         this.authStrategy.afterAuthReady();
 
         // Disconnect when navigating away when in PAIRING state (detect logout)
-        this.pupPage.on('framenavigated', async () => {
+        this.playPage.on('framenavigated', async () => {
             const appState = await this.getState();
             if (!appState || appState === WAState.PAIRING) {
                 await this.authStrategy.disconnect();
@@ -673,540 +681,35 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      * Logs out the client, closing the current session
      */
     async logout() {
-        await this.pupPage.evaluate(() => {
+        await this.playPage.evaluate(() => {
             return window.Store.AppState.logout();
         });
 
         await this.authStrategy.logout();
     }
 
-
-
-
-
-    /*
-    NEW FUNCTION BY AMIRUL DEV
-    */
-
-
-    // check whatsapp web
-    async checkWaweb() {
-        return await this.pupPage.evaluate(() => {
-            var res = {
-                version: window.Debug.VERSION,
-                desktop_beta: window.Debug.DESKTOP_BETA,
-                id: window.Debug.BUILD_ID
-            }
-            return res
+    /**
+     * Returns the version of WhatsApp Web currently being run
+     * @returns {Promise<string>}
+     */
+    async getWWebVersion() {
+        return await this.playPage.evaluate(() => {
+            return window.Debug.VERSION;
         });
     }
 
-
     /**
-     * Read Message
-     * @param {*} chatId 
-     * @returns 
+     * Mark as seen for the Chat
+     *  @param {string} chatId
+     *  @returns {Promise<boolean>} result
+     * 
      */
-    async readMessage(chatId) {
-        const result = await this.pupPage.evaluate(async (chatId) => {
+    async sendSeen(chatId) {
+        const result = await this.playPage.evaluate(async (chatId) => {
             return window.WWebJS.sendSeen(chatId);
 
         }, chatId);
         return result;
-    }
-
-    /**
-     * Search Message
-     * @param {*} query 
-     * @param {*} options 
-     * @returns 
-     */
-    async searchMessage(query, options = {}) {
-        const messages = await this.pupPage.evaluate(async (query, page, count, remote) => {
-            const { messages } = await window.Store.Msg.search(query, page, count, remote);
-            return messages.map(msg => window.WWebJS.getMessageModel(msg));
-        }, query, options.page, options.limit, options.chatId);
-
-        return messages.map(msg => new Message(this, msg));
-    }
-
-
-    // get all chats
-    async getChats() {
-        let chats = await this.pupPage.evaluate(async () => {
-            return await window.WWebJS.getChats();
-        });
-
-        return chats.map(chat => ChatFactory.create(this, chat));
-    }
-
-    /**
-     * Get Chat By Id
-     * @param {*} chatId 
-     * @returns 
-     */
-    async getChatId(chatId) {
-        let chat = await this.pupPage.evaluate(async chatId => {
-            return await window.WWebJS.getChat(chatId);
-        }, chatId);
-
-        return ChatFactory.create(this, chat);
-    }
-
-    // get all contacts
-    async getContacts() {
-        let contacts = await this.pupPage.evaluate(() => {
-            return window.WWebJS.getContacts();
-        });
-
-        return contacts.map(contact => ContactFactory.create(this, contact));
-    }
-
-    /**
-     * Get Contact By Id
-     * @param {*} contactId 
-     * @returns 
-     */
-    async getContactId(contactId) {
-        let contact = await this.pupPage.evaluate(contactId => {
-            return window.WWebJS.getContact(contactId);
-        }, contactId);
-
-        return ContactFactory.create(this, contact);
-    }
-
-    /**
-     * Get Invite Info
-     * @param {*} inviteCode 
-     * @returns 
-     */
-    async getInviteInfo(inviteCode) {
-        return await this.pupPage.evaluate(inviteCode => {
-            return window.Store.InviteInfo.queryGroupInvite(inviteCode);
-        }, inviteCode);
-    }
-
-    /**
-     * Accept Invite
-     * @param {*} inviteCode 
-     * @returns 
-     */
-    async acceptInvite(inviteCode) {
-        const res = await this.pupPage.evaluate(async inviteCode => {
-            return await window.Store.Invite.joinGroupViaInvite(inviteCode);
-        }, inviteCode);
-
-        return res.gid._serialized;
-    }
-
-    /**
-     * Set Status Bio
-     * @param {*} status 
-     * @returns 
-     */
-    async updateBio(status) {
-        var pup = await this.pupPage.evaluate(async status => {
-            var res = await window.Store.StatusUtils.setMyStatus(status);
-            return {
-                status: res.status,
-                bio: status
-            }
-        }, status)
-        return pup
-    }
-
-    /**
-     * Set Name
-     * @param {*} name 
-     * @returns 
-     */
-    async updateName(name) {
-        var pup = await this.pupPage.evaluate(async (name) => {
-            var res = await WPP.profile.setMyProfileName(name)
-            return {
-                status: 200,
-                name: name,
-                change: res
-            }
-        }, name);
-        return pup;
-    }
-
-    // client online
-    async isOnline() {
-        return await this.pupPage.evaluate(() => {
-            return window.Store.PresenceUtils.sendPresenceAvailable();
-        });
-    }
-
-    // client offline
-    async isOffline() {
-        return await this.pupPage.evaluate(() => {
-            return window.Store.PresenceUtils.sendPresenceUnavailable();
-        });
-    }
-
-    /**
-     * Archive Chat
-     * @param {*} chatId 
-     * @returns 
-     */
-    async archiveChat(chatId) {
-        return await this.pupPage.evaluate(async chatId => {
-            let chat = await window.Store.Chat.get(chatId);
-            await window.Store.Cmd.archiveChat(chat, true);
-            return true;
-        }, chatId);
-    }
-
-    /**
-     * Unarchive Chat
-     * @param {*} chatId 
-     * @returns 
-     */
-    async unarchiveChat(chatId) {
-        return await this.pupPage.evaluate(async chatId => {
-            let chat = await window.Store.Chat.get(chatId);
-            await window.Store.Cmd.archiveChat(chat, false);
-            return false;
-        }, chatId);
-    }
-
-    /**
-     * Archive All
-     * @param {*} type 
-     * @param {*} status 
-     * @returns 
-     */
-    async archiveAll(type = 'chat', status = true) {
-        const act = status ? 'archived' : 'unarchived'
-        const jid = (type === 'chat') ?
-            (status ? (await this.getChats()).filter(a => !a.isGroup && !a.archived && !a.pinned) : (await this.getChats()).filter(a => !a.isGroup && a.archived)) : (type === 'group') ?
-                (status ? (await this.getChats()).filter(a => a.isGroup && !a.archived && !a.pinned) : (await this.getChats()).filter(a => a.isGroup && a.archived)) : []
-
-        jid.forEach(async (id) => {
-            if (status) return this.archiveChat(id.id._serialized)
-            else return this.unarchiveChat(id.id._serialized)
-        });
-
-        if (jid.length == 0) return null
-        return `${jid.length} ${type} ${act}`
-    }
-
-    /**
-     * Set Theme Whatsapp Web
-     * @param {*} act 
-     */
-    async updateTheme(act) {
-        var pup = await this.pupPage.evaluate(async (act) => {
-            var res = window.new.theme[0].setTheme(act)
-            return {
-                status: 200,
-                theme: act
-            }
-        }, act)
-    }
-
-    /**
-     * Pin Chat
-     * @param {*} chatId 
-     * @returns 
-     */
-    async pinChat(chatId) {
-        return this.pupPage.evaluate(async chatId => {
-            let chat = window.Store.Chat.get(chatId);
-            if (chat.pin) {
-                return true;
-            }
-            const MAX_PIN_COUNT = 3;
-            const chatModels = window.Store.Chat.getModelsArray();
-            if (chatModels.length > MAX_PIN_COUNT) {
-                let maxPinned = chatModels[MAX_PIN_COUNT - 1].pin;
-                if (maxPinned) {
-                    return false;
-                }
-            }
-            await window.Store.Cmd.pinChat(chat, true);
-            return true;
-        }, chatId);
-    }
-
-    /**
-     * Unpin Chat
-     * @param {*} chatId 
-     * @returns 
-     */
-    async unpinChat(chatId) {
-        return this.pupPage.evaluate(async chatId => {
-            let chat = window.Store.Chat.get(chatId);
-            if (!chat.pin) {
-                return false;
-            }
-            await window.Store.Cmd.pinChat(chat, false);
-            return false;
-        }, chatId);
-    }
-
-    /**
-     * Mute Chat
-     * @param {*} chatId 
-     * @param {*} unmuteDate 
-     */
-    async muteChat(chatId, unmuteDate) {
-        unmuteDate = unmuteDate ? unmuteDate.getTime() / 1000 : -1;
-        await this.pupPage.evaluate(async (chatId, timestamp) => {
-            let chat = await window.Store.Chat.get(chatId);
-            await chat.mute.mute({ expiration: timestamp, sendDevice: !0 });
-        }, chatId, unmuteDate || -1);
-    }
-
-    /**
-     * Unmute Chat
-     * @param {*} chatId 
-     */
-    async unmuteChat(chatId) {
-        await this.pupPage.evaluate(async chatId => {
-            let chat = await window.Store.Chat.get(chatId);
-            await window.Store.Cmd.muteChat(chat, false);
-        }, chatId);
-    }
-
-    /**
-     * Mute All
-     * @param {*} type 
-     * @param {*} status 
-     * @returns 
-     */
-    async muteAll(type = 'chat', status = true) {
-        const act = status ? 'muted' : 'unmuted'
-        const jid = (type === 'chat') ?
-            (status ? (await this.getChats()).filter(a => !a.isGroup && !a.isMuted && !a.pinned) : (await this.getChats()).filter(a => !a.isGroup && a.isMuted)) : (type === 'group') ?
-                (status ? (await this.getChats()).filter(a => a.isGroup && !a.isMuted && !a.pinned) : (await this.getChats()).filter(a => a.isGroup && a.isMuted)) : []
-
-        jid.forEach(async (id) => {
-            if (status) return this.muteChat(id.id._serialized)
-            else return this.unmuteChat(id.id._serialized)
-        });
-
-        if (jid.length == 0) return null
-        return `${jid.length} ${type} ${act}`
-    }
-
-    /**
-     * Mark As Unread
-     * @param {*} chatId 
-     */
-    async markChatUnread(chatId) {
-        await this.pupPage.evaluate(async chatId => {
-            let chat = await window.Store.Chat.get(chatId);
-            await window.Store.Cmd.markChatUnread(chat, true);
-        }, chatId);
-    }
-
-    /**
-     * Get Profile Picture
-     * @param {*} contactId 
-     * @returns 
-     */
-    async getProfilePict
-        (contactId) {
-        const profilePic = await this.pupPage.evaluate(async contactId => {
-            try {
-                const chatWid = window.Store.WidFactory.createWid(contactId);
-                return await window.Store.ProfilePic.profilePicFind(chatWid);
-            } catch (err) {
-                if (err.name === 'ServerStatusCodeError') return undefined;
-                throw err;
-            }
-        }, contactId);
-
-        return profilePic ? profilePic.eurl : undefined;
-    }
-
-    /**
-     *  Get Name
-     * @param {*} jid 
-     * @returns 
-     */
-    async getName(jid) {
-        var res = await this.getContactId(jid)
-        var hsl = res.isGroup ? res.name : res.pushname || res.name
-        return hsl
-    }
-
-    /**
-     * Get Same Groups
-     * @param {*} contactId 
-     * @returns 
-     */
-    async checkSameGroup(contactId) {
-        const commonGroups = await this.pupPage.evaluate(async (contactId) => {
-            let contact = window.Store.Contact.get(contactId);
-            if (!contact) {
-                const wid = window.Store.WidFactory.createUserWid(contactId);
-                const chatConstructor = window.Store.Contact.getModelsArray().find(c => !c.isGroup).constructor;
-                contact = new chatConstructor({ id: wid });
-            }
-
-            if (contact.commonGroups) {
-                return contact.commonGroups.serialize();
-            }
-            const status = await window.Store.findCommonGroups(contact);
-            if (status) {
-                return contact.commonGroups.serialize();
-            }
-            return [];
-        }, contactId);
-        const chats = [];
-        for (const group of commonGroups) {
-            chats.push(await (await this.groupMetadata(group?.id ? group.id._serialized : group)));
-        }
-        return `*${chats.length} same groups*
-
-${util.format(chats)}`
-    }
-
-    /**
-     * Delete Chat
-     * @param {*} jid 
-     * @returns 
-     */
-    async deleteChat(jid) {
-        var pup = await this.pupPage.evaluate(async (jid) => {
-            var res = WPP.chat.delete(jid)
-            return {
-                status: 200,
-                msg: "Done"
-            }
-        }, jid)
-        return pup
-    }
-
-    /**
-     * Delete All Chat
-     * @param {*} type 
-     * @param {*} status 
-     * @returns 
-     */
-    async delchatAll(type = 'chat', status = true) {
-        const act = status ? 'my contact' : 'non contact'
-
-        const jid = (type === 'chat') ?
-            (status ? (await this.getContacts()).filter(a => !a.isGroup && a.isMyContact) : (await this.getContacts()).filter(a => !a.isGroup && !a.isMyContact)) : (type === 'group') ?
-                (status ? (await this.getChats()).filter(a => a.isGroup) : (await this.getChats()).filter(a => a.isGroup)) : []
-
-        jid.forEach(async (id) => {
-            if (status) return this.delChat(id.id._serialized)
-        });
-
-        if (jid.length == 0) return null
-        var msg = type === 'chat' ? `${jid.length} ${type} ${act} cleared` : `${jid.length} group chat cleared`
-        return msg
-    }
-
-    /**
-     * Get Number ID
-     * @param {*} number 
-     * @returns 
-     */
-    async getNumberId(number) {
-        if (!number.endsWith('@c.us')) {
-            number += '@c.us';
-        }
-
-        return await this.pupPage.evaluate(async number => {
-            const wid = window.Store.WidFactory.createWid(number);
-            const result = await window.Store.QueryExist(wid);
-            if (!result || result.wid === undefined) return null;
-            return result.wid;
-        }, number);
-    }
-
-    /**
-     * Check Whatsapp
-     * @param {*} id 
-     * @returns 
-     */
-    async isWhatsapp(id) {
-        var cek = Boolean(await this.getNumberId(id))
-        var name = await this.getName(id)
-        return {
-            registered: cek,
-            name: name
-        }
-    }
-
-    /**
-     * Create New Group
-     * @param {*} name 
-     * @param {*} participants 
-     * @returns 
-     */
-    async createGroup(name, participants) {
-        if (!Array.isArray(participants) || participants.length == 0) {
-            throw 'You need to add at least one other participant to the group';
-        }
-
-        if (participants.every(c => c instanceof Contact)) {
-            participants = participants.map(c => c.id._serialized);
-        }
-
-        const createRes = await this.pupPage.evaluate(async (name, participantIds) => {
-            const participantWIDs = participantIds.map(p => window.Store.WidFactory.createWid(p));
-            return await window.Store.GroupUtils.createGroup(name, participantWIDs, 0);
-        }, name, participants);
-
-        const missingParticipants = createRes.participants.reduce(((missing, c) => {
-            const id = c.wid._serialized;
-            const statusCode = c.error ? c.error.toString() : '200';
-            if (statusCode != 200) return Object.assign(missing, { [id]: statusCode });
-            return missing;
-        }), {});
-
-        return { gid: createRes.wid, missingParticipants };
-    }
-
-    /**
-     * Get Blocked Contact
-     * @returns 
-     */
-    async getBlocked() {
-        const blockedContacts = await this.pupPage.evaluate(() => {
-            let chatIds = window.Store.Blocklist.getModelsArray().map(a => a.id._serialized);
-            return Promise.all(chatIds.map(id => window.WWebJS.getContact(id)));
-        });
-
-        return blockedContacts.map(contact => ContactFactory.create(this.client, contact));
-    }
-
-    /**
-     * Set Profile Picture
-     * @param {*} chatId 
-     * @param {*} content 
-     * @param {*} type 
-     * @returns 
-     */
-    async updateProfilePict(chatId, content, type = 'normal') {
-        let data
-        if ((Buffer.isBuffer(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || fs.existsSync(content))) {
-            let media = await Util.getFile(content)
-            data = await Util.generateProfilePicture(media.data, type)
-        }
-
-        return this.pupPage.evaluate(async (chatId, preview, image, type) => {
-            let chatWid = await window.Store.WidFactory.createWid(chatId)
-
-            if (type === 'delete') return window.Store.GroupUtils.requestDeletePicture(chatWid)
-
-            return window.Store.GroupUtils.sendSetPicture(chatWid, image, preview)
-        }, chatId, data.img, data.preview, type)
-    }
-
-    // delete profile picture
-    async deleteProfilePict() {
-        await this.pupPage.evaluate(() => {
-            return WPP.profile.removeMyProfilePicture()
-        })
     }
 
     /**
@@ -1244,7 +747,7 @@ ${util.format(chats)}`
             sendMediaAsSticker: options.sendMediaAsSticker,
             sendMediaAsDocument: options.sendMediaAsDocument,
             caption: options.caption,
-            quotedMessageId: options.quotedMessageId,
+            quotedMessageId: options.quoted?.id ? (options.quoted._serialized || options.quoted.id._serialized) : options.quoted,
             parseVCards: options.parseVCards === false ? false : true,
             mentionedJidList: Array.isArray(options.mentions) ? options.mentions.map(contact => contact.id._serialized) : [],
             extraOptions: options.extra
@@ -1277,17 +780,30 @@ ${util.format(chats)}`
             content = '';
         }
 
+        if (internalOptions.linkPreview) {
+            const text = options.caption ? options.caption : content
+
+            if (!/https?:\/\//i.test(text)) {
+                throw `No Url Found`
+            }
+
+            const preview = await getUrlInfo(text)
+
+            preview.subtype = 'url';
+            internalOptions = { ...internalOptions, ...preview };
+        }
+
         if (internalOptions.sendMediaAsSticker && internalOptions.attachment) {
             internalOptions.attachment = await Util.formatToWebpSticker(
                 internalOptions.attachment, {
-                name: options.stickerName,
-                author: options.stickerAuthor,
-                categories: options.stickerCategories
-            }, this.pupPage
+                packName: options.packName,
+                packPublish: options.packPublish,
+                categories: options.categories
+            }, this.playPage
             );
         }
 
-        const newMessage = await this.pupPage.evaluate(async (chatId, message, options, sendSeen) => {
+        const newMessage = await this.playPage.evaluate(async ({ chatId, message, options, sendSeen }) => {
             const chatWid = window.Store.WidFactory.createWid(chatId);
             const chat = await window.Store.Chat.find(chatWid);
 
@@ -1298,14 +814,688 @@ ${util.format(chats)}`
 
             const msg = await window.WWebJS.sendMessage(chat, message, options, sendSeen);
             return JSON.parse(JSON.stringify(msg));
-        }, chatId, content, internalOptions, sendSeen);
+        }, { chatId, message: content, options: internalOptions, sendSeen });
 
         return new Message(this, newMessage);
     }
 
+    /**
+     * Searches for messages
+     * @param {string} query
+     * @param {Object} [options]
+     * @param {number} [options.page]
+     * @param {number} [options.limit]
+     * @param {string} [options.chatId]
+     * @returns {Promise<Message[]>}
+     */
+    async searchMessages(query, options = {}) {
+        const messages = await this.playPage.evaluate(async ({ query, page, count, remote }) => {
+            const { messages } = await window.Store.Msg.search(query, page, count, remote);
+            return messages.map(msg => window.WWebJS.getMessageModel(msg));
+        }, { query, page: options.page, limit: options.limit, remote: options.chatId });
 
+        return messages.map(msg => new Message(this, msg));
+    }
 
+    /**
+     * Get all current chat instances
+     * @returns {Promise<Array<Chat>>}
+     */
+    async getChats() {
+        let chats = await this.playPage.evaluate(async () => {
+            return await window.WWebJS.getChats();
+        });
 
+        return chats.map(chat => ChatFactory.create(this, chat));
+    }
+
+    /**
+     * Get chat instance by ID
+     * @param {string} chatId 
+     * @returns {Promise<Chat>}
+     */
+    async getChatById(chatId) {
+        let chat = await this.playPage.evaluate(async chatId => {
+            return await window.WWebJS.getChat(chatId);
+        }, chatId);
+
+        return ChatFactory.create(this, chat);
+    }
+
+    /**
+     * 
+     * @param {string} chatId 
+     * @returns {Promise<GroupChat>}
+     */
+    async groupMetadata(chatId) {
+        let chat = await this.playPage.evaluate(async (chatId) => {
+            let chatWid = await window.Store.WidFactory.createWid(chatId)
+            let chat = await window.Store.GroupMetadata.find(chatWid)
+
+            return chat.serialize()
+        }, chatId)
+
+        if (!chat) return false
+        return chat
+    }
+
+    /**
+     * Get all current contact instances
+     * @returns {Promise<Array<Contact>>}
+     */
+    async getContacts() {
+        let contacts = await this.playPage.evaluate(() => {
+            return window.WWebJS.getContacts();
+        });
+
+        return contacts.map(contact => ContactFactory.create(this, contact));
+    }
+
+    async saveContact(number) {
+        let contact = await this.playPage.evaluate(number => {
+            return window.WWebJS.getContact(number);
+        }, number);
+
+        let res = ContactFactory.create(this, contact);
+        return res.isMyContact
+    }
+    /**
+     * Get contact instance by ID
+     * @param {string} contactId
+     * @returns {Promise<Contact>}
+     */
+    async getContactById(contactId) {
+        let contact = await this.playPage.evaluate(contactId => {
+            return window.WWebJS.getContact(contactId);
+        }, contactId);
+
+        return ContactFactory.create(this, contact);
+    }
+
+    /**
+     * Returns an object with information about the invite code's group
+     * @param {string} inviteCode 
+     * @returns {Promise<object>} Invite information
+     */
+    async getInviteInfo(inviteCode) {
+        return await this.playPage.evaluate(inviteCode => {
+            return window.Store.InviteInfo.queryGroupInvite(inviteCode);
+        }, inviteCode);
+    }
+
+    /**
+     * Accepts an invitation to join a group
+     * @param {string} inviteCode Invitation code
+     * @returns {Promise<string>} Id of the joined Chat
+     */
+    async acceptInvite(inviteCode) {
+        const res = await this.playPage.evaluate(async inviteCode => {
+            return await window.Store.Invite.joinGroupViaInvite(inviteCode);
+        }, inviteCode);
+
+        return res.gid._serialized;
+    }
+
+    /**
+     * Accepts a private invitation to join a group
+     * @param {object} inviteInfo Invite V4 Info
+     * @returns {Promise<Object>}
+     */
+    async acceptGroupV4Invite(inviteInfo) {
+        if (!inviteInfo.inviteCode) throw 'Invalid invite code, try passing the message.inviteV4 object';
+        if (inviteInfo.inviteCodeExp == 0) throw 'Expired invite code';
+        return this.playPage.evaluate(async inviteInfo => {
+            let { groupId, fromId, inviteCode, inviteCodeExp } = inviteInfo;
+            return await window.Store.JoinInviteV4.sendJoinGroupViaInviteV4(inviteCode, String(inviteCodeExp), groupId, fromId);
+        }, inviteInfo);
+    }
+
+    /**
+     * Sets the current user's status message
+     * @param {string} status New status message
+     */
+    async setStatus(status) {
+        await this.playPage.evaluate(async status => {
+            return await window.Store.StatusUtils.setMyStatus(status);
+        }, status);
+    }
+
+    /**
+     * Sets the current user's display name. 
+     * This is the name shown to WhatsApp users that have not added you as a contact beside your number in groups and in your profile.
+     * @param {string} displayName New display name
+     * @returns {Promise<Boolean>}
+     */
+    async setDisplayName(displayName) {
+        const couldSet = await this.playPage.evaluate(async displayName => {
+            return window.WWebJS.profile.setMyProfileName(displayName)
+        }, displayName);
+
+        return couldSet;
+    }
+
+    /**
+     * Gets the current connection state for the client
+     * @returns {WAState} 
+     */
+    async getState() {
+        return await this.playPage.evaluate(() => {
+            if (!window.Store) return null;
+            return window.Store.AppState.state;
+        });
+    }
+
+    /**
+     * Marks the client as online
+     */
+    async sendPresenceAvailable() {
+        return await this.playPage.evaluate(() => {
+            return window.Store.PresenceUtils.sendPresenceAvailable();
+        });
+    }
+
+    /**
+     * Marks the client as unavailable
+     */
+    async sendPresenceUnavailable() {
+        return await this.playPage.evaluate(() => {
+            return window.Store.PresenceUtils.sendPresenceUnavailable();
+        });
+    }
+
+    /**
+     * Enables and returns the archive state of the Chat
+     * @returns {boolean}
+     */
+    async archiveChat(chatId) {
+        return await this.playPage.evaluate(async chatId => {
+            let chat = await window.Store.Chat.get(chatId);
+            await window.Store.Cmd.archiveChat(chat, true);
+            return true;
+        }, chatId);
+    }
+
+    /**
+     * Changes and returns the archive state of the Chat
+     * @returns {boolean}
+     */
+    async unarchiveChat(chatId) {
+        return await this.playPage.evaluate(async chatId => {
+            let chat = await window.Store.Chat.get(chatId);
+            await window.Store.Cmd.archiveChat(chat, false);
+            return false;
+        }, chatId);
+    }
+
+    /**
+     * Pins the Chat
+     * @returns {Promise<boolean>} New pin state. Could be false if the max number of pinned chats was reached.
+     */
+    async pinChat(chatId) {
+        return this.playPage.evaluate(async chatId => {
+            let chat = window.Store.Chat.get(chatId);
+            if (chat.pin) {
+                return true;
+            }
+            const MAX_PIN_COUNT = 3;
+            const chatModels = window.Store.Chat.getModelsArray();
+            if (chatModels.length > MAX_PIN_COUNT) {
+                let maxPinned = chatModels[MAX_PIN_COUNT - 1].pin;
+                if (maxPinned) {
+                    return false;
+                }
+            }
+            await window.Store.Cmd.pinChat(chat, true);
+            return true;
+        }, chatId);
+    }
+
+    /**
+     * Unpins the Chat
+     * @returns {Promise<boolean>} New pin state
+     */
+    async unpinChat(chatId) {
+        return this.playPage.evaluate(async chatId => {
+            let chat = window.Store.Chat.get(chatId);
+            if (!chat.pin) {
+                return false;
+            }
+            await window.Store.Cmd.pinChat(chat, false);
+            return false;
+        }, chatId);
+    }
+
+    /**
+     * Mutes this chat forever, unless a date is specified
+     * @param {string} chatId ID of the chat that will be muted
+     * @param {?Date} unmuteDate Date when the chat will be unmuted, leave as is to mute forever
+     */
+    async muteChat(chatId, unmuteDate) {
+        unmuteDate = unmuteDate ? unmuteDate.getTime() / 1000 : -1;
+        await this.playPage.evaluate(async (chatId, timestamp) => {
+            let chat = await window.Store.Chat.get(chatId);
+            await chat.mute.mute({ expiration: timestamp, sendDevice: !0 });
+        }, chatId, unmuteDate || -1);
+    }
+
+    /**
+     * Unmutes the Chat
+     * @param {string} chatId ID of the chat that will be unmuted
+     */
+    async unmuteChat(chatId) {
+        await this.playPage.evaluate(async chatId => {
+            let chat = await window.Store.Chat.get(chatId);
+            await window.Store.Cmd.muteChat(chat, false);
+        }, chatId);
+    }
+
+    /**
+     * 
+     * @param {string} chatId ID of the chat that will be muted
+     * @param {number} ephemeralDuration 
+     */
+    async setEphemeral(chatId, ephemeralDuration) {
+        ephemeralDuration = ephemeralDuration ? ephemeralDuration : 0
+        await this.playPage.evaluate(async (chatId, ephemeralDuration) => {
+            const chat = window.Store.Chat.get(chatId)
+
+            if (chat.isGroup) {
+                return await window.WWebJS.group.setProperty(chat.id, 'ephemeral', ephemeralDuration)
+            }
+
+            return await window.Store.ChangeEphemeralDuration(chat, ephemeralDuration).catch((e) => e)
+        }, chatId, ephemeralDuration)
+    }
+
+    /**
+     * Mark the Chat as unread
+     * @param {string} chatId ID of the chat that will be marked as unread
+     */
+    async markChatUnread(chatId) {
+        await this.playPage.evaluate(async chatId => {
+            let chat = await window.Store.Chat.get(chatId);
+            await window.Store.Cmd.markChatUnread(chat, true);
+        }, chatId);
+    }
+
+    /**
+     * Returns the contact ID's profile picture URL, if privacy settings allow it
+     * @param {string} contactId the whatsapp user's ID
+     * @returns {Promise<string>}
+     */
+    async getProfilePicUrl(contactId) {
+        const profilePic = await this.playPage.evaluate(async contactId => {
+            try {
+                const chatWid = window.Store.WidFactory.createWid(contactId);
+                return await window.Store.ProfilePic.profilePicFind(chatWid);
+            } catch (err) {
+                if (err.name === 'ServerStatusCodeError') return undefined;
+                throw err;
+            }
+        }, contactId);
+
+        return profilePic ? profilePic.eurl : undefined;
+    }
+
+    /**
+     * Gets the Contact's common groups with you. Returns empty array if you don't have any common group.
+     * @param {string} contactId the whatsapp user's ID (_serialized format)
+     * @returns {Promise<WAWebJS.ChatId[]>}
+     */
+    async getCommonGroups(contactId) {
+        const commonGroups = await this.playPage.evaluate(async (contactId) => {
+            let contact = window.Store.Contact.get(contactId);
+            if (!contact) {
+                const wid = window.Store.WidFactory.createUserWid(contactId);
+                const chatConstructor = window.Store.Contact.getModelsArray().find(c => !c.isGroup).constructor;
+                contact = new chatConstructor({ id: wid });
+            }
+
+            if (contact.commonGroups) {
+                return contact.commonGroups.serialize();
+            }
+            const status = await window.Store.findCommonGroups(contact);
+            if (status) {
+                return contact.commonGroups.serialize();
+            }
+            return [];
+        }, contactId);
+        const chats = [];
+        for (const group of commonGroups) {
+            chats.push(group.id);
+        }
+        return chats;
+    }
+
+    /**
+     * Force reset of connection state for the client
+    */
+    async resetState() {
+        await this.playPage.evaluate(() => {
+            window.Store.AppState.phoneWatchdog.shiftTimer.forceRunNow();
+        });
+    }
+
+    /**
+     * Check if a given ID is registered in whatsapp
+     * @param {string} id the whatsapp user's ID
+     * @returns {Promise<Boolean>}
+     */
+    async isRegisteredUser(id) {
+        return Boolean(await this.getNumberId(id));
+    }
+
+    /**
+     * Get the registered WhatsApp ID for a number. 
+     * Will return null if the number is not registered on WhatsApp.
+     * @param {string} number Number or ID ("@c.us" will be automatically appended if not specified)
+     * @returns {Promise<Object|null>}
+     */
+    async getNumberId(number) {
+        if (!number.endsWith('@c.us')) {
+            number += '@c.us';
+        }
+
+        return await this.playPage.evaluate(async number => {
+            const wid = window.Store.WidFactory.createWid(number);
+            const result = await window.Store.QueryExist(wid);
+            if (!result || result.wid === undefined) return null;
+            return result.wid;
+        }, number);
+    }
+
+    /**
+     * Get the formatted number of a WhatsApp ID.
+     * @param {string} number Number or ID
+     * @returns {Promise<string>}
+     */
+    async getFormattedNumber(number) {
+        if (!number.endsWith('@s.whatsapp.net')) number = number.replace('c.us', 's.whatsapp.net');
+        if (!number.includes('@s.whatsapp.net')) number = `${number}@s.whatsapp.net`;
+
+        return await this.playPage.evaluate(async numberId => {
+            return window.Store.NumberInfo.formattedPhoneNumber(numberId);
+        }, number);
+    }
+
+    /**
+     * Get the country code of a WhatsApp ID.
+     * @param {string} number Number or ID
+     * @returns {Promise<string>}
+     */
+    async getCountryCode(number) {
+        number = number.replace(' ', '').replace('+', '').replace('@c.us', '');
+
+        return await this.playPage.evaluate(async numberId => {
+            return window.Store.NumberInfo.findCC(numberId);
+        }, number);
+    }
+
+    /**
+     * Create a new group
+     * @param {string} name group title
+     * @param {Array<Contact|string>} participants an array of Contacts or contact IDs to add to the group
+     * @returns {Object} createRes
+     * @returns {string} createRes.gid - ID for the group that was just created
+     * @returns {Object.<string,string>} createRes.missingParticipants - participants that were not added to the group. Keys represent the ID for participant that was not added and its value is a status code that represents the reason why participant could not be added. This is usually 403 if the user's privacy settings don't allow you to add them to groups.
+     */
+    async createGroup(name, participants) {
+        if (!Array.isArray(participants) || participants.length == 0) {
+            throw 'You need to add at least one other participant to the group';
+        }
+
+        if (participants.every(c => c instanceof Contact)) {
+            participants = participants.map(c => c.id._serialized);
+        }
+
+        const createRes = await this.playPage.evaluate(async (name, participantIds) => {
+            const participantWIDs = participantIds.map(p => window.Store.WidFactory.createWid(p));
+            return await window.Store.GroupUtils.createGroup(name, participantWIDs, 0);
+        }, name, participants);
+
+        const missingParticipants = createRes.participants.reduce(((missing, c) => {
+            const id = c.wid._serialized;
+            const statusCode = c.error ? c.error.toString() : '200';
+            if (statusCode != 200) return Object.assign(missing, { [id]: statusCode });
+            return missing;
+        }), {});
+
+        return { gid: createRes.wid, missingParticipants };
+    }
+
+    /**
+     * Get all current Labels
+     * @returns {Promise<Array<Label>>}
+     */
+    async getLabels() {
+        const labels = await this.playPage.evaluate(async () => {
+            return window.WWebJS.getLabels();
+        });
+
+        return labels.map(data => new Label(this, data));
+    }
+
+    /**
+     * Get Label instance by ID
+     * @param {string} labelId
+     * @returns {Promise<Label>}
+     */
+    async getLabelById(labelId) {
+        const label = await this.playPage.evaluate(async (labelId) => {
+            return window.WWebJS.getLabel(labelId);
+        }, labelId);
+
+        return new Label(this, label);
+    }
+
+    /**
+     * Get all Labels assigned to a chat 
+     * @param {string} chatId
+     * @returns {Promise<Array<Label>>}
+     */
+    async getChatLabels(chatId) {
+        const labels = await this.playPage.evaluate(async (chatId) => {
+            return window.WWebJS.getChatLabels(chatId);
+        }, chatId);
+
+        return labels.map(data => new Label(this, data));
+    }
+
+    /**
+     * Get all Chats for a specific Label
+     * @param {string} labelId
+     * @returns {Promise<Array<Chat>>}
+     */
+    async getChatsByLabelId(labelId) {
+        const chatIds = await this.playPage.evaluate(async (labelId) => {
+            const label = window.Store.Label.get(labelId);
+            const labelItems = label.labelItemCollection.getModelsArray();
+            return labelItems.reduce((result, item) => {
+                if (item.parentType === 'Chat') {
+                    result.push(item.parentId);
+                }
+                return result;
+            }, []);
+        }, labelId);
+
+        return Promise.all(chatIds.map(id => this.getChatById(id)));
+    }
+
+    /**
+     * Gets all blocked contacts by host account
+     * @returns {Promise<Array<Contact>>}
+     */
+    async getBlockedContacts() {
+        const blockedContacts = await this.playPage.evaluate(() => {
+            let chatIds = window.Store.Blocklist.getModelsArray().map(a => a.id._serialized);
+            return Promise.all(chatIds.map(id => window.WWebJS.getContact(id)));
+        });
+
+        return blockedContacts.map(contact => ContactFactory.create(this.client, contact));
+    }
+
+    /**
+     * Sets the current user's profile picture.
+     * @param {MessageMedia} media
+     * @returns {Promise<boolean>} Returns true if the picture was properly updated.
+     */
+    async setProfilePicture(media, type = 'normal') {
+        const success = await this.playPage.evaluate((chatid, media, type) => {
+            return window.WWebJS.setPicture(chatid, media, type);
+        }, this.info.wid._serialized, media, type);
+
+        return success;
+    }
+
+    /**
+     * Deletes the current user's profile picture.
+     * @returns {Promise<boolean>} Returns true if the picture was properly deleted.
+     */
+    async deleteProfilePicture() {
+        const success = await this.playPage.evaluate((chatid) => {
+            return window.WWebJS.deletePicture(chatid);
+        }, this.info.wid._serialized);
+
+        return success;
+    }
+
+    /**
+     * 
+     * @param {string} chatId 
+     * @param {object} options 
+     * @returns {Promise<Boolean>}
+     */
+    async sendCall(chatId, options = {}) {
+       // soon
+    }
+
+    /**
+     * 
+     * @param {string} chatId
+     * @returns {Promise<Boolean>}
+     */
+    async endCall(chatId) {
+        const end = await this.playPage.evaluate((chatId) => {
+            return window.WWebJS.call.end(chatId)
+        }, chatId)
+
+        if (!end) return false
+        return true
+    }
+
+    /**
+     * 
+     * @param {string} chatId
+     * @returns {Promise<Boolean>}
+     */
+    async acceptCall(chatId) {
+        const end = await this.playPage.evaluate((chatId) => {
+            return window.WWebJS.call.accept(chatId)
+        }, chatId)
+
+        if (!end) return false
+        return true
+    }
+
+    /**
+     * 
+     * @param {string} chatId 
+     * @returns {Promise<Boolean|String>}
+     */
+    async getLastSeen(chatId) {
+        const chat = await this.playPage.evaluate(async (chatId) => {
+            return await window.WWebJS.chat.getLastSeen(chatId) || await window.WWebJS.getChatOnline(chatId);
+        }, chatId);
+
+        if (!chat) return false
+        return Number(chat) > 2 ? Number(chat) : 'online'
+    }
+
+    /**
+     * 
+     * @param {string} type 
+     * @param {boolean} status 
+     * @returns {Number}
+     */
+    async archiveAll(type = 'chat', status = true) {
+        const jid = (type === 'chat') ?
+            (status ? (await this.getChats()).filter(a => !a.isGroup && !a.archived && !a.pinned) : (await this.getChats()).filter(a => !a.isGroup && a.archived)) : (type === 'group') ?
+                (status ? (await this.getChats()).filter(a => a.isGroup && !a.archived && !a.pinned) : (await this.getChats()).filter(a => a.isGroup && a.archived)) : []
+
+        jid.forEach(async (id) => {
+            if (status) return this.archiveChat(id.id._serialized, status)
+        });
+
+        if (jid.length == 0) return null
+        return jid.length
+    }
+
+    /**
+     * 
+     * @param {string} type 
+     * @param {boolean} status 
+     * @param {number} duration 
+     * @returns {Number}
+     */
+    async muteAll(type = 'chat', duration = 86400) {
+        const jid = (type === 'chat') ? await (await this.getChats()) : (type === 'group') ? await (await this.getChats()) : []
+
+        jid.forEach(async (id) => {
+            if (status) return this.muteChat(id.id._serialized, duration)
+        });
+
+        if (jid.length == 0) return null
+        return jid.length
+    }
+
+    /**
+     * 
+     * @returns 
+     */
+    getHost() {
+        return this.playPage.evaluate(() => {
+            return WPP.whatsapp.Conn.attributes
+        })
+    }
+
+    /**
+     * 
+     * @param {string} type light or dark 
+     */
+    async setTheme(type = 'dark') {
+        await this.playPage.evaluate(async (type) => {
+            await window.Store.Theme.setTheme(type);
+            return true
+        }, type);
+    }
+
+    /**
+     * 
+     * @returns {string}
+     */
+    async getTheme() {
+        const theme = await this.playPage.evaluate(async () => {
+            if (window.localStorage) {
+                return await JSON.parse(JSON.stringify(window.localStorage))?.theme
+            } else {
+                return await window.Store.Theme.getTheme()
+            }
+        })
+
+        if (!theme) return false
+        return theme
+    }
+
+    /**
+     * 
+     * @param {string} chatId 
+     * @returns 
+     */
+    async clearMessage(chatId) {
+        return this.playPage.evaluate(chatId => {
+            return window.WWebJS.sendClearChat(chatId)
+        }, chatId)
+    }
 }
 
-module.exports = Client;
+export default Client;

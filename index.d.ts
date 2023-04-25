@@ -1,18 +1,18 @@
 /*
-© whatsapp-web.js
-re-developed by: Amirul Dev
+MywaJS
+Pengembangan ulang whatsapp-web.js
+menggunakan wjs + playwright
 contact:
-- ig: @amirul.dev
-- github: amiruldev20
-- wa: 085157489446
+email: amiruldev20@gmail.com
+ig: amirul.dev
+wa: 62851574894460
+tq to: pedro & edgard & dika
 */
 import { EventEmitter } from 'events'
 import { RequestInit } from 'node-fetch'
-import { ButtonSpec, FormattedButtonSpec } from './src/func/Buttons'
-import { FormattedSectionSpec, SectionSpec } from './src/func/List'
-import * as puppeteer from 'puppeteer'
+import * as playwright from 'playwright'
 
-declare namespace mywajs {
+declare namespace MywaJS {
 
     export class Client extends EventEmitter {
         constructor(options: ClientOptions)
@@ -20,11 +20,11 @@ declare namespace mywajs {
         /** Current connection information */
         public info: ClientInfo
 
-        /** Puppeteer page running WhatsApp Web */
-        pupPage?: puppeteer.Page
+        /** playwright page running WhatsApp Web */
+        playPage?: playwright.Page
 
-        /** Puppeteer browser running WhatsApp Web */
-        pupBrowser?: puppeteer.Browser
+        /** playwright browser running WhatsApp Web */
+        pupBrowser?: playwright.Browser
 
         /**Accepts an invitation to join a group */
         acceptInvite(inviteCode: string): Promise<string>
@@ -48,9 +48,8 @@ declare namespace mywajs {
          * Create a new group
          * @param name group title
          * @param participants an array of Contacts or contact IDs to add to the group
-        
+         */
         createGroup(name: string, participants: Contact[] | string[]): Promise<CreateGroupResult>
-        */
 
         /** Closes the client */
         destroy(): Promise<void>
@@ -58,9 +57,8 @@ declare namespace mywajs {
         /** Logs out the client, closing the current session */
         logout(): Promise<void>
 
-        /** Get all blocked contacts by host account 
+        /** Get all blocked contacts by host account */
         getBlockedContacts(): Promise<Contact[]>
-        */
 
         /** Get chat instance by ID */
         getChatById(chatId: string): Promise<Chat>
@@ -68,12 +66,11 @@ declare namespace mywajs {
         /** Get all current chat instances */
         getChats(): Promise<Chat[]>
 
-        /** Get contact instance by ID 
+        /** Get contact instance by ID */
         getContactById(contactId: string): Promise<Contact>
-        */
-        /** Get all current contact instances 
+
+        /** Get all current contact instances */
         getContacts(): Promise<Contact[]>
-        */
 
         /** Get the country code of a WhatsApp ID. (154185968@c.us) => (1) */
         getCountryCode(number: string): Promise<string>
@@ -81,7 +78,7 @@ declare namespace mywajs {
         /** Get the formatted number of a WhatsApp ID. (12345678901@c.us) => (+1 (234) 5678-901) */
         getFormattedNumber(number: string): Promise<string>
 
-        /** Get all current Labels*/
+        /** Get all current Labels  */
         getLabels(): Promise<Label[]>
 
         /** Get Label instance by ID */
@@ -115,11 +112,16 @@ declare namespace mywajs {
         getNumberId(number: string): Promise<ContactId | null>
 
         /**
-         * Mutes this chat forever, unless a date is specified
          * @param chatId ID of the chat that will be muted
-         * @param unmuteDate Date when the chat will be unmuted, leave as is to mute forever
+         * @param unmuteDate number, in the form of seconds for the duration of the muted chat
          */
-        muteChat(chatId: string, unmuteDate?: Date): Promise<void>
+        muteChat(chatId: string, unmuteDate?: number): Promise<void>
+
+        /**
+        * @param chatId ID of the chat that will be muted
+        * @param ephemeralDuration number, in the form of seconds for the duration of the temporary message in chat
+        */
+        setEphemeral(chatId: string, ephemeralDuration?: number): Promise<void>
 
         /** Force reset of connection state for the client */
         resetState(): Promise<void>
@@ -311,7 +313,7 @@ declare namespace mywajs {
         /** Emitted when the QR code is received */
         on(event: 'qr', listener: (
             /** qr code string
-             *@example ```1@9Q8tWf6bnezr8uVGwVCluyRuBOJ3tIglimzI5dHB0vQW2m4DQ0GMlCGf,f1/vGcW4Z3vBa1eDNl3tOjWqLL5DpYTI84DMVkYnQE8=,ZL7YnK2qdPN8vKo2ESxhOQ==``` */
+             *  @example ```1@9Q8tWf6bnezr8uVGwVCluyRuBOJ3tIglimzI5dHB0vQW2m4DQ0GMlCGf,f1/vGcW4Z3vBa1eDNl3tOjWqLL5DpYTI84DMVkYnQE8=,ZL7YnK2qdPN8vKo2ESxhOQ==``` */
             qr: string
         ) => void): this
 
@@ -338,7 +340,7 @@ declare namespace mywajs {
         /** Current user ID */
         wid: ContactId
         /** 
-         * Information about the phone this client is connected to.Not available in multi-device. 
+         * Information about the phone this client is connected to.  Not available in multi-device. 
          * @deprecated 
          */
         phone: ClientInfoPhone
@@ -370,11 +372,11 @@ declare namespace mywajs {
 
     /** Options for initializing the whatsapp client */
     export interface ClientOptions {
-        /** Timeout for authentication selector in puppeteer
+        /** Timeout for authentication selector in playwright
          * @default 0 */
         authTimeoutMs?: number,
-        /** Puppeteer launch options. View docs here: https://github.com/puppeteer/puppeteer/ */
-        puppeteer?: puppeteer.PuppeteerNodeLaunchOptions & puppeteer.ConnectOptions
+        /** playwright launch options. View docs here: https://github.com/microsoft/playwright/ */
+        playwright?: playwright.LaunchOptions & playwright.ConnectOptions
         /** Determines how to save and restore sessions. Will use LegacySessionAuth if options.session is set. Otherwise, NoAuth will be used. */
         authStrategy?: AuthStrategy,
         /** How many times should the qrcode be refreshed before giving up
@@ -385,7 +387,7 @@ declare namespace mywajs {
          */
         restartOnAuthFail?: boolean
         /** 
-         * @deprecated Only here for backwards-compatibility. You should move to using LocalAuth, or set the authStrategy to LegacySessionAuth explicitly.
+         * @deprecated Only here for backwards-compatibility. You should move to using LocalAuth, or set the authStrategy to LegacySessionAuth explicitly.  
          */
         session?: ClientSession
         /** If another whatsapp web session is detected (another browser), take over the session in the current browser
@@ -394,12 +396,14 @@ declare namespace mywajs {
         /** How much time to wait before taking over the session
          * @default 0 */
         takeoverTimeoutMs?: number,
-        /** User agent to use in puppeteer.
+        /** User agent to use in playwright.
          * @default 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36' */
         userAgent?: string
         /** Ffmpeg path to use when formating videos to webp while sending stickers 
          * @default 'ffmpeg' */
         ffmpegPath?: string
+        /** Object with proxy autentication requirements @default: undefined */
+        proxyAuthentication?: { username: string, password: string } | undefined
     }
 
     /**
@@ -512,7 +516,7 @@ declare namespace mywajs {
         /** ID for the Chat that this groupNotification was sent for */
         chatId: string,
         /** ID that represents the groupNotification 
-         *@todo create a more specific type for the id object */
+         *  @todo create a more specific type for the id object */
         id: object,
         /** Contact IDs for the users that were affected by this GroupNotification */
         recipientIds: string[],
@@ -678,28 +682,28 @@ declare namespace mywajs {
      * 
      * @example
      * {
-     * mediaKey: undefined,
-     * id: {
-     * fromMe: false,
-     * remote: `554199999999@c.us`,
-     * id: '1234567890ABCDEFGHIJ',
-     * _serialized: `false_554199999999@c.us_1234567890ABCDEFGHIJ`
-     * },
-     * ack: -1,
-     * hasMedia: false,
-     * body: 'Hello!',
-     * type: 'chat',
-     * timestamp: 1591482682,
-     * from: `554199999999@c.us`,
-     * to: `554188888888@c.us`,
-     * author: undefined,
-     * isForwarded: false,
-     * broadcast: false,
-     * fromMe: false,
-     * hasQuotedMsg: false,
-     * hasReaction: false,
-     * location: undefined,
-     * mentionedIds: []
+     *   mediaKey: undefined,
+     *   id: {
+     *     fromMe: false,
+     *     remote: `554199999999@c.us`,
+     *     id: '1234567890ABCDEFGHIJ',
+     *     _serialized: `false_554199999999@c.us_1234567890ABCDEFGHIJ`
+     *   },
+     *   ack: -1,
+     *   hasMedia: false,
+     *   body: 'Hello!',
+     *   type: 'chat',
+     *   timestamp: 1591482682,
+     *   from: `554199999999@c.us`,
+     *   to: `554188888888@c.us`,
+     *   author: undefined,
+     *   isForwarded: false,
+     *   broadcast: false,
+     *   fromMe: false,
+     *   hasQuotedMsg: false,
+     *   hasReaction: false,
+     *   location: undefined,
+     *   mentionedIds: []
      * }
      */
     export interface Message {
@@ -939,28 +943,28 @@ declare namespace mywajs {
      *
      * @example 
      * {
-     * id: {
-     * server: 'c.us',
-     * user: '554199999999',
-     * _serialized: `554199999999@c.us`
-     * },
-     * number: '554199999999',
-     * isBusiness: false,
-     * isEnterprise: false,
-     * labels: [],
-     * name: undefined,
-     * pushname: 'John',
-     * sectionHeader: undefined,
-     * shortName: undefined,
-     * statusMute: false,
-     * type: 'in',
-     * verifiedLevel: undefined,
-     * verifiedName: undefined,
-     * isMe: false,
-     * isUser: true,
-     * isGroup: false,
-     * isWAContact: true,
-     * isMyContact: false
+     *   id: {
+     *     server: 'c.us',
+     *     user: '554199999999',
+     *     _serialized: `554199999999@c.us`
+     *   },
+     *   number: '554199999999',
+     *   isBusiness: false,
+     *   isEnterprise: false,
+     *   labels: [],
+     *   name: undefined,
+     *   pushname: 'John',
+     *   sectionHeader: undefined,
+     *   shortName: undefined,
+     *   statusMute: false,
+     *   type: 'in',
+     *   verifiedLevel: undefined,
+     *   verifiedName: undefined,
+     *   isMe: false,
+     *   isUser: true,
+     *   isGroup: false,
+     *   isWAContact: true,
+     *   isMyContact: false
      * }
      */
     export interface Contact {
@@ -1006,7 +1010,7 @@ declare namespace mywajs {
         /** Returns the contact's profile picture URL, if privacy settings allow it */
         getProfilePicUrl: () => Promise<string>,
 
-        /** Returns the Chat that corresponds to this Contact.
+        /** Returns the Chat that corresponds to this Contact.  
          * Will return null when getting chat for currently logged in user.
          */
         getChat: () => Promise<Chat>,
@@ -1023,7 +1027,7 @@ declare namespace mywajs {
         /** Unlocks this contact from WhatsApp */
         unblock: () => Promise<boolean>,
 
-        /** Gets the Contact's current "about" info. Returns null if you don't have permission to read their status.*/
+        /** Gets the Contact's current "about" info. Returns null if you don't have permission to read their status.  */
         getAbout: () => Promise<string | null>,
 
         /** Gets the Contact's common groups with you. Returns empty array if you don't have any common group. */
@@ -1054,17 +1058,17 @@ declare namespace mywajs {
      *
      * @example
      * {
-     * id: {
-     * server: 'c.us',
-     * user: '554199999999',
-     * _serialized: `554199999999@c.us`
-     * },
-     * name: '+55 41 9999-9999',
-     * isGroup: false,
-     * isReadOnly: false,
-     * unreadCount: 6,
-     * timestamp: 1591484087,
-     * archived: false
+     *   id: {
+     *     server: 'c.us',
+     *     user: '554199999999',
+     *     _serialized: `554199999999@c.us`
+     *   },
+     *   name: '+55 41 9999-9999',
+     *   isGroup: false,
+     *   isReadOnly: false,
+     *   unreadCount: 6,
+     *   timestamp: 1591484087,
+     *   archived: false
      * }
      */
     export interface Chat {
@@ -1143,9 +1147,9 @@ declare namespace mywajs {
      * 
      * @example
      * id: {
-     * server: 'c.us',
-     * user: '554199999999',
-     * _serialized: `554199999999@c.us`
+     *   server: 'c.us',
+     *   user: '554199999999',
+     *   _serialized: `554199999999@c.us`
      * },
      */
     export interface ChatId {
@@ -1330,7 +1334,7 @@ declare namespace mywajs {
      * user: '5511999999999',
      * _serialized: '5511999999999@c.us'
      * },
-     *id: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+     *  id: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
      * _serialized: 'true_5511999999999@c.us_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
      * },
      * paymentCurrency: 'BRL',
@@ -1351,7 +1355,7 @@ declare namespace mywajs {
         id: object,
         /** Payment currency */
         paymentCurrency: string,
-        /** Payment ammount*/
+        /** Payment ammount  */
         paymentAmount1000: number,
         /** Payment receiver */
         paymentMessageReceiverJid: object,
@@ -1409,21 +1413,21 @@ declare namespace mywajs {
     export class List {
         body: string
         buttonText: string
-        sections: Array<FormattedSectionSpec>
+        sections: Array<any>
         title?: string | null
         footer?: string | null
 
-        constructor(body: string, buttonText: string, sections: Array<FormattedSectionSpec>, title?: string | null, footer?: string | null)
+        constructor(body: string, buttonText: string, sections: Array<any>, title?: string | null, footer?: string | null)
     }
 
     /** Message type Buttons */
     export class Buttons {
         body: string | MessageMedia
-        buttons: FormattedButtonSpec
+        buttons: Array<{ buttonId: string; buttonText: { displayText: string }; type: number }>
         title?: string | null
         footer?: string | null
 
-        constructor(body: string, buttons: Array<ButtonSpec>, title?: string | null, footer?: string | null)
+        constructor(body: string, buttons: Array<{ id?: string; body: string }>, title?: string | null, footer?: string | null)
     }
 
     /** Message type Reaction */
@@ -1447,4 +1451,4 @@ declare namespace mywajs {
     }
 }
 
-export = mywajs
+export = MywaJS
