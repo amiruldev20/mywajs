@@ -741,7 +741,7 @@ class Client extends EventEmitter {
      */
     async sendMessage(chatId, content, options = {}) {
         let internalOptions = {
-            linkPreview: options.linkPreview === false ? undefined : true,
+            linkPreview: options.linkPreview === undefined ? false : true,
             sendAudioAsVoice: options.sendAudioAsVoice,
             sendVideoAsGif: options.sendVideoAsGif,
             sendMediaAsSticker: options.sendMediaAsSticker,
