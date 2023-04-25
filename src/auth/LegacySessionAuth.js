@@ -9,7 +9,7 @@ ig: amirul.dev
 wa: 62851574894460
 tq to: pedro & edgard & dika
 */
-import BaseAuthStrategy from './BaseAuthStrategy.js'
+import BaseAuthStrategy from './BaseAuth.js'
 
 /**
  * Legacy session auth strategy
