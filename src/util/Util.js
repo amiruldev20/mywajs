@@ -14,7 +14,6 @@ import Crypto from "crypto";
 import { tmpdir } from 'os';
 import ffmpeg from 'fluent-ffmpeg';
 import webp from 'node-webpmux';
-import sharp from 'sharp';
 import fs from 'fs/promises';
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 
