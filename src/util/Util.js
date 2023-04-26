@@ -226,12 +226,13 @@ class Util {
      * @param {Buffer} buffer
      * @return {Promise<{preview: Promise<string>, img: Promise<string>}>}
      */
+    /*
     static async generateProfilePicture(buffer, type = 'normal'){
         /**
          * @param {Sharp} img
          * @param {number} maxSize
          * @return {Promise<Sharp>}
-         */
+         
         const resizeByMax = async (img, maxSize) => {
             const metadata = await img.metadata();
             const outputRatio = maxSize/Math.max(metadata.height, metadata.width);
@@ -240,7 +241,7 @@ class Util {
         /**
          * @param {Sharp} img
          * @return {Promise<string>}
-         */
+         
         const imgToBase64 = async (img) => {
             return Buffer.from(await img.toFormat('jpg').toBuffer()).toString('base64');
         };
@@ -251,6 +252,7 @@ class Util {
             preview: (type === 'long') ? await imgToBase64(await resizeByMax(img, 120)) : await imgToBase64(await resizeByMax(img, 96))
         };
     }
+    */
 }
 
 export default Util

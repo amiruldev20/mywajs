@@ -24,7 +24,7 @@ import ContactFactory from './factories/ContactFactory.js';
 import { PollVote, ClientInfo, Message, MessageMedia, Contact, Location, GroupNotification, Label, Call, Buttons, List, Reaction } from './func/index.js';
 import LegacySessionAuth from './auth/LegacySessionAuth.js';
 import NoAuth from './auth/NoAuth.js';
-import { getUrlInfo } from './util/LinkPreview.js'
+//import { getUrlInfo } from './util/LinkPreview.js'
 
 
 const require = createRequire(import.meta.url)
@@ -787,7 +787,8 @@ class Client extends EventEmitter {
                 throw `No Url Found`
             }
 
-            const preview = await getUrlInfo(text)
+            const preview = ''
+            //await getUrlInfo(text)
 
             preview.subtype = 'url';
             internalOptions = { ...internalOptions, ...preview };

@@ -1,3 +1,4 @@
+/*
 import sharp from 'sharp';
 import { getLinkPreview } from 'link-preview-js';
 import axios from 'axios';
@@ -97,3 +98,4 @@ export const getUrlInfo = async (text, opts = {
         }
     }
 }
+*/
