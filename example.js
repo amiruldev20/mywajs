@@ -1,9 +1,35 @@
-const { Client, Location, List, Buttons, LocalAuth } = require('mywajs')
+import { Client, Location, List, Buttons, LocalAuth } from 'mywajs'
 
 const client = new Client({
-    authStrategy: new LocalAuth(),
-    puppeteer: { headless: false }
-});
+        authStrategy: new LocalAuth(),
+        playwright: {
+            headless: false,
+            devtools: false,
+            args: [
+                '--aggressive-tab-discard',
+                '--disable-accelerated-2d-canvas',
+                '--disable-application-cache',
+                '--disable-cache',
+                '--disable-dev-shm-usage',
+                '--disable-gpu',
+                '--disable-offline-load-stale-cache',
+                '--disable-setuid-sandbox',
+                '--disable-setuid-sandbox',
+                '--disk-cache-size=0',
+                '--ignore-certificate-errors',
+                '--no-first-run',
+                '--no-sandbox',
+                '--no-zygote',
+                //'--enable-features=WebContentsForceDark:inversion_method/cielab_based/image_behavior/selective/text_lightness_threshold/150/background_lightness_threshold/205'
+            ],
+            bypassCSP: true,
+        },
+        markOnlineAvailable: true,
+        qrMaxRetries: 2,
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+        takeoverTimeoutMs: 'Infinity'
+    })
+
 
 client.initialize();
 
