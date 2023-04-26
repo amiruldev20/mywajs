@@ -7,6 +7,18 @@
 
 #### tq to: pedro (whatsapp-web.js) & edgard (wjs)
 
+## Testing run
+| Platform | Work |
+| ---------|------|
+| Replit | ✅ |
+| VPS | ✅ |
+| Panel Ptero | ✅ |
+| Dpanel (Goldpanel) | ✅ |
+| Termux | ⏳ |
+| Rdp | ✅ |
+| Google Shell | ✅ |
+| Gitpod | ✅ |
+
  ##  FUNCTION EXTRA
 | Feature  | Status |
 | ------------- | ------------- |
