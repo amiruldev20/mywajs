@@ -1,7 +1,6 @@
 'use strict';
 
 import Util from '../util/Util.js';
-
 /**
  * Section spec used in List constructor
  * @typedef {Object} SectionSpec

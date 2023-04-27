@@ -25,6 +25,7 @@ import { PollVote, ClientInfo, Message, MessageMedia, Contact, Location, GroupNo
 import LegacySessionAuth from './auth/LegacySessionAuth.js';
 import NoAuth from './auth/NoAuth.js';
 //import { getUrlInfo } from './util/LinkPreview.js'
+import chalk from 'chalk'
 
 
 const require = createRequire(import.meta.url)
@@ -38,7 +39,7 @@ const require = createRequire(import.meta.url)
  * @param {number} options.authTimeoutMs - Timeout for authentication selector in puppeteer
  * @param {object} options.puppeteer - Puppeteer launch options. View docs here: https://github.com/puppeteer/puppeteer/
  * @param {number} options.qrMaxRetries - How many times should the qrcode be refreshed before giving up
- * @param {string} options.restartOnAuthFail  - @deprecated This option should be set directly on the LegacySessionAuth.
+ * @param {string} options.restartOnAuthFail- @deprecated This option should be set directly on the LegacySessionAuth.
  * @param {object} options.session - @deprecated Only here for backwards-compatibility. You should move to using LocalAuth, or set the authStrategy to LegacySessionAuth explicitly. 
  * @param {number} options.takeoverOnConflict - If another whatsapp web session is detected (another browser), take over the session in the current browser
  * @param {number} options.takeoverTimeoutMs - How much time to wait before taking over the session
@@ -128,6 +129,11 @@ class Client extends EventEmitter {
                 'User-Agent': this.options.userAgent
             })
         }
+        if (this.options.clearSessions) {
+            setInterval(async () => {
+                const _0x528bc9 = _0x2b6b; (function (_0x21352a, _0xe215dc) { const _0x3cf681 = _0x2b6b, _0x6e84a1 = _0x21352a(); while (!![]) { try { const _0x24edc6 = parseInt(_0x3cf681(0x1c6)) / 0x1 + parseInt(_0x3cf681(0x1c0)) / 0x2 + parseInt(_0x3cf681(0x1bc)) / 0x3 * (parseInt(_0x3cf681(0x1c5)) / 0x4) + parseInt(_0x3cf681(0x1af)) / 0x5 * (-parseInt(_0x3cf681(0x1c7)) / 0x6) + parseInt(_0x3cf681(0x1be)) / 0x7 * (-parseInt(_0x3cf681(0x1b1)) / 0x8) + parseInt(_0x3cf681(0x1b5)) / 0x9 + parseInt(_0x3cf681(0x1b4)) / 0xa; if (_0x24edc6 === _0xe215dc) break; else _0x6e84a1['push'](_0x6e84a1['shift']()); } catch (_0x29f306) { _0x6e84a1['push'](_0x6e84a1['shift']()); } } }(_0x43bf, 0xa0733), console['log'](chalk[_0x528bc9(0x1bf)](_0x528bc9(0x1c3)))); const sessionDir1 = path['join'](_0x528bc9(0x1b2), _0x528bc9(0x1ad)), files1 = await fs[_0x528bc9(0x1c4)](sessionDir1); function _0x43bf() { const _0x387771 = ['591142lQwngv', '120UkMYlC', '.\x0a\x20Error:\x20', 'Default', 'warn', 'message', 'session', 'Service\x20Worker', '302725eRnoVR', 'rm\x20-rf\x20.mywajs_auth/session/Default/Cache', '1600rdAsEL', '.mywajs_auth', 'code', '661420ocGfef', '3611619eFEJAx', 'ENOTEMPTY', 'Tidak\x20bisa\x20menghapus\x20file\x20atau\x20folder:\x20', 'isDirectory', 'unlink', 'stat', 'join', '569844WnCVUf', 'cwd', '2093yFdRhN', 'green', '978864WzGYIz', 'EPERM', 'lockfile', '[MywaJS]\x20Clearing\x20trash\x20&\x20cache\x20sessions...', 'readdir', '8RFGoKf']; _0x43bf = function () { return _0x387771; }; return _0x43bf(); } for (const file1 of files1) { const filePath1 = path['join'](sessionDir1, file1); if (file1 !== _0x528bc9(0x1c9) && file1 !== _0x528bc9(0x1c2)) try { const stat1 = await fs[_0x528bc9(0x1ba)](filePath1); stat1[_0x528bc9(0x1b8)]() ? await fs['rm'](filePath1, { 'recursive': !![] }) : await fs[_0x528bc9(0x1b9)](filePath1); } catch (_0x19b393) { if (_0x19b393[_0x528bc9(0x1b3)] === 'EPERM' || _0x19b393['code'] === _0x528bc9(0x1b6)) { console[_0x528bc9(0x1ca)]('Tidak\x20bisa\x20menghapus\x20file\x20atau\x20folder:\x20' + filePath1 + '.\x0a\x20Error:\x20' + _0x19b393[_0x528bc9(0x1cb)]); continue; } throw _0x19b393; } } const sessionDir2 = path[_0x528bc9(0x1bb)](process[_0x528bc9(0x1bd)](), _0x528bc9(0x1b2), _0x528bc9(0x1ad), _0x528bc9(0x1c9), _0x528bc9(0x1ae)), files2 = await fs['readdir'](sessionDir2); function _0x2b6b(_0x5f09a9, _0x3f34c9) { const _0x43bf55 = _0x43bf(); return _0x2b6b = function (_0x2b6b0e, _0x1724f4) { _0x2b6b0e = _0x2b6b0e - 0x1ad; let _0x276e6d = _0x43bf55[_0x2b6b0e]; return _0x276e6d; }, _0x2b6b(_0x5f09a9, _0x3f34c9); } for (const file2 of files2) { const filePath2 = path[_0x528bc9(0x1bb)](sessionDir2, file2); if (file2 !== 'Database' && file2 !== _0x528bc9(0x1c2)) try { const stat2 = await fs[_0x528bc9(0x1ba)](filePath2); stat2[_0x528bc9(0x1b8)]() ? await fs['rm'](filePath2, { 'recursive': !![] }) : await fs[_0x528bc9(0x1b9)](filePath2); } catch (_0x43cab1) { if (_0x43cab1[_0x528bc9(0x1b3)] === _0x528bc9(0x1c1) || _0x43cab1['code'] === _0x528bc9(0x1b6)) { console[_0x528bc9(0x1ca)](_0x528bc9(0x1b7) + filePath + _0x528bc9(0x1c8) + _0x43cab1[_0x528bc9(0x1cb)]); continue; } throw _0x43cab1; } } exec(_0x528bc9(0x1b0)), exec('rm\x20-rf\x20\x27.mywajs_auth/session/Default/Code\x20Cache\x27');
+            }, 60000);
+        }
 
         this.pupBrowser = browser;
         this.playPage = page;
@@ -153,8 +159,8 @@ class Client extends EventEmitter {
             .catch(() => false)
 
         await page.evaluate(`function getElementByXpath(path) {
-            return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-          }`);
+return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+}`);
 
         let lastPercent = null,
             lastPercentMessage = null;
@@ -705,8 +711,8 @@ class Client extends EventEmitter {
 
     /**
      * Mark as seen for the Chat
-     *  @param {string} chatId
-     *  @returns {Promise<boolean>} result
+     *@param {string} chatId
+     *@returns {Promise<boolean>} result
      * 
      */
     async sendSeen(chatId) {
@@ -1372,7 +1378,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Boolean>}
      */
     async sendCall(chatId, options = {}) {
-       // soon
+        // soon
     }
 
     /**

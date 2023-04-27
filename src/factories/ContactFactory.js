@@ -1,5 +1,4 @@
 'use strict';
-
 import PrivateContact from '../func/PrivateContact.js';
 import BusinessContact from '../func/BusinessContact.js';
 
