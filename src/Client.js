@@ -692,9 +692,14 @@ class Client extends EventEmitter {
      * Returns the version of WhatsApp Web currently being run
      * @returns {Promise<string>}
      */
-    async getWWebVersion() {
+    async getWWeb() {
         return await this.playPage.evaluate(() => {
-            return window.Debug.VERSION;
+            var res = {
+                version: window.Debug.VERSION,
+                desktop_beta: window.Debug.DESKTOP_BETA,
+                id: window.Debug.BUILD_ID
+            }
+            return res
         });
     }
 
