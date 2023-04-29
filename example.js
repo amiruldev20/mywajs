@@ -1,35 +1,9 @@
-import { Client, Location, List, Buttons, LocalAuth } from 'mywajs'
+import { Client, Location, List, Buttons, LocalAuth } from './index.js'
 
 const client = new Client({
-        authStrategy: new LocalAuth(),
-        playwright: {
-            headless: false,
-            devtools: false,
-            args: [
-                '--aggressive-tab-discard',
-                '--disable-accelerated-2d-canvas',
-                '--disable-application-cache',
-                '--disable-cache',
-                '--disable-dev-shm-usage',
-                '--disable-gpu',
-                '--disable-offline-load-stale-cache',
-                '--disable-setuid-sandbox',
-                '--disable-setuid-sandbox',
-                '--disk-cache-size=0',
-                '--ignore-certificate-errors',
-                '--no-first-run',
-                '--no-sandbox',
-                '--no-zygote',
-                //'--enable-features=WebContentsForceDark:inversion_method/cielab_based/image_behavior/selective/text_lightness_threshold/150/background_lightness_threshold/205'
-            ],
-            bypassCSP: true,
-        },
-        markOnlineAvailable: true,
-        qrMaxRetries: 2,
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
-        takeoverTimeoutMs: 'Infinity'
-    })
-
+    authStrategy: new LocalAuth(),
+    playwright: { headless: false }
+});
 
 client.initialize();
 
@@ -193,10 +167,10 @@ client.on('message', async msg => {
         await chat.archive();
     } else if (msg.body === '!mute') {
         const chat = await msg.getChat();
-        // mute the chat for 20 seconds
-        const unmuteDate = new Date();
-        unmuteDate.setSeconds(unmuteDate.getSeconds() + 20);
-        await chat.mute(unmuteDate);
+        await chat.mute(86400);
+    } else if (msg.body === 'ephemeral') {
+        const chat = await msg.getChat()
+        await chat.ephemeral(86400)
     } else if (msg.body === '!typing') {
         const chat = await msg.getChat();
         // simulates typing in the chat
@@ -294,53 +268,4 @@ client.on('call', async (call) => {
 
 client.on('disconnected', (reason) => {
     console.log('Client was logged out', reason);
-});
-
-client.on('contact_changed', async (message, oldId, newId, isContact) => {
-    /** The time the event occurred. */
-    const eventTime = (new Date(message.timestamp * 1000)).toLocaleString();
-
-    console.log(
-        `The contact ${oldId.slice(0, -5)}` +
-        `${!isContact ? ' that participates in group ' +
-            `${(await client.getChatById(message.to ?? message.from)).name} ` : ' '}` +
-        `changed their phone number\nat ${eventTime}.\n` +
-        `Their new phone number is ${newId.slice(0, -5)}.\n`);
-
-    /**
-     * Information about the {@name message}:
-     * 
-     * 1. If a notification was emitted due to a group participant changing their phone number:
-     * {@name message.author} is a participant's id before the change.
-     * {@name message.recipients[0]} is a participant's id after the change (a new one).
-     * 
-     * 1.1 If the contact who changed their number WAS in the current user's contact list at the time of the change:
-     * {@name message.to} is a group chat id the event was emitted in.
-     * {@name message.from} is a current user's id that got an notification message in the group.
-     * Also the {@name message.fromMe} is TRUE.
-     * 
-     * 1.2 Otherwise:
-     * {@name message.from} is a group chat id the event was emitted in.
-     * {@name message.to} is @type {undefined}.
-     * Also {@name message.fromMe} is FALSE.
-     * 
-     * 2. If a notification was emitted due to a contact changing their phone number:
-     * {@name message.templateParams} is an array of two user's ids:
-     * the old (before the change) and a new one, stored in alphabetical order.
-     * {@name message.from} is a current user's id that has a chat with a user,
-     * whos phone number was changed.
-     * {@name message.to} is a user's id (after the change), the current user has a chat with.
-     */
-});
-
-client.on('group_admin_changed', (notification) => {
-    if (notification.type === 'promote') {
-        /** 
-          * Emitted when a current user is promoted to an admin.
-          * {@link notification.author} is a user who performs the action of promoting/demoting the current user.
-          */
-        console.log(`You were promoted by ${notification.author}`);
-    } else if (notification.type === 'demote')
-        /** Emitted when a current user is demoted to a regular user. */
-        console.log(`You were demoted by ${notification.author}`);
 });
