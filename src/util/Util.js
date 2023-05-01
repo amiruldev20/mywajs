@@ -179,16 +179,16 @@ class Util {
         "sticker-pack-id": metadata.packId ? metadata.packId : hash,
         "sticker-pack-name": metadata.packName
           ? metadata.packName
-          : "Dika Ardnt.",
+          : "MywaJS",
         "sticker-pack-publisher": metadata.packPublish
           ? metadata.packPublish
-          : "Dika Ardnt.",
+          : "Amirul Dev",
         "sticker-pack-publisher-email": metadata.packEmail
           ? metadata.packEmail
           : "",
         "sticker-pack-publisher-website": metadata.packWebsite
           ? metadata.packWebsite
-          : "https://instagram.com/cak_haho",
+          : "https://instagram.com/amirul.dev",
         "android-app-store-link": metadata.androidApp
           ? metadata.androidApp
           : "",
