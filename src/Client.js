@@ -980,6 +980,18 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
   }
 
   /**
+   * Join Whatsapp Beta
+   * @param {*} act 
+   * @returns 
+   */
+  async joinBeta(act) {
+    const res = await this.playPage.evaluate((act) => {
+      return window.extra.joinBeta(act)
+    }, act)
+    return res
+  }
+
+  /**
    * Mark as seen for the Chat
    *@param {string} chatId
    *@returns {Promise<boolean>} result

@@ -122,6 +122,48 @@ v2.0.0
 <p>melihat detail whatsapp web bot anda</p>
 <pre class="snippet"><code class="html">client.getWWeb()</code></pre>
 
+<h2 id="code-blocks"><span>Change Theme Whatsapp Web<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>menganti tema wa web</p>
+<code>PARAM:</code>
+<br>
+- opt ('dark' or 'light')<br>
+<pre class="snippet"><code class="html">client.changeTheme(opt)
+</code></pre>
+
+<h2 id="code-blocks"><span>Get Member Request<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>mengambil data permintaan masuk member ke grup</p>
+<code>PARAM:</code>
+<br>
+- jid<br>
+<pre class="snippet"><code class="html">client.getMemberRequest(jid)
+</code></pre>
+
+<h2 id="code-blocks"><span>Approve Request Member<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>menerima permintaan masuk member ke grup</p>
+<code>PARAM:</code>
+<br>
+- jid<br>
+- number<br>
+<pre class="snippet"><code class="html">client.approveRequest(jid, number)
+</code></pre>
+
+<h2 id="code-blocks"><span>Reject Request Member<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>menolak permintaan masuk member ke grup</p>
+<code>PARAM:</code>
+<br>
+- jid<br>
+- number<br>
+<pre class="snippet"><code class="html">client.rejectRequest(jid, number)
+</code></pre>
+
+<h2 id="code-blocks"><span>Join Whatsapp Beta<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>masuk mode beta whatsapp web</p>
+<code>PARAM:</code>
+<br>
+- boolean<br>
+<pre class="snippet"><code class="html">client.joinBeta(boolean)
+</code></pre>
+
 <h2 id="code-blocks"><span>Read Message<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
 <p>membaca pesan</p>
 <code>PARAM:</code>
