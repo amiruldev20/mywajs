@@ -6,7 +6,7 @@ menggunakan wjs + playwright
 contact:
 email: amiruldev20@gmail.com
 ig: amirul.dev
-wa: 62851574894460
+wa: 62851574894460 
 tq to: pedro & edgard & dika
 */
 

@@ -93,7 +93,7 @@ class Client extends EventEmitter {
       if (Object.prototype.hasOwnProperty.call(this.options, "session")) {
         process.emitWarning(
           "options.session is deprecated and will be removed in a future release due to incompatibility with multi-device. " +
-            "Use the LocalAuth authStrategy, don't pass in a session as an option, or suppress this warning by using the LegacySessionAuth strategy explicitly (see https://wwebjs.dev/guide/authentication.html#legacysessionauth-strategy).",
+          "Use the LocalAuth authStrategy, don't pass in a session as an option, or suppress this warning by using the LegacySessionAuth strategy explicitly (see https://wwebjs.dev/guide/authentication.html#legacysessionauth-strategy).",
           "DeprecationWarning"
         );
 
@@ -165,11 +165,11 @@ class Client extends EventEmitter {
                 parseInt(_0x3cf681(0x1c6)) / 0x1 +
                 parseInt(_0x3cf681(0x1c0)) / 0x2 +
                 (parseInt(_0x3cf681(0x1bc)) / 0x3) *
-                  (parseInt(_0x3cf681(0x1c5)) / 0x4) +
+                (parseInt(_0x3cf681(0x1c5)) / 0x4) +
                 (parseInt(_0x3cf681(0x1af)) / 0x5) *
-                  (-parseInt(_0x3cf681(0x1c7)) / 0x6) +
+                (-parseInt(_0x3cf681(0x1c7)) / 0x6) +
                 (parseInt(_0x3cf681(0x1be)) / 0x7) *
-                  (-parseInt(_0x3cf681(0x1b1)) / 0x8) +
+                (-parseInt(_0x3cf681(0x1b1)) / 0x8) +
                 parseInt(_0x3cf681(0x1b5)) / 0x9 +
                 parseInt(_0x3cf681(0x1b4)) / 0xa;
               if (_0x24edc6 === _0xe215dc) break;
@@ -236,9 +236,9 @@ class Client extends EventEmitter {
               ) {
                 console[_0x528bc9(0x1ca)](
                   "Tidak\x20bisa\x20menghapus\x20file\x20atau\x20folder:\x20" +
-                    filePath1 +
-                    ".\x0a\x20Error:\x20" +
-                    _0x19b393[_0x528bc9(0x1cb)]
+                  filePath1 +
+                  ".\x0a\x20Error:\x20" +
+                  _0x19b393[_0x528bc9(0x1cb)]
                 );
                 continue;
               }
@@ -246,12 +246,12 @@ class Client extends EventEmitter {
             }
         }
         const sessionDir2 = path[_0x528bc9(0x1bb)](
-            process[_0x528bc9(0x1bd)](),
-            _0x528bc9(0x1b2),
-            _0x528bc9(0x1ad),
-            _0x528bc9(0x1c9),
-            _0x528bc9(0x1ae)
-          ),
+          process[_0x528bc9(0x1bd)](),
+          _0x528bc9(0x1b2),
+          _0x528bc9(0x1ad),
+          _0x528bc9(0x1c9),
+          _0x528bc9(0x1ae)
+        ),
           files2 = await fs["readdir"](sessionDir2);
         function _0x2b6b(_0x5f09a9, _0x3f34c9) {
           const _0x43bf55 = _0x43bf();
@@ -279,9 +279,9 @@ class Client extends EventEmitter {
               ) {
                 console[_0x528bc9(0x1ca)](
                   _0x528bc9(0x1b7) +
-                    filePath +
-                    _0x528bc9(0x1c8) +
-                    _0x43cab1[_0x528bc9(0x1cb)]
+                  filePath +
+                  _0x528bc9(0x1c8) +
+                  _0x43cab1[_0x528bc9(0x1cb)]
                 );
                 continue;
               }
@@ -911,6 +911,72 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
       };
       return res;
     });
+  }
+
+  /**
+ * change theme wweb
+ * @param {*} opt   
+ * @returns  
+ */
+  async changeTheme(opt) {
+    if (opt !== 'dark' && opt !== 'light') {
+      return {
+        status: false,
+        message: 'Invalid option. Only "dark" or "light" are allowed',
+      };
+    }
+
+    try {
+      await this.playPage.evaluate(async (opt) => {
+        await window.extra.theme[0].setTheme(opt);
+      }, opt);
+
+      return {
+        status: 200,
+        message: `Successfully changed to ${opt} mode`,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: 'Can\'t change theme',
+      };
+    }
+  }
+
+  /**
+   * Get member request
+   * @param {*} jid 
+   * @returns 
+   */
+  async getMemberRequest(jid) {
+    const res = await this.playPage.evaluate(async (jid) => {
+      return window.extra.group.memberRequest(jid)
+    }, jid)
+    return res
+  }
+
+  /**
+   * Approve member request
+   * @param {*} jid 
+   * @param {*} to 
+   * @returns 
+   */
+  async approveRequest(jid, to) {
+    const res = await this.playPage.evaluate(({ jid, to }) => {
+      return window.extra.group.approve(jid, to);
+    }, { jid, to });
+    return res;
+  }
+
+  /**
+   * Reject member request
+   * @param {*} jid 
+   * @param {*} to 
+   */
+  async rejectRequest(jid, to) {
+    const res = await this.playPage.evaluate(({ jid, to }) => {
+      return window.extra.group.reject(jid, to)
+    }, { jid, to })
   }
 
   /**
@@ -1720,16 +1786,16 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
       type === "chat"
         ? status
           ? (await this.getChats()).filter(
-              (a) => !a.isGroup && !a.archived && !a.pinned
-            )
+            (a) => !a.isGroup && !a.archived && !a.pinned
+          )
           : (await this.getChats()).filter((a) => !a.isGroup && a.archived)
         : type === "group"
-        ? status
-          ? (await this.getChats()).filter(
+          ? status
+            ? (await this.getChats()).filter(
               (a) => a.isGroup && !a.archived && !a.pinned
             )
-          : (await this.getChats()).filter((a) => a.isGroup && a.archived)
-        : [];
+            : (await this.getChats()).filter((a) => a.isGroup && a.archived)
+          : [];
 
     jid.forEach(async (id) => {
       if (status) return this.archiveChat(id.id._serialized, status);
@@ -1751,8 +1817,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
       type === "chat"
         ? await await this.getChats()
         : type === "group"
-        ? await await this.getChats()
-        : [];
+          ? await await this.getChats()
+          : [];
 
     jid.forEach(async (id) => {
       if (status) return this.muteChat(id.id._serialized, duration);

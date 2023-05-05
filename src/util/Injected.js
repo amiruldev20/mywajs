@@ -96,6 +96,30 @@ export const ExposeStore = (moduleRaidStr) => {
         ...window.mR.findModule('sendSetPicture')[0]
     };
 
+    window.extra = {
+        group: {
+            memberRequest: async (jid) => {
+                return WPP.group.getMembershipRequests(jid)
+            },
+            approve: async (jid, participant) => {
+            return WPP.group.approve(jid, participant)
+        },
+        reject: async (jid, memb) => {
+        return WPP.group.reject(jid, memb)
+        }
+    },
+        theme: window.mR.findModule((module) => module.setTheme && module.getTheme ? module : null),
+        status: {
+        text: async (capt, opt) => {
+        return WPP.status.sendTextStatus(capt, opt)
+        },
+        // masih belum dapat bekerja
+        image: async (base64) => {
+        return WPP.status.sendImageStatus(base64)
+        }
+        }
+        }
+
     if (!window.Store.Chat._find) {
         window.Store.Chat._find = e => {
             const target = window.Store.Chat.get(e);

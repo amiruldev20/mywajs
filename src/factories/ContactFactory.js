@@ -1,6 +1,6 @@
 'use strict';
 import PrivateContact from '../func/PrivateContact.js';
-import BusinessContact from '../func/BusinessContact.js';
+import BusinessContact from '../func/BusinessContact.js'; 
 
 class ContactFactory {
     static create(client, data) {
