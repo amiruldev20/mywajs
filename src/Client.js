@@ -44,7 +44,6 @@ import NoAuth from "./auth/NoAuth.js";
 //import { getUrlInfo } from './util/LinkPreview.js'
 import chalk from "chalk";
 import path from "path";
-import { promises as fs } from "fs";
 import fs from 'fs'
 import { exec } from "child_process";
 
