@@ -272,6 +272,44 @@ class Util {
         };
     }
     */
+
+  async getFile(PATH, save) {
+    let filename
+    let data = Buffer.isBuffer(PATH) ? PATH : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await this.fetchBuffer(PATH) : fs.existsSync(PATH) ? (filename = PATH, fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0)
+    let type = await fileType.fromBuffer(data) || {
+      mime: 'application/octet-stream',
+      ext: '.bin'
+    }
+    filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
+    if (data && save) fs.promises.writeFile(filename, data)
+    let size = Buffer.byteLength(data)
+    return {
+      filename,
+      size,
+      sizeH: this.formatSize(size),
+      ...type,
+      data
+    }
+  }
+
+  getRandom(ext = "", length = "10") {
+    var result = ""
+    var character = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+    var characterLength = character.length
+    for (var i = 0; i < length; i++) {
+      result += character.charAt(Math.floor(Math.random() * characterLength))
+    }
+
+    return `${result}${ext ? `.${ext}` : ""}`
+  }
+
+  bufferToBase64(buffer) {
+    if (!Buffer.isBuffer(buffer)) throw new Error("Buffer Not Detected")
+
+    var buf = new Buffer(buffer)
+    return buf.toString('base64')
+  }
+
 }
 
 export default Util;

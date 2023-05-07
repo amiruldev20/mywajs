@@ -1033,106 +1033,91 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
    */
   async sendMessage(chatId, content, options = {}) {
     let internalOptions = {
-      linkPreview: options.linkPreview === undefined ? false : true,
-      sendAudioAsVoice: options.sendAudioAsVoice,
-      sendVideoAsGif: options.sendVideoAsGif,
-      sendMediaAsSticker: options.sendMediaAsSticker,
-      sendMediaAsDocument: options.sendMediaAsDocument,
+      linkPreview: options.linkPreview,
+      sendAudioAsVoice: options.ptt,
+      sendVideoAsGif: options.gifPlayBack,
+      sendMediaAsSticker: options.asSticker,
+      sendMediaAsDocument: options.asDocument,
       caption: options.caption,
-      quotedMessageId: options.quoted?.id
-        ? options.quoted._serialized || options.quoted.id._serialized
-        : options.quoted,
+      quotedMessageId: options.quoted?.id ? (options.quoted._serialized || options.quoted.id._serialized) : options.quoted,
       parseVCards: options.parseVCards === false ? false : true,
-      mentionedJidList: Array.isArray(options.mentions)
-        ? options.mentions.map((contact) => contact.id._serialized)
-        : [],
-      extraOptions: options.extra,
+      mentionedJidList: Array.isArray(options.mentions) ? options.mentions.map(contact => (contact?.id ? contact?.id?._serialized : contact)) : [],
+      extraOptions: options.extra
     };
 
-    const sendSeen =
-      typeof options.sendSeen === "undefined" ? true : options.sendSeen;
+    if (options.caption) internalOptions.caption = options.caption
+    const sendSeen = typeof options.sendSeen === 'undefined' ? true : options.sendSeen;
 
-    if (content instanceof MessageMedia) {
+    if ((Buffer.isBuffer(content) || /^[a-zA-Z0-9+/]*={0,2}$/i.test(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || fs.existsSync(content))) {
+      let media = await Util.getFile(content)
+      if (!options.mimetype && media.ext === '.bin') {
+        content = content
+      } else {
+        internalOptions.attachment = {
+          mimetype: options.mimetype ? options.mimetype : media.mime,
+          data: media?.data?.toString('base64') || Util.bufferToBase64(media.data),
+          filename: options.fileName ? options.fileName : Util.getRandom(media.ext),
+          filesize: options.fileSize ? options.fileSize : media.size
+        }
+        content = ''
+      }
+    } else if (content instanceof MessageMedia) {
       internalOptions.attachment = content;
-      content = "";
+      content = '';
     } else if (options.media instanceof MessageMedia) {
       internalOptions.attachment = options.media;
       internalOptions.caption = content;
-      content = "";
+      content = '';
     } else if (content instanceof Location) {
       internalOptions.location = content;
-      content = "";
+      content = '';
     } else if (content instanceof Contact) {
-      internalOptions.contactCard = content.id._serialized;
-      content = "";
-    } else if (
-      Array.isArray(content) &&
-      content.length > 0 &&
-      content[0] instanceof Contact
-    ) {
-      internalOptions.contactCardList = content.map(
-        (contact) => contact.id._serialized
-      );
-      content = "";
+      internalOptions.contactCard = (content.id ? content.id._serialized : content);
+      content = '';
+    } else if (Array.isArray(content) && content.length > 0 && content[0] instanceof Contact) {
+      internalOptions.contactCardList = content.map(contact => (contact.id ? contact.id._serialized : contact));
+      content = '';
     } else if (content instanceof Buttons) {
-      if (content.type !== "chat") {
-        internalOptions.attachment = content.body;
-      }
+      if (content.type !== 'chat') { internalOptions.attachment = content.body; }
       internalOptions.buttons = content;
-      content = "";
+      content = '';
     } else if (content instanceof List) {
       internalOptions.list = content;
-      content = "";
-    }
-
-    if (internalOptions.linkPreview) {
-      const text = options.caption ? options.caption : content;
-
-      if (!/https?:\/\//i.test(text)) {
-        throw `No Url Found`;
-      }
-
-      const preview = "";
-      //await getUrlInfo(text)
-
-      preview.subtype = "url";
-      internalOptions = { ...internalOptions, ...preview };
+      content = '';
     }
 
     if (internalOptions.sendMediaAsSticker && internalOptions.attachment) {
       internalOptions.attachment = await Util.formatToWebpSticker(
-        internalOptions.attachment,
-        {
-          packName: options.packName,
-          packPublish: options.packPublish,
-          categories: options.categories,
-        },
-        this.playPage
+        internalOptions.attachment, {
+        packId: options?.packId ? options.packId : set.exif.packId,
+        packName: options?.packName ? options.packName : set.exif.packName,
+        packPublish: options?.packPublish ? options.packPublish : set.exif.packPublish,
+        packEmail: options?.packEmail ? options.packEmail : set.exif.packEmail,
+        packWebsite: options?.packWebsite ? options.packWebsite : set.exif.packWebsite,
+        androidApp: options?.androidApp ? options.androidApp : set.exif.androidApp,
+        iOSApp: options?.iOSApp ? options.iOSApp : set.exif.iOSApp,
+        categories: options?.categories ? options.categories : set.exif.categories,
+        isAvatar: options?.isAvatar ? options.isAvatar : set.exif.isAvatar
+      }, this.playPage
       );
     }
 
-    const newMessage = await this.playPage.evaluate(
-      async ({ chatId, message, options, sendSeen }) => {
-        const chatWid = window.Store.WidFactory.createWid(chatId);
-        const chat = await window.Store.Chat.find(chatWid);
+    const newMessage = await this.playPage.evaluate(async ({ chatId, message, options, sendSeen }) => {
+      const chatWid = window.Store.WidFactory.createWid(chatId);
+      const chat = await window.Store.Chat.find(chatWid);
 
-        if (sendSeen) {
-          window.WWebJS.sendSeen(chatId);
-        }
 
-        const msg = await window.WWebJS.sendMessage(
-          chat,
-          message,
-          options,
-          sendSeen
-        );
-        return JSON.parse(JSON.stringify(msg));
-      },
-      { chatId, message: content, options: internalOptions, sendSeen }
-    );
+      if (sendSeen) {
+        window.WWebJS.sendSeen(chatId);
+      }
 
-    return new Message(this, newMessage);
+      const msg = await window.WWebJS.sendMessage(chat, message, options, sendSeen);
+      return msg.serialize();
+    }, { chatId, message: content, options: internalOptions, sendSeen });
+
+    if (newMessage) return new Message(this, newMessage)
   }
+
 
   /**
    * Searches for messages
