@@ -44,7 +44,8 @@ import NoAuth from "./auth/NoAuth.js";
 //import { getUrlInfo } from './util/LinkPreview.js'
 import chalk from "chalk";
 import path from "path";
-import fs from 'fs'
+import { promises as fs } from "fs";
+import Fs from 'fs'
 import { exec } from "child_process";
 
 const require = createRequire(import.meta.url);
@@ -914,10 +915,10 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
   }
 
   /**
- * change theme wweb
- * @param {*} opt   
- * @returns  
- */
+   * change theme wweb
+   * @param {*} opt 
+   * @returns
+   */
   async changeTheme(opt) {
     if (opt !== 'dark' && opt !== 'light') {
       return {
@@ -1048,7 +1049,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     if (options.caption) internalOptions.caption = options.caption
     const sendSeen = typeof options.sendSeen === 'undefined' ? true : options.sendSeen;
 
-    if ((Buffer.isBuffer(content) || /^[a-zA-Z0-9+/]*={0,2}$/i.test(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || fs.existsSync(content))) {
+    if ((Buffer.isBuffer(content) || /^[a-zA-Z0-9+/]*={0,2}$/i.test(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || Fs.existsSync(content))) {
       let media = await Util.getFile(content)
       if (!options.mimetype && media.ext === '.bin') {
         content = content

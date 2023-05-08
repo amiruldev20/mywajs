@@ -9,7 +9,18 @@ ig: amirul.dev
 wa: 62851574894460
 tq to: pedro & edgard & dika
 */
-import path from "path";
+import Fs from 'fs'
+import path from "node:path"
+import stream from "node:stream"
+import { createRequire } from "node:module"
+import { fileURLToPath, pathToFileURL } from "node:url"
+import { platform } from "node:os"
+import { format } from "node:util"
+const fileType = (await import("file-type")).default
+import axios from 'axios'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const require = createRequire(import.meta.url)
 import Crypto from "crypto";
 import { tmpdir } from "os";
 import ffmpeg from "fluent-ffmpeg";
@@ -26,6 +37,11 @@ class Util {
     throw new Error(
       `The ${this.constructor.name} class may not be instantiated.`
     );
+  }
+
+  static
+    isUrl(url) {
+    return url.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/, 'gi'))
   }
 
   static generateHash(length) {
@@ -273,15 +289,25 @@ class Util {
     }
     */
 
-  async getFile(PATH, save) {
+  static async getFile(PATH, save) {
     let filename
-    let data = Buffer.isBuffer(PATH) ? PATH : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await this.fetchBuffer(PATH) : fs.existsSync(PATH) ? (filename = PATH, fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0)
-    let type = await fileType.fromBuffer(data) || {
-      mime: 'application/octet-stream',
-      ext: '.bin'
+    let data = Buffer.isBuffer(PATH) ? PATH : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await this.fetchBuffer(PATH) : Fs.existsSync(PATH) ? (filename = PATH, Fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0)
+    let type;
+    if (typeof data === 'string') {
+      const encoder = new TextEncoder();
+      const uint8Array = encoder.encode(data);
+      type = await fileType.fromBuffer(uint8Array) || {
+        mime: 'application/octet-stream',
+        ext: '.bin'
+      };
+    } else {
+      type = await fileType.fromBuffer(data) || {
+        mime: 'application/octet-stream',
+        ext: '.bin'
+      };
     }
     filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
-    if (data && save) fs.promises.writeFile(filename, data)
+    if (data && save) Fs.promises.writeFile(filename, data)
     let size = Buffer.byteLength(data)
     return {
       filename,
@@ -292,7 +318,44 @@ class Util {
     }
   }
 
-  getRandom(ext = "", length = "10") {
+  static fetchBuffer(string, options = {}) {
+    return new Promise(async (resolve, reject) => {
+      if (this.isUrl(string)) {
+        let buffer = await axios({
+          url: string,
+          method: "GET",
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36',
+            'Referer': string
+          },
+          responseType: 'arraybuffer',
+          ...options
+        })
+
+        resolve(buffer.data)
+      } else if (Buffer.isBuffer(string)) {
+        resolve(string)
+      } else if (/^data:.*?\/.*?;base64,/i.test(string)) {
+        let buffer = Buffer.from(string.split`,`[1], 'base64')
+        resolve(buffer)
+      } else {
+        let buffer = Fs.readFileSync(string)
+        resolve(buffer)
+      }
+    })
+  }
+
+  static formatSize(bytes) {
+    if (bytes >= 1000000000) { bytes = (bytes / 1000000000).toFixed(2) + " GB"; }
+    else if (bytes >= 1000000) { bytes = (bytes / 1000000).toFixed(2) + " MB"; }
+    else if (bytes >= 1000) { bytes = (bytes / 1000).toFixed(2) + " KB"; }
+    else if (bytes > 1) { bytes = bytes + " bytes"; }
+    else if (bytes == 1) { bytes = bytes + " byte"; }
+    else { bytes = "0 bytes"; }
+    return bytes;
+  }
+
+  static getRandom(ext = "", length = "10") {
     var result = ""
     var character = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
     var characterLength = character.length
@@ -303,7 +366,7 @@ class Util {
     return `${result}${ext ? `.${ext}` : ""}`
   }
 
-  bufferToBase64(buffer) {
+  static bufferToBase64(buffer) {
     if (!Buffer.isBuffer(buffer)) throw new Error("Buffer Not Detected")
 
     var buf = new Buffer(buffer)
