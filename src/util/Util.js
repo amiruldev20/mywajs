@@ -9,14 +9,14 @@ ig: amirul.dev
 wa: 62851574894460
 tq to: pedro & edgard & dika
 */
-import Fs from 'fs'
+import Fs from "node:fs"
 import path from "node:path"
 import stream from "node:stream"
 import { createRequire } from "node:module"
 import { fileURLToPath, pathToFileURL } from "node:url"
 import { platform } from "node:os"
 import { format } from "node:util"
-const fileType = (await import("file-type")).default
+import { fileTypeFromBuffer } from "file-type"
 import axios from 'axios'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -39,8 +39,12 @@ class Util {
     );
   }
 
-  static
-    isUrl(url) {
+  static isBase64(string) {
+    const regex = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/
+    return regex.test(string)
+  }
+
+  static isUrl(url) {
     return url.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/, 'gi'))
   }
 
@@ -289,35 +293,6 @@ class Util {
     }
     */
 
-  static async getFile(PATH, save) {
-    let filename
-    let data = Buffer.isBuffer(PATH) ? PATH : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await this.fetchBuffer(PATH) : Fs.existsSync(PATH) ? (filename = PATH, Fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0)
-    let type;
-    if (typeof data === 'string') {
-      const encoder = new TextEncoder();
-      const uint8Array = encoder.encode(data);
-      type = await fileType.fromBuffer(uint8Array) || {
-        mime: 'application/octet-stream',
-        ext: '.bin'
-      };
-    } else {
-      type = await fileType.fromBuffer(data) || {
-        mime: 'application/octet-stream',
-        ext: '.bin'
-      };
-    }
-    filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
-    if (data && save) Fs.promises.writeFile(filename, data)
-    let size = Buffer.byteLength(data)
-    return {
-      filename,
-      size,
-      sizeH: this.formatSize(size),
-      ...type,
-      data
-    }
-  }
-
   static fetchBuffer(string, options = {}) {
     return new Promise(async (resolve, reject) => {
       if (this.isUrl(string)) {
@@ -345,14 +320,41 @@ class Util {
     })
   }
 
-  static formatSize(bytes) {
-    if (bytes >= 1000000000) { bytes = (bytes / 1000000000).toFixed(2) + " GB"; }
-    else if (bytes >= 1000000) { bytes = (bytes / 1000000).toFixed(2) + " MB"; }
-    else if (bytes >= 1000) { bytes = (bytes / 1000).toFixed(2) + " KB"; }
-    else if (bytes > 1) { bytes = bytes + " bytes"; }
-    else if (bytes == 1) { bytes = bytes + " byte"; }
-    else { bytes = "0 bytes"; }
-    return bytes;
+  static async getFile(PATH, save) {
+    try {
+      let filename = 'Not Saved'
+      let data
+      if (/^https?:\/\//.test(PATH)) {
+        data = await this.fetchBuffer(PATH)
+      } else if (/^data:.*?\/.*?;base64,/i.test(PATH) || this.isBase64(PATH)) {
+        data = Buffer.from(PATH.split`,`[1], 'base64')
+      } else if (Fs.existsSync(PATH) && (Fs.statSync(PATH)).isFile()) {
+        data = Fs.readFileSync(PATH)
+      } else if (Buffer.isBuffer(PATH)) {
+        data = PATH
+      } else {
+        data = Buffer.alloc(20)
+      }
+
+      let type = await fileTypeFromBuffer(data) || {
+        mime: 'application/octet-stream',
+        ext: '.bin'
+      }
+
+      if (data && save) {
+        filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
+        Fs.promises.writeFile(filename, data)
+      }
+      let size = Buffer.byteLength(data)
+      return {
+        filename,
+        size,
+        sizeH: this.formatSize(size),
+        ...type,
+        data
+      }
+    } catch { }
+
   }
 
   static getRandom(ext = "", length = "10") {
@@ -371,6 +373,16 @@ class Util {
 
     var buf = new Buffer(buffer)
     return buf.toString('base64')
+  }
+
+  static formatSize(bytes) {
+    if (bytes >= 1000000000) { bytes = (bytes / 1000000000).toFixed(2) + " GB"; }
+    else if (bytes >= 1000000) { bytes = (bytes / 1000000).toFixed(2) + " MB"; }
+    else if (bytes >= 1000) { bytes = (bytes / 1000).toFixed(2) + " KB"; }
+    else if (bytes > 1) { bytes = bytes + " bytes"; }
+    else if (bytes == 1) { bytes = bytes + " byte"; }
+    else { bytes = "0 bytes"; }
+    return bytes;
   }
 
 }
