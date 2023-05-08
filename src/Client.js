@@ -1051,6 +1051,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
     if ((Buffer.isBuffer(content) || /^[a-zA-Z0-9+/]*={0,2}$/i.test(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || Fs.existsSync(content))) {
       let media = await Util.getFile(content)
+    
       if (!options.mimetype && media.ext === '.bin') {
         content = content
       } else {
@@ -1090,15 +1091,15 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     if (internalOptions.sendMediaAsSticker && internalOptions.attachment) {
       internalOptions.attachment = await Util.formatToWebpSticker(
         internalOptions.attachment, {
-        packId: options?.packId ? options.packId : set.exif.packId,
-        packName: options?.packName ? options.packName : set.exif.packName,
-        packPublish: options?.packPublish ? options.packPublish : set.exif.packPublish,
-        packEmail: options?.packEmail ? options.packEmail : set.exif.packEmail,
-        packWebsite: options?.packWebsite ? options.packWebsite : set.exif.packWebsite,
-        androidApp: options?.androidApp ? options.androidApp : set.exif.androidApp,
-        iOSApp: options?.iOSApp ? options.iOSApp : set.exif.iOSApp,
-        categories: options?.categories ? options.categories : set.exif.categories,
-        isAvatar: options?.isAvatar ? options.isAvatar : set.exif.isAvatar
+        packId: options?.packId ? options.packId : global?.Exif?.packId,
+        packName: options?.packName ? options.packName : global?.Exif?.packName,
+        packPublish: options?.packPublish ? options.packPublish : global?.Exif?.packPublish,
+        packEmail: options?.packEmail ? options.packEmail : global?.Exif?.packEmail,
+        packWebsite: options?.packWebsite ? options.packWebsite : global?.Exif?.packWebsite,
+        androidApp: options?.androidApp ? options.androidApp : global?.Exif?.androidApp,
+        iOSApp: options?.iOSApp ? options.iOSApp : global?.Exif?.iOSApp,
+        categories: options?.categories ? options.categories : global?.Exif?.categories,
+        isAvatar: options?.isAvatar ? options.isAvatar : global?.Exif?.isAvatar
       }, this.playPage
       );
     }
@@ -1118,6 +1119,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
     if (newMessage) return new Message(this, newMessage)
   }
+
 
 
   /**

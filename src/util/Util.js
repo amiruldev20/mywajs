@@ -16,7 +16,7 @@ import { createRequire } from "node:module"
 import { fileURLToPath, pathToFileURL } from "node:url"
 import { platform } from "node:os"
 import { format } from "node:util"
-import { fileTypeFromBuffer } from "file-type"
+const fileT = (await import("file-type")).default
 import axios from 'axios'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -335,12 +335,12 @@ class Util {
       } else {
         data = Buffer.alloc(20)
       }
-
-      let type = await fileTypeFromBuffer(data) || {
+      
+      let type = await fileT.fromBuffer(data) || {
         mime: 'application/octet-stream',
         ext: '.bin'
       }
-
+    
       if (data && save) {
         filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
         Fs.promises.writeFile(filename, data)
