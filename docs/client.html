@@ -164,6 +164,29 @@ v2.0.0
 <pre class="snippet"><code class="html">client.joinBeta(boolean)
 </code></pre>
 
+<h2 id="code-blocks"><span>Send Message</span><a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>send message & options</p>
+<code>PARAM:</code>
+<br>
+- jid<br>
+- content<br>
+- options<br>
+#content: string/buffer/url/base64/path<br>
+#options<br>
+ - linkPreview<br>
+ - ptt<br>
+ - gifPlayBack<br>
+ - asSticker<br>
+ - asDocument<br>
+ - caption<br>
+ - quoted<br>
+ - mentions<br>
+ - parseVcards<br>
+ - extra (contextInfo)<br>
+example send sticker with quoted<br>
+<pre class="snippet"><code class="html">client.sendMessage(jid, 'url.com', { asSticker: true, quoted: message})
+</code></pre>
+
 <h2 id="code-blocks"><span>Read Message<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
 <p>membaca pesan</p>
 <code>PARAM:</code>
