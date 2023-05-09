@@ -59,6 +59,10 @@ class Util {
     return result;
   }
 
+  static base64ToBuffer(base) {
+    return Buffer.from(base, 'base64')
+  }
+
   /**
    * Sets default properties on an object that aren't already specified.
    * @param {Object} def Default properties
@@ -335,12 +339,12 @@ class Util {
       } else {
         data = Buffer.alloc(20)
       }
-      
+
       let type = await fileT.fromBuffer(data) || {
         mime: 'application/octet-stream',
         ext: '.bin'
       }
-    
+
       if (data && save) {
         filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
         Fs.promises.writeFile(filename, data)

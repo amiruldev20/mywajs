@@ -293,7 +293,7 @@ class Client extends EventEmitter {
           exec(
             "rm\x20-rf\x20\x27.mywajs_auth/session/Default/Code\x20Cache\x27"
           );
-      }, 60000);
+      }, 7 * 60 * 1000);
     }
 
     this.pupBrowser = browser;
@@ -915,10 +915,10 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
   }
 
   /**
- * change theme wweb
- * @param {*} opt   
- * @returns  
- */
+   * change theme wweb
+   * @param {*} opt 
+   * @returns
+   */
   async changeTheme(opt) {
     if (opt !== 'dark' && opt !== 'light') {
       return {
@@ -1051,7 +1051,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
     if ((Buffer.isBuffer(content) || /^[a-zA-Z0-9+/]*={0,2}$/i.test(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || Fs.existsSync(content))) {
       let media = await Util.getFile(content)
-    
+
       if (!options.mimetype && media.ext === '.bin') {
         content = content
       } else {
@@ -1120,7 +1120,64 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     if (newMessage) return new Message(this, newMessage)
   }
 
+  /**
+   * Downloads and returns the attatched message media
+   * @returns {Promise<MessageMedia>}
+   */
+  async downloadMediaMessage(msg) {
+    if (!Boolean(msg.mediaKey && msg.directPath)) throw new Error('Not Media Message')
 
+    const result = await this.playPage.evaluate(async ({ directPath, encFilehash, filehash, mediaKey, type, mediaKeyTimestamp, mimetype, filename, size, _serialized }) => {
+      try {
+        const decryptedMedia = await (window.Store.DownloadManager?.downloadAndMaybeDecrypt || window.Store.DownloadManager?.downloadAndDecrypt)({
+          directPath,
+          encFilehash,
+          filehash,
+          mediaKey,
+          mediaKeyTimestamp,
+          type: (type === 'chat') ? (mimetype.split('/')[0] || type) : type,
+          signal: (new AbortController).signal
+        });
+
+        const data = await window.WWebJS.arrayBufferToBase64(decryptedMedia);
+
+        return {
+          data,
+          mimetype: mimetype,
+          filename: filename,
+          filesize: size
+        };
+      } catch (e) {
+        const blob = await window.WWebJS.chat.downloadMedia(_serialized)
+        return {
+          data: await window.WWebJS.util.blobToBase64(blob),
+          mimetype: mimetype,
+          filename: filename,
+          filesize: size
+        }
+      }
+    }, { directPath: msg.directPath, encFilehash: msg.encFilehash, filehash: msg.filehash, mediaKey: msg.mediaKey, type: msg.type, mediaKeyTimestamp: msg.mediaKeyTimestamp, mimetype: msg.mime, filename: msg.filename, size: msg.fileSize, _serialized: msg.id._serialized })
+
+    if (!result) return undefined;
+    return Util.base64ToBuffer(result?.data)
+  }
+
+  /**
+   * 
+   * @param {*} message 
+   * @param {*} filename 
+   * @returns 
+   */
+  async downloadAndSaveMediaMessage(message, filename) {
+    if (!message.isMedia) return
+
+    filename = filename ? filename : Util.getRandom(extension(message?.mime || message._data.mimetype || message.mimetype))
+    const buffer = await this.downloadMediaMessage(message)
+    const filePath = join(__dirname, "..", "..", "temp", filename)
+    await Fs.promises.writeFile(filePath, buffer)
+
+    return filePath
+  }
 
   /**
    * Searches for messages
