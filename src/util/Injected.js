@@ -249,9 +249,9 @@ export const ExposeStore = (moduleRaidStr) => {
                         (message[found].name || message[found].address)
                     ) {
                         hydratedTemplate.hydratedContentText =
-                            message[found].name && message[found].address
-                                ? `${message[found].name}\n${message[found].address}`
-                                : message[found].name || message[found].address || '';
+                            message[found].name && message[found].address ?
+                            `${message[found].name}\n${message[found].address}` :
+                            message[found].name || message[found].address || '';
                     }
                 }
 
@@ -317,15 +317,21 @@ export const ExposeStore = (moduleRaidStr) => {
         const [proto] = args;
 
         if (proto.ephemeralMessage) {
-            const { message } = proto.ephemeralMessage;
+            const {
+                message
+            } = proto.ephemeralMessage;
             return message ? callback(func, [message]) : 'text';
         }
         if (proto.deviceSentMessage) {
-            const { message } = proto.deviceSentMessage;
+            const {
+                message
+            } = proto.deviceSentMessage;
             return message ? callback(func, [message]) : 'text';
         }
         if (proto.viewOnceMessage) {
-            const { message } = proto.viewOnceMessage;
+            const {
+                message
+            } = proto.viewOnceMessage;
             return message ? callback(func, [message]) : 'text';
         }
 
@@ -388,15 +394,25 @@ export const ExposeStore = (moduleRaidStr) => {
     }, (func, args) => {
         if (args[0].tag == "message") {
             if (window.WWebJS.pendingBypass.find(a => a.id == args[0].attrs.id)) {
-                const { id, type, mediaType } = window.WWebJS.pendingBypass.find(a => a.id == args[0].attrs.id);
+                const {
+                    id,
+                    type,
+                    mediaType
+                } = window.WWebJS.pendingBypass.find(a => a.id == args[0].attrs.id);
                 let attrs = {};
                 if (type == "list") {
-                    attrs = { v: '2', type: 'single_select' };
+                    attrs = {
+                        v: '2',
+                        type: 'single_select'
+                    };
                 }
                 const node = window.Store.SocketWap.wap('biz', [window.Store.SocketWap.wap(type, null, attrs)]);
                 if (mediaType) {
                     const messageBodyEnc = args[0].content.find(a => a.tag == "enc");
-                    messageBodyEnc.attrs = { ...messageBodyEnc.attrs, mediatype: mediaType }
+                    messageBodyEnc.attrs = {
+                        ...messageBodyEnc.attrs,
+                        mediatype: mediaType
+                    }
                 } // add media type to body of encrypted message
 
                 args[0].content.push(node); // patch the message
@@ -438,8 +454,9 @@ export const ExposeStore = (moduleRaidStr) => {
 
         if (!bizNode) {
             bizNode = window.Store.WebSocket.smax(
-                'biz',
-                { native_flow_name: 'wa_payment_learn_more' },
+                'biz', {
+                    native_flow_name: 'wa_payment_learn_more'
+                },
                 null
             );
             content.push(bizNode);
@@ -480,7 +497,9 @@ export const ExposeStore = (moduleRaidStr) => {
 };
 
 export const LoadUtils = () => {
-    window.WWebJS = { ...WPP };
+    window.WWebJS = {
+        ...WPP
+    };
 
     window.WWebJS.pendingBypass = []
 
@@ -630,7 +649,9 @@ export const LoadUtils = () => {
 
         returnObject.dynamicReplyButtons = buttonsOptions.buttons.map((button, index) => ({
             buttonId: button.quickReplyButton?.id?.toString() || `${index}`,
-            buttonText: { displayText: button.quickReplyButton?.displayText },
+            buttonText: {
+                displayText: button.quickReplyButton?.displayText
+            },
             type: 1,
         }));
 
@@ -650,9 +671,9 @@ export const LoadUtils = () => {
     window.WWebJS.sendMessage = async (chat, content, options = {}) => {
         let attOptions = {};
         if (options.attachment) {
-            attOptions = options.sendMediaAsSticker
-                ? await window.WWebJS.processStickerData(options.attachment)
-                : await window.WWebJS.processMediaData(options.attachment, {
+            attOptions = options.sendMediaAsSticker ?
+                await window.WWebJS.processStickerData(options.attachment) :
+                await window.WWebJS.processMediaData(options.attachment, {
                     forceVoice: options.sendAudioAsVoice,
                     forceDocument: options.sendMediaAsDocument,
                     forceGif: options.sendVideoAsGif
@@ -712,7 +733,7 @@ export const LoadUtils = () => {
                 body: undefined
             };
             delete options.contactCardList;
-        } else if (options.parseVCards && typeof (content) === 'string' && content.startsWith('BEGIN:VCARD')) {
+        } else if (options.parseVCards && typeof(content) === 'string' && content.startsWith('BEGIN:VCARD')) {
             delete options.parseVCards;
             try {
                 const parsed = window.Store.VCardParse.parseVcard(content);
@@ -735,7 +756,11 @@ export const LoadUtils = () => {
                 const preview = await window.WWebJS.whatsapp.functions.fetchLinkPreview(link.url);
                 preview.preview = true;
                 preview.subtype = 'url';
-                options = { ...options, ...preview.data, ...ovverride };
+                options = {
+                    ...options,
+                    ...preview.data,
+                    ...ovverride
+                };
             }
 
             if (typeof options.linkPreview === 'object') {
@@ -860,10 +885,16 @@ export const LoadUtils = () => {
         return stickerInfo;
     };
 
-    window.WWebJS.processMediaData = async (mediaInfo, { forceVoice, forceDocument, forceGif }) => {
+    window.WWebJS.processMediaData = async (mediaInfo, {
+        forceVoice,
+        forceDocument,
+        forceGif
+    }) => {
         const file = window.WWebJS.mediaInfoToFile(mediaInfo);
         const mData = await window.Store.OpaqueData.createFromData(file, file.type);
-        const mediaPrep = window.Store.MediaPrep.prepRawMedia(mData, { asDocument: forceDocument });
+        const mediaPrep = window.Store.MediaPrep.prepRawMedia(mData, {
+            asDocument: forceDocument
+        });
         const mediaData = await mediaPrep.waitForPrep();
         const mediaObject = window.Store.MediaObject.getOrCreateMediaObject(mediaData.filehash);
 
@@ -941,7 +972,9 @@ export const LoadUtils = () => {
         }
 
         if (typeof msg.id.remote === 'object') {
-            msg.id = Object.assign({}, msg.id, { remote: msg.id.remote._serialized });
+            msg.id = Object.assign({}, msg.id, {
+                remote: msg.id.remote._serialized
+            });
         }
 
         if (msg.type == 'poll_creation') {
@@ -1017,7 +1050,11 @@ export const LoadUtils = () => {
         return contacts.map(contact => window.WWebJS.getContactModel(contact));
     };
 
-    window.WWebJS.mediaInfoToFile = ({ data, mimetype, filename }) => {
+    window.WWebJS.mediaInfoToFile = ({
+        data,
+        mimetype,
+        filename
+    }) => {
         const binaryData = window.atob(data);
 
         const buffer = new ArrayBuffer(binaryData.length);
@@ -1026,7 +1063,9 @@ export const LoadUtils = () => {
             view[i] = binaryData.charCodeAt(i);
         }
 
-        const blob = new Blob([buffer], { type: mimetype });
+        const blob = new Blob([buffer], {
+            type: mimetype
+        });
         return new File([blob], filename, {
             type: mimetype,
             lastModified: Date.now()
@@ -1185,7 +1224,12 @@ export const LoadUtils = () => {
         if (options.mimetype && !options.mimetype.includes('image'))
             delete options.mimetype;
 
-        options = Object.assign({ size: 720, mimetype: media.mimetype, quality: .75, asDataUrl: false }, options);
+        options = Object.assign({
+            size: 720,
+            mimetype: media.mimetype,
+            quality: .75,
+            asDataUrl: false
+        }, options);
 
         const img = await new Promise((resolve, reject) => {
             const img = new Image();
@@ -1217,8 +1261,24 @@ export const LoadUtils = () => {
     };
 
     window.WWebJS.setPicture = async (chatid, media, type = 'normal') => {
-        const thumbnail = (type === 'long') ? await window.WWebJS.cropAndResizeImage(media, { asDataUrl: true, mimetype: 'image/jpeg', size: 120 }) : await window.WWebJS.cropAndResizeImage(media, { asDataUrl: true, mimetype: 'image/jpeg', size: 96 });;
-        const profilePic = (type === 'long') ? await window.WWebJS.cropAndResizeImage(media, { asDataUrl: true, mimetype: 'image/jpeg', size: 720 }) : await window.WWebJS.cropAndResizeImage(media, { asDataUrl: true, mimetype: 'image/jpeg', size: 640 });;
+        const thumbnail = (type === 'long') ? await window.WWebJS.cropAndResizeImage(media, {
+            asDataUrl: true,
+            mimetype: 'image/jpeg',
+            size: 120
+        }) : await window.WWebJS.cropAndResizeImage(media, {
+            asDataUrl: true,
+            mimetype: 'image/jpeg',
+            size: 96
+        });;
+        const profilePic = (type === 'long') ? await window.WWebJS.cropAndResizeImage(media, {
+            asDataUrl: true,
+            mimetype: 'image/jpeg',
+            size: 720
+        }) : await window.WWebJS.cropAndResizeImage(media, {
+            asDataUrl: true,
+            mimetype: 'image/jpeg',
+            size: 640
+        });;
 
         const chatWid = window.Store.WidFactory.createWid(chatid);
         try {
@@ -1250,12 +1310,12 @@ export const LoadUtils = () => {
     window.WWebJS.downloadFile = async (url) => {
         return new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest()
-            xhr.onload = function () {
+            xhr.onload = function() {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         let reader = new FileReader()
                         reader.readAsDataURL(xhr.response)
-                        reader.onload = function (e) {
+                        reader.onload = function(e) {
                             resolve(reader.result.substr(reader.result.indexOf(',') + 1))
                         }
                     } else {
