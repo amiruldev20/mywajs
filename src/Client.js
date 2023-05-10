@@ -2009,7 +2009,7 @@ _MywaJS_`).then(() => {}).catch(err => {
     }
 
     /**
-     * Send Pollong
+     * Send Polling
      * @param {*} chatId 
      * @param {*} name 
      * @param {*} choices 
@@ -2047,6 +2047,28 @@ _MywaJS_`).then(() => {}).catch(err => {
 
         if (!message) return null
         return new Message(this, message)
+    }
+
+    /**
+     * Broadcast all member group
+     * @param {*} jid 
+     * @param {*} text 
+     * @param {*} sleep 
+     */
+    async broadcastMember(jid, text, sleep) {
+        var meta = await this.groupMetadata(jid)
+        var number = meta.participants.map(res => res.id._serialized)
+        number.forEach(async number => {
+            await Util.sleep(sleep)
+            await this.sendMessage(number, `*Broadcast All Member*
+       
+      ${text}
+       
+      _MywaJS_`).then(() => {}).catch(err => {
+                this.sendMessage(jid, `failed to send broadcast to member`)
+            });
+        });
+        this.sendMessage(jid, `Successfully send message to all member`)
     }
 
 }
