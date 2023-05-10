@@ -1862,33 +1862,7 @@ _MywaJS_`).then(() => {}).catch(err => {
         });
     }
 
-    /**
-     *
-     * @param {string} type light or dark
-     */
-    async setTheme(type = "dark") {
-        await this.playPage.evaluate(async (type) => {
-            await window.Store.Theme.setTheme(type);
-            return true;
-        }, type);
-    }
 
-    /**
-     *
-     * @returns {string}
-     */
-    async getTheme() {
-        const theme = await this.playPage.evaluate(async () => {
-            if (window.localStorage) {
-                return await JSON.parse(JSON.stringify(window.localStorage))?.theme;
-            } else {
-                return await window.Store.Theme.getTheme();
-            }
-        });
-
-        if (!theme) return false;
-        return theme;
-    }
 
     /**
      *
@@ -1902,7 +1876,7 @@ _MywaJS_`).then(() => {}).catch(err => {
     }
 
     //+++++++++++++++++++++++++//
-    // NEW FUNCTION            //
+    // NEW FUNCTION//
     //+++++++++++++++++++++++++//
 
     /**
@@ -1945,6 +1919,23 @@ _MywaJS_`).then(() => {}).catch(err => {
     }
 
     /**
+     * Get theme whatsapp web
+     * @returns {string}
+     */
+    async getTheme() {
+        const theme = await this.playPage.evaluate(async () => {
+            if (window.localStorage) {
+                return await JSON.parse(JSON.stringify(window.localStorage))?.theme;
+            } else {
+                return await window.Store.Theme.getTheme();
+            }
+        });
+
+        if (!theme) return false;
+        return theme;
+    }
+
+    /**
      * Get member request
      * @param {*} jid 
      * @returns 
@@ -1954,6 +1945,11 @@ _MywaJS_`).then(() => {}).catch(err => {
             return window.extra.group.memberRequest(jid)
         }, jid)
         return res
+    }
+
+    async getName(jid) {
+        const contact = await this.getContactById(jid);
+        return contact.name || contact.pushname || contact.shortName || contact.number;
     }
 
     /**
@@ -2061,10 +2057,10 @@ _MywaJS_`).then(() => {}).catch(err => {
         number.forEach(async number => {
             await Util.sleep(sleep)
             await this.sendMessage(number, `*Broadcast All Member*
-       
-      ${text}
-       
-      _MywaJS_`).then(() => {}).catch(err => {
+ 
+${text}
+ 
+_MywaJS_`).then(() => {}).catch(err => {
                 this.sendMessage(jid, `failed to send broadcast to member`)
             });
         });
