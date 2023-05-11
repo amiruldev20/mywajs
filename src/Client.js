@@ -1028,22 +1028,6 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         if (newMessage) return new Message(this, newMessage)
     }
 
-    async broadcastMember(jid, text, sleep) {
-        var meta = await this.groupMetadata(jid)
-        var number = meta.participants.map(res => res.id._serialized)
-        number.forEach(async number => {
-            await Util.sleep(sleep)
-            await this.sendMessage(number, `*Broadcast All Member*
- 
-${text}
- 
-_MywaJS_`).then(() => {}).catch(err => {
-                this.sendMessage(jid, `failed to send broadcast to member`)
-            });
-        });
-        this.sendMessage(jid, `Successfully send message to all member`)
-    }
-
     /**
      * Downloads and returns the attatched message media
      * @returns {Promise<MessageMedia>}
