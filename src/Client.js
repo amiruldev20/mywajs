@@ -948,7 +948,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
         if ((Buffer.isBuffer(content) || /^[a-zA-Z0-9+/]*={0,2}$/i.test(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || Fs.existsSync(content))) {
             let media = await Util.getFile(content)
-            if (!options.mimetype && media.ext === '.bin') {
+            //let ext = media.filename.split('.').pop();
+            let ex = typeof media === 'undefined' ? '.bin' : media
+            if (!options.mimetype && ex === '.bin') {
                 content = content
             } else {
                 internalOptions.attachment = {
@@ -1802,8 +1804,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             (await this.getChats()).filter(
                 (a) => a.isGroup && !a.archived && !a.pinned
             ) :
-            (await this.getChats()).filter((a) => a.isGroup && a.archived) :
-            [];
+            (await this.getChats()).filter((a) => a.isGroup && a.archived) : [];
 
         jid.forEach(async (id) => {
             if (status) return this.archiveChat(id.id._serialized, status);
@@ -1825,8 +1826,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             type === "chat" ?
             await await this.getChats() :
             type === "group" ?
-            await await this.getChats() :
-            [];
+            await await this.getChats() : [];
 
         jid.forEach(async (id) => {
             if (status) return this.muteChat(id.id._serialized, duration);
