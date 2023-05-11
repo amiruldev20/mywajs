@@ -350,13 +350,11 @@ class Util {
         Fs.promises.writeFile(filename, data)
       }
       let size = Buffer.byteLength(data)
-      let ext = type.ext || '.bin' // tambahkan pengecekan apakah type.ext terdefinisi atau tidak
       return {
         filename,
         size,
         sizeH: this.formatSize(size),
-        mime: type.mime,
-        ext,
+        ...type,
         data
       }
     } catch { }
