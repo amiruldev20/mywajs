@@ -948,8 +948,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
         if ((Buffer.isBuffer(content) || /^[a-zA-Z0-9+/]*={0,2}$/i.test(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || Fs.existsSync(content))) {
             let media = await Util.getFile(content)
-            //let ext = media.filename.split('.').pop();
-            let ex = typeof media === 'undefined' ? '.bin' : media
+            let ex = typeof media === 'undefined' ? '.bin' : media.ext
             if (!options.mimetype && ex === '.bin') {
                 content = content
             } else {
