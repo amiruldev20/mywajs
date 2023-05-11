@@ -186,8 +186,52 @@ example send sticker with quoted<br>
 <pre class="snippet"><code class="html">client.sendMessage(jid, 'url.com', { asSticker: true, quoted: message})
 </code></pre>
 
+<h2 id="code-blocks"><span>Parse Mention<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>parse text to add mentions</p>
+<code>PARAM:</code>
+<br>
+- text
+<pre class="snippet"><code class="html">client.parseMention(text)
+</code></pre>
+
+<h2 id="code-blocks"><span>Get Theme<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>get theme whatsapp web</p>
+<br>
+<pre class="snippet"><code class="html">client.getTheme()
+</code></pre>
+
+<h2 id="code-blocks"><span>Get Name<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>get name whatsapp</p>
+<code>PARAM:</code>
+<br>
+- jid
+<pre class="snippet"><code class="html">client.getName(jid)
+</code></pre>
+
+<h2 id="code-blocks"><span>Send Polling<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>send polling whatsapp</p>
+<code>PARAM:</code>
+<br>
+- jid<br>
+- caption<br>
+- text vote<br>
+- single (boolean)<br>
+<pre class="snippet"><code class="html">client.sendPoll(jid, caption, ['text1', 'text2'], { single: true})
+</code>
+</pre>
+
+<h2 id="code-blocks"><span>Broadcast All Member Groups<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>send broadcast to all member groups</p>
+<code>PARAM:</code>
+<br>
+- jid<br>
+- text<br>
+- sleep<br>
+<pre class="snippet"><code class="html">client.broadcastMember(jid, text, sleep)
+</code></pre>
+
 <h2 id="code-blocks"><span>Read Message<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
-<p>membaca pesan</p>
+<p>read this message</p>
 <code>PARAM:</code>
 <br>
 - chatId<br>
