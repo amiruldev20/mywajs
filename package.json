@@ -1,6 +1,6 @@
 {
   "name": "mywajs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Pengembangan ulang whatsapp-web.js",
   "main": "./index.js",
   "type": "module",
