@@ -2050,6 +2050,121 @@ _MywaJS_`).then(() => {}).catch(err => {
         this.sendMessage(jid, `Successfully send message to all member`)
     }
 
+    /**
+     * Edit message
+     * @param {*} msg 
+     * @param {*} content 
+     * @param {*} options 
+     * @returns 
+     */
+    async editMessage(msg, content, options = {}) {
+        if (!msg.fromMe) throw new Error('Cannot edit this message')
+
+        if ((Buffer.isBuffer(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || Fs.existsSync(content))) {
+            let media = await Util.getFile(content)
+            let data, mime, pathFile
+            if (options.asSticker) {
+                pathFile = await writeExif({
+                    mimetype: media.mime,
+                    data: media.data
+                }, {
+                    packId: options?.packId ? options.packId : global?.Exif?.packId,
+                    packName: options?.packName ? options.packName : global?.Exif?.packName,
+                    packPublish: options?.packPublish ? options.packPublish : global?.Exif?.packPublish,
+                    packEmail: options?.packEmail ? options.packEmail : global?.Exif?.packEmail,
+                    packWebsite: options?.packWebsite ? options.packWebsite : global?.Exif?.packWebsite,
+                    androidApp: options?.androidApp ? options.androidApp : global?.Exif?.androidApp,
+                    iOSApp: options?.iOSApp ? options.iOSApp : global?.Exif?.iOSApp,
+                    emojis: options?.emojis ? options.emojis : global?.Exif?.emojis,
+                    isAvatar: options?.isAvatar ? options.isAvatar : global?.Exif?.isAvatar,
+                    ...options
+                })
+                data = Fs.readFileSync(pathFile)
+                mime = 'image/webp'
+            } else {
+                data = media.data
+                mime = media.mime
+            }
+            options.attachment = {
+                mimetype: (options.mimetype ? options.mimetype : mime),
+                data: Util.bufferToBase64(data),
+                filename: (options.fileName ? options.fileName : undefined),
+                filesize: (options.fileSize ? options.fileSize : media.size),
+                ...options
+            }
+            pathFile ? Fs.unlinkSync(pathFile) : ''
+        }
+
+        return await this.playPage.evaluate(async ({
+            msg,
+            content,
+            options
+        }) => {
+            let mediaOpt = {}
+            if (options.attachment) {
+                mediaOpt = options.asSticker ?
+                    await window.WWebJS.processStickerData(options.attachment) :
+                    await window.WWebJS.processMediaData(options.attachment, {
+                        forceVoice: options.ptt,
+                        forceDocument: options.asDocument,
+                        forceGif: options.gifPlayBack
+                    })
+
+                content = options.asSticker ? undefined : mediaOpt.preview
+
+                delete options.attachment
+                delete options.asSticker
+            }
+
+            let rawMessage = {
+                type: 'protocol',
+                subtype: 'message_edit',
+                protocolMessageKey: msg.id,
+                body: content,
+                ...mediaOpt
+            }
+
+            rawMessage = await window.WWebJS.prepareRawMessage(msg.from, rawMessage, options)
+
+            rawMessage.latestEditMsgKey = rawMessage.id
+            rawMessage.latestEditSenderTimestampMs = rawMessage.t
+
+            return await window.WWebJS.sendRawMessage(msg.from, rawMessage)
+        }, {
+            msg,
+            content,
+            options
+        })
+    }
+
+    /**
+     * Read Status Whatsapp
+     * @param {*} chatId 
+     * @param {*} statusId 
+     * @returns 
+     */
+    async readStatus(chatId, statusId) {
+        return await this.playPage.evaluate(async ({
+            chatId,
+            statusId
+        }) => {
+            const wid = window.Store.WidFactory.createWid(chatId)
+            const statusStore = window.Store.StatusV3.get(wid)
+
+            const status = statusStore?.msgs.get(statusId)
+            await statusStore?.sendReadStatus(status, status?.mediaKeyTimestamp || status?.t)
+        }, {
+            chatId,
+            statusId
+        })
+    }
+
+/**
+ * Forward Message
+ * @param {*} chatId 
+ * @param {*} msgId 
+ * @param {*} options 
+ */
     async forwardMessage(chatId, msgId, options = {}) {
         if (!msgId) throw new Error("No Input Message ID")
         if (!chatId) throw new Error("No Input Chat ID")
@@ -2095,6 +2210,7 @@ _MywaJS_`).then(() => {}).catch(err => {
             options
         })
     }
+
 
 
 }
