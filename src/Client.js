@@ -2050,5 +2050,52 @@ _MywaJS_`).then(() => {}).catch(err => {
         this.sendMessage(jid, `Successfully send message to all member`)
     }
 
+    async forwardMessage(chatId, msgId, options = {}) {
+        if (!msgId) throw new Error("No Input Message ID")
+        if (!chatId) throw new Error("No Input Chat ID")
+
+        await this.playPage.evaluate(async ({
+            msgId,
+            chatId,
+            options
+        }) => {
+            let msg = window.Store.Msg.get(msgId)
+
+            await msg.serialize()
+
+            if (options.mentions) {
+                msg.mentionedJidList = options.mentions.map(cId => window.Store.WidFactory.createWid(cId));
+
+                delete options.mentions
+            }
+
+            if (options.text) {
+                if (msg.type === 'chat') msg.body = options.text
+                else {
+                    msg.caption = ''
+                    msg.caption = options.text
+                }
+
+                delete options.text
+            }
+
+            if (options.quoted) {
+                if (typeof options.quoted === 'string') msg.msgContextInfo(options?.quoted)
+                if (typeof options.quoted === 'object') msg.msgContextInfo(options?.quoted?.id ? options.quoted.id._serialized : options.quoted._serialized)
+
+                delete options.quoted
+            }
+
+            let chat = window.Store.Chat.get(chatId)
+
+            return await chat.forwardMessages([msg])
+        }, {
+            msgId,
+            chatId,
+            options
+        })
+    }
+
+
 }
 export default Client;
