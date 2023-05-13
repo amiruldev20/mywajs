@@ -1706,7 +1706,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      */
     async setProfilePicture(media, type = "normal") {
         const success = await this.playPage.evaluate(
-            (chatid, media, type) => {
+            ({chatid, media, type}) => {
                 return window.WWebJS.setPicture(chatid, media, type);
             },
             this.info.wid._serialized,

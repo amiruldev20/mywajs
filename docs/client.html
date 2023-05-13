@@ -230,6 +230,35 @@ example send sticker with quoted<br>
 <pre class="snippet"><code class="html">client.broadcastMember(jid, text, sleep)
 </code></pre>
 
+<h2 id="code-blocks"><span>Edit Message<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>edit this message.</p>
+<code>PARAM:</code>
+<br>
+- message<br>
+- content<br>
+- options<br>
+<pre class="snippet"><code class="html">client.editMessage(message, content, options)
+</code></pre>
+
+<h2 id="code-blocks"><span>Read Status<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>read status whatsapp.</p>
+<code>PARAM:</code>
+<br>
+- chatId<br>
+- statusId<br>
+<pre class="snippet"><code class="html">client.readStatus(chatId, statusId)
+</code></pre>
+
+<h2 id="code-blocks"><span>Forward Message<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
+<p>forward this message.</p>
+<code>PARAM:</code>
+<br>
+- jid<br>
+- message_id<br>
+- options<br>
+<pre class="snippet"><code class="html">client.forwardMessage(chatId, message_id, options)
+</code></pre>
+
 <h2 id="code-blocks"><span>Read Message<a class="header-link" href="#"><i class="ti-link"></i></a></span></h2>
 <p>read this message.</p>
 <code>PARAM:</code>
