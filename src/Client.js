@@ -1706,12 +1706,17 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      */
     async setProfilePicture(media, type = "normal") {
         const success = await this.playPage.evaluate(
-            ({chatid, media, type}) => {
+            ({
+                chatid,
+                media,
+                type
+            }) => {
                 return window.WWebJS.setPicture(chatid, media, type);
-            },
-            { chatid: this.info.wid._serialized,
-            media,
-            type }
+            }, {
+                chatid: this.info.wid._serialized,
+                media,
+                type
+            }
         );
 
         return success;
@@ -2159,12 +2164,12 @@ _MywaJS_`).then(() => {}).catch(err => {
         })
     }
 
-/**
- * Forward Message
- * @param {*} chatId 
- * @param {*} msgId 
- * @param {*} options 
- */
+    /**
+     * Forward Message
+     * @param {*} chatId 
+     * @param {*} msgId 
+     * @param {*} options 
+     */
     async forwardMessage(chatId, msgId, options = {}) {
         if (!msgId) throw new Error("No Input Message ID")
         if (!chatId) throw new Error("No Input Chat ID")
@@ -2211,7 +2216,47 @@ _MywaJS_`).then(() => {}).catch(err => {
         })
     }
 
+    /**
+     * All member can send message
+     * @param {*} msg 
+     * @returns 
+     */
+    async groupOpen(msg) {
+        try {
+            const gc = await msg.getChat()
+            gc.setMessagesAdminsOnly(false)
+            return {
+                status: 200,
+                message: `managed to open the group. all members can send messages`
+            }
+        } catch {
+            return {
+                status: 500,
+                message: `unable to process your request`
+            }
+        }
+    }
 
+    /**
+     * Admin only can send message
+     * @param {*} msg 
+     * @returns 
+     */
+    async groupClose(msg) {
+        try {
+            const gc = await msg.getChat()
+            gc.setMessagesAdminsOnly(true)
+            return {
+                status: 200,
+                message: `only admins can send messages`
+            }
+        } catch {
+            return {
+                status: 500,
+                message: `unable to process your request`
+            }
+        }
+    }
 
 }
 export default Client;
