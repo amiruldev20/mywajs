@@ -1,5 +1,7 @@
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#table-of-contents)
 # MYWAJS
+[COMMUNITY - CLICK HERE](https://chat.whatsapp.com/BIHE3USWr4lAnahwJTQEOX)
+
  > *NB*: ini adalah remake dari wawebjs & wjs, project ini sudah izin terlebih dahulu ke sumbernya. yang gasuka silahkan nyinyir sepuasnya 😸. cukup senyumin aja
  
  <p align="center">
