@@ -1709,9 +1709,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             ({chatid, media, type}) => {
                 return window.WWebJS.setPicture(chatid, media, type);
             },
-            this.info.wid._serialized,
+            { chatid: this.info.wid._serialized,
             media,
-            type
+            type }
         );
 
         return success;
