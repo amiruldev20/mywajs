@@ -1,14 +1,5 @@
 'use strict';
-/*
-MywaJS
-Pengembangan ulang whatsapp-web.js
-menggunakan wjs + playwright
-contact:
-email: amiruldev20@gmail.com
-ig: amirul.dev
-wa: 62851574894460 
-tq to: pedro & edgard & dika
-*/
+
 export const WhatsWebURL = 'https://web.whatsapp.com/';
 
 export const DefaultOptions = {
@@ -23,7 +14,7 @@ export const DefaultOptions = {
     takeoverTimeoutMs: 0,
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36',
     ffmpegPath: 'ffmpeg',
-    clearSessions: false
+    autoClearSession: true
 };
 
 /**

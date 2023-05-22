@@ -1,7 +1,7 @@
 'use strict';
 
-import PrivateChat from '../func/PrivateChat.js';
-import GroupChat from '../func/GroupChat.js'; 
+import PrivateChat from '../structures/PrivateChat.js';
+import GroupChat from '../structures/GroupChat.js';
 
 class ChatFactory {
     static create(client, data) {

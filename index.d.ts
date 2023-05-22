@@ -1,18 +1,9 @@
-/*
-MywaJS
-Pengembangan ulang whatsapp-web.js
-menggunakan wjs + playwright
-contact:
-email: amiruldev20@gmail.com
-ig: amirul.dev
-wa: 62851574894460 
-tq to: pedro & edgard & dika
-*/
-import { EventEmitter } from 'events'
-import { RequestInit } from 'node-fetch'
-import * as playwright from 'playwright'
 
-declare namespace MywaJS {
+import { EventEmitter } from 'events'
+import { AxiosInterceptorOptions } from 'axios'
+import * as playwright from 'playwright-chromium'
+
+declare namespace WAWebJS {
 
     export class Client extends EventEmitter {
         constructor(options: ClientOptions)
@@ -21,7 +12,7 @@ declare namespace MywaJS {
         public info: ClientInfo
 
         /** playwright page running WhatsApp Web */
-        playPage?: playwright.Page
+        pupPage?: playwright.Page
 
         /** playwright browser running WhatsApp Web */
         pupBrowser?: playwright.Browser
@@ -30,7 +21,7 @@ declare namespace MywaJS {
         acceptInvite(inviteCode: string): Promise<string>
 
         /** Accepts a private invitation to join a group (v4 invite) */
-        acceptGroupV4Invite: (inviteV4: InviteV4Data) => Promise<{ status: number }>
+        acceptGroupV4Invite: (inviteV4: InviteV4Data) => Promise<{status: number}>
 
         /**Returns an object with information about the invite code's group */
         getInviteInfo(inviteCode: string): Promise<object>
@@ -71,7 +62,7 @@ declare namespace MywaJS {
 
         /** Get all current contact instances */
         getContacts(): Promise<Contact[]>
-
+        
         /** Get the country code of a WhatsApp ID. (154185968@c.us) => (1) */
         getCountryCode(number: string): Promise<string>
 
@@ -117,10 +108,10 @@ declare namespace MywaJS {
          */
         muteChat(chatId: string, unmuteDate?: number): Promise<void>
 
-        /**
-        * @param chatId ID of the chat that will be muted
-        * @param ephemeralDuration number, in the form of seconds for the duration of the temporary message in chat
-        */
+         /**
+         * @param chatId ID of the chat that will be muted
+         * @param ephemeralDuration number, in the form of seconds for the duration of the temporary message in chat
+         */
         setEphemeral(chatId: string, ephemeralDuration?: number): Promise<void>
 
         /** Force reset of connection state for the client */
@@ -128,7 +119,7 @@ declare namespace MywaJS {
 
         /** Send a message to a specific chatId */
         sendMessage(chatId: string, content: MessageContent, options?: MessageSendOptions): Promise<Message>
-
+        
         /** Searches for messages */
         searchMessages(query: string, options?: { chatId?: string, page?: number, limit?: number }): Promise<Message[]>
 
@@ -155,7 +146,7 @@ declare namespace MywaJS {
          * @param displayName New display name
          */
         setDisplayName(displayName: string): Promise<boolean>
-
+                
         /** Changes and returns the archive state of the Chat */
         unarchiveChat(chatId: string): Promise<boolean>
 
@@ -167,6 +158,48 @@ declare namespace MywaJS {
 
         /** Deletes the current user's profile picture */
         deleteProfilePicture(): Promise<boolean>
+
+        /** Send a call to someone */
+        sendCall(chatId: string, options: CallOptions): Promise<Boolean>
+
+        /** Hang up the call in progress */
+        endCall(chatId: string): Promise<Boolean>
+
+        /** Receive a phone call from someone */
+        acceptCall(chatId: string): Promise<Boolean>
+
+        /** Displays last seen status (Conditions : No Privacy) */
+        getLastSeen(chatId: string): Promise<string|Boolean|Number>
+
+        /** Archives or No all selected conversation, 'chat' or 'group' except pinned ones */
+        archiveAll(type: string, status: boolean): Promise<Boolean>
+
+        /** Mute or No all selected conversation, 'chat' or 'group' except pinned ones */
+        muteAll(type: string, status: boolean): Promise<Boolean>
+
+        /** Displays connection status */
+        getHost(): Promise<Object>
+
+        /** Change the display theme 'light' or 'dark' */
+        setTheme(type: string): Promise<void>
+
+        /** get display theme */
+        getTheme(): Promise<string>
+        
+        /** Delete all messages */
+        clearMessage(chatId: string): Promise<Boolean>
+		
+	/** fetch stories user */
+	getStories(chatId: string): Promise<Array>
+	
+	/** get contact by name */
+	getContactByName(name: string): Promise<void>
+		
+	/** send polling message */
+        sendPoll(chatId: string, name: string, choices: Array, options: MessageSendOptions): Promise<Message>
+		
+	/** read status user */
+	sendReadStatus(chatId: string, msgId: string): Promise<void>
 
         /** Generic event */
         on(event: string, listener: (...args: any) => void): this
@@ -229,11 +262,11 @@ declare namespace MywaJS {
             /** Message with more information about the event. */
             message: Message,
             /** Old user's id. */
-            oldId: String,
+            oldId : String,
             /** New user's id. */
-            newId: String,
+            newId : String,
             /** Indicates if a contact or a group participant changed their phone number. */
-            isContact: Boolean
+            isContact : Boolean
         ) => void): this
 
         /** Emitted when media has been uploaded for a message sent by the client */
@@ -255,7 +288,7 @@ declare namespace MywaJS {
             /** The new ACK value */
             ack: MessageAck
         ) => void): this
-
+        
         /** Emitted when a chat unread count changes */
         on(event: 'unread_count', listener: (
             /** The chat that was affected */
@@ -377,11 +410,11 @@ declare namespace MywaJS {
         authTimeoutMs?: number,
         /** playwright launch options. View docs here: https://github.com/microsoft/playwright/ */
         playwright?: playwright.LaunchOptions & playwright.ConnectOptions
-        /** Determines how to save and restore sessions. Will use LegacySessionAuth if options.session is set. Otherwise, NoAuth will be used. */
+		/** Determines how to save and restore sessions. Will use LegacySessionAuth if options.session is set. Otherwise, NoAuth will be used. */
         authStrategy?: AuthStrategy,
         /** How many times should the qrcode be refreshed before giving up
-         * @default 0 (disabled) */
-        qrMaxRetries?: number,
+		 * @default 0 (disabled) */
+		qrMaxRetries?: number,
         /** 
          * @deprecated This option should be set directly on the LegacySessionAuth
          */
@@ -403,7 +436,7 @@ declare namespace MywaJS {
          * @default 'ffmpeg' */
         ffmpegPath?: string
         /** Object with proxy autentication requirements @default: undefined */
-        proxyAuthentication?: { username: string, password: string } | undefined
+        proxyAuthentication?: {username: string, password: string} | undefined
     }
 
     /**
@@ -414,8 +447,8 @@ declare namespace MywaJS {
         beforeBrowserInitialized: () => Promise<void>;
         afterBrowserInitialized: () => Promise<void>;
         onAuthenticationNeeded: () => Promise<{
-            failed?: boolean;
-            restart?: boolean;
+            failed?: boolean; 
+            restart?: boolean; 
             failureEventPayload?: any
         }>;
         getAuthEventPayload: () => Promise<any>;
@@ -429,7 +462,7 @@ declare namespace MywaJS {
      * No session restoring functionality
      * Will need to authenticate via QR code every time
      */
-    export class NoAuth extends AuthStrategy { }
+    export class NoAuth extends AuthStrategy {}
 
     /**
      * Local directory-based authentication
@@ -442,11 +475,11 @@ declare namespace MywaJS {
             dataPath?: string
         })
     }
-
+    
     /**
      * Remote-based authentication
      */
-    export class RemoteAuth extends AuthStrategy {
+     export class RemoteAuth extends AuthStrategy {
         public clientId?: string;
         public dataPath?: string;
         constructor(options?: {
@@ -471,7 +504,7 @@ declare namespace MywaJS {
      * Legacy session auth strategy
      * Not compatible with multi-device accounts.
      */
-    export class LegacySessionAuth extends AuthStrategy {
+     export class LegacySessionAuth extends AuthStrategy {
         constructor(options?: {
             session?: ClientSession,
             restartOnAuthFail?: boolean,
@@ -535,7 +568,7 @@ declare namespace MywaJS {
         reply: (content: MessageContent, options?: MessageSendOptions) => Promise<Message>,
 
     }
-
+    
     /** whatsapp web url */
     export const WhatsWebURL: string
 
@@ -660,11 +693,11 @@ declare namespace MywaJS {
     }
 
     export type MessageInfo = {
-        delivery: Array<{ id: ContactId, t: number }>,
+        delivery: Array<{id: ContactId, t: number}>,
         deliveryRemaining: number,
-        played: Array<{ id: ContactId, t: number }>,
+        played: Array<{id: ContactId, t: number}>,
         playedRemaining: number,
-        read: Array<{ id: ContactId, t: number }>,
+        read: Array<{id: ContactId, t: number}>,
         readRemaining: number
     }
 
@@ -795,7 +828,7 @@ declare namespace MywaJS {
         */
         reload: () => Promise<Message>,
         /** Accept the Group V4 Invite in message */
-        acceptGroupV4Invite: () => Promise<{ status: number }>,
+        acceptGroupV4Invite: () => Promise<{status: number}>,
         /** Deletes the message from the chat */
         delete: (everyone?: boolean) => Promise<void>,
         /** Downloads and returns the attached message media */
@@ -853,7 +886,7 @@ declare namespace MywaJS {
         description?: string | null
         latitude: string
         longitude: string
-
+        
         constructor(latitude: number, longitude: number, description?: string)
     }
 
@@ -907,7 +940,7 @@ declare namespace MywaJS {
         client?: Client
         filename?: string
         unsafeMime?: boolean
-        reqOptions?: RequestInit
+        reqOptions?: AxiosInterceptorOptions
     }
 
     /** Media attached to a message */
@@ -1014,13 +1047,13 @@ declare namespace MywaJS {
          * Will return null when getting chat for currently logged in user.
          */
         getChat: () => Promise<Chat>,
-
+        
         /** Returns the contact's countrycode, (1541859685@c.us) => (1) */
         getCountryCode(): Promise<string>,
-
+        
         /** Returns the contact's formatted phone number, (12345678901@c.us) => (+1 (234) 5678-901) */
         getFormattedNumber(): Promise<string>,
-
+        
         /** Blocks this contact from WhatsApp */
         block: () => Promise<boolean>,
 
@@ -1029,7 +1062,7 @@ declare namespace MywaJS {
 
         /** Gets the Contact's current "about" info. Returns null if you don't have permission to read their status.  */
         getAbout: () => Promise<string | null>,
-
+        
         /** Gets the Contact's common groups with you. Returns empty array if you don't have any common group. */
         getCommonGroups: () => Promise<ChatId[]>
 
@@ -1181,11 +1214,11 @@ declare namespace MywaJS {
     }
 
     /** Promotes or demotes participants by IDs to regular users or admins */
-    export type ChangeParticipantsPermissions =
+    export type ChangeParticipantsPermissions = 
         (participantIds: Array<string>) => Promise<{ status: number }>
 
     /** Adds or removes a list of participants by ID to the group */
-    export type ChangeGroupParticipants =
+    export type ChangeGroupParticipants = 
         (participantIds: Array<string>) => Promise<{
             status: number;
             participants: Array<{
@@ -1193,9 +1226,9 @@ declare namespace MywaJS {
                     code: number
                 }
             }>
-        } & {
-            [key: string]: number;
-        }>
+         } & {
+             [key: string]: number;
+         }>
 
     export interface GroupChat extends Chat {
         /** Group owner */
@@ -1356,19 +1389,19 @@ declare namespace MywaJS {
         /** Payment currency */
         paymentCurrency: string,
         /** Payment ammount  */
-        paymentAmount1000: number,
+        paymentAmount1000 : number,
         /** Payment receiver */
-        paymentMessageReceiverJid: object,
+        paymentMessageReceiverJid : object,
         /** Payment transaction timestamp */
-        paymentTransactionTimestamp: number,
+        paymentTransactionTimestamp : number,
         /** Payment paymentStatus */
-        paymentStatus: number,
+        paymentStatus : number,
         /** Integer that represents the payment Text */
-        paymentTxnStatus: number,
+        paymentTxnStatus  : number,
         /** The note sent with the payment */
-        paymentNote: string;
+        paymentNote  : string;
     }
-
+    
     /**
      * Represents a Call on WhatsApp
      *
@@ -1416,17 +1449,17 @@ declare namespace MywaJS {
         sections: Array<any>
         title?: string | null
         footer?: string | null
-
+        
         constructor(body: string, buttonText: string, sections: Array<any>, title?: string | null, footer?: string | null)
     }
-
+    
     /** Message type Buttons */
     export class Buttons {
         body: string | MessageMedia
-        buttons: Array<{ buttonId: string; buttonText: { displayText: string }; type: number }>
+        buttons: Array<{ buttonId: string; buttonText: {displayText: string}; type: number }>
         title?: string | null
         footer?: string | null
-
+        
         constructor(body: string, buttons: Array<{ id?: string; body: string }>, title?: string | null, footer?: string | null)
     }
 
@@ -1442,13 +1475,17 @@ declare namespace MywaJS {
         senderId: string
         ack?: number
     }
-
+    
     export type ReactionList = {
         id: string,
         aggregateEmoji: string,
         hasReactionByMe: boolean,
         senders: Array<Reaction>
     }
+
+    export interface CallOptions {
+        isGroup: boolean
+    }
 }
 
-export = MywaJS
+export = WAWebJS
