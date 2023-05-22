@@ -2,7 +2,7 @@
 # MYWAJS
 [COMMUNITY - CLICK HERE](https://chat.whatsapp.com/BIHE3USWr4lAnahwJTQEOX)
 
- > *NB*: ini adalah remake dari wawebjs & wjs, project ini sudah izin terlebih dahulu ke sumbernya. yang gasuka silahkan nyinyir sepuasnya 😸. cukup senyumin aja
+ > *NB*: this is whatsapp-web.js repo added with wajs wpp. Previously, permits had been granted to WPP
  
  <p align="center">
 <img width="" src="https://img.shields.io/github/repo-size/amiruldev20/mywajs?color=green&label=Repo%20Size&style=for-the-badge&logo=appveyor">
@@ -23,13 +23,11 @@
 | Replit | ✅ |
 | VPS | ✅ |
 | Panel Ptero | ✅ |
-| Dpanel (Goldpanel) | ✅ |
-| Termux | ⏳ |
+| Dpanel (Goldpanel / Goldserver) | ✅ |
+| Termux | ✅ |
 | Rdp | ✅ |
-| Google Shell | ✅ |
-| Gitpod | ✅ |
 
-## Konfigurasi + Auto Clear Sesi
+## client configuration
 ```
  const mywa = new Client({
         authStrategy: new mywajs.LocalAuth(),
