@@ -27,40 +27,6 @@
 | Termux | ✅ |
 | Rdp | ✅ |
 
-## client configuration
-```
- const mywa = new Client({
-        authStrategy: new mywajs.LocalAuth(),
-        playwright: {
-            headless: true,
-            devtools: false,
-            args: [
-                '--aggressive-tab-discard',
-                '--disable-accelerated-2d-canvas',
-                '--disable-application-cache',
-                '--disable-cache',
-                '--disable-dev-shm-usage',
-                '--disable-gpu',
-                '--disable-offline-load-stale-cache',
-                '--disable-setuid-sandbox',
-                '--disable-setuid-sandbox',
-                '--disk-cache-size=0',
-                '--ignore-certificate-errors',
-                '--no-first-run',
-                '--no-sandbox',
-                '--no-zygote',
-                //'--enable-features=WebContentsForceDark:inversion_method/cielab_based/image_behavior/selective/text_lightness_threshold/150/background_lightness_threshold/205'
-            ],
-            bypassCSP: true,
-        },
-        markOnlineAvailable: true,
-        qrMaxRetries: 2,
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
-        takeoverTimeoutMs: 'Infinity',
-        clearSessions: true // work jika nama folder session default dari mywajs (.mywajs_auth/session)
-    })
-```
-
  ##  FUNCTION EXTRA
 | Feature  | Status |
 | ------------- | ------------- |
