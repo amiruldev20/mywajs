@@ -52,7 +52,7 @@ class Product extends Base {
 
     async getData() {
         if (this.data === null) {
-            let result = await this.client.pupPage.evaluate((productId) => {
+            let result = await this.client.playPage.evaluate((productId) => {
                 return window.WWebJS.getProductMetadata(productId);
             }, this.id);
             if (!result) {

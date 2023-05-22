@@ -61,7 +61,7 @@ class ClientInfo extends Base {
      * @deprecated
      */
     async getBatteryStatus() {
-        return await this.client.pupPage.evaluate(() => {
+        return await this.client.playPage.evaluate(() => {
             const { battery, plugged } = window.Store.Conn;
             return { battery, plugged };
         });

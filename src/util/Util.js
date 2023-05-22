@@ -53,7 +53,7 @@ class Util {
      * 
      * @returns {Promise<MessageMedia>} media in webp format
      */
-    static async formatImageToWebpSticker(media, pupPage) {
+    static async formatImageToWebpSticker(media, playPage) {
         if (!media.mimetype.includes('image'))
             throw new Error('media is not a image');
 
@@ -61,7 +61,7 @@ class Util {
             return media;
         }
 
-        return pupPage.evaluate((media) => {
+        return playPage.evaluate((media) => {
             return window.WWebJS.toStickerData(media);
         }, media);
     }
@@ -145,13 +145,13 @@ class Util {
      * 
      * @returns {Promise<MessageMedia>} media in webp format
      */
-    static async formatToWebpSticker(media, metadata, pupPage) {
+    static async formatToWebpSticker(media, metadata, playPage) {
         let webpMedia;
 
         if (media.mimetype.includes('webp'))
             webpMedia = { mimetype: 'image/webp', data: media.data, filename: undefined }
         else if (media.mimetype.includes('image'))
-            webpMedia = await this.formatImageToWebpSticker(media, pupPage);
+            webpMedia = await this.formatImageToWebpSticker(media, playPage);
         else if (media.mimetype.includes('video'))
             webpMedia = await this.formatVideoToWebpSticker(media);
         else
