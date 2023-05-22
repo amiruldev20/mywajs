@@ -468,13 +468,7 @@ export const LoadUtils = () => {
         const meUser = window.Store.User.getMaybeMeUser()
         const isMD = window.Store.MDBackend
 
-        const newMsgId = new window.Store.MsgKey({
-            from: meUser,
-            to: chat.id,
-            id: window.Store.MsgKey.newId(),
-            participant: isMD && chat.id.isGroup() || chat.id.isStatusV3() ? meUser : undefined,
-            selfDir: 'out'
-        })
+        const newMsgId = await window.WWebJS.chat.generateMessageID(chat)
 
         message = {
             t: parseInt(new Date().getTime() / 1000),
@@ -749,17 +743,8 @@ export const LoadUtils = () => {
             delete listOptions.list.footer;
         }
 
-        const meUser = window.Store.User.getMaybeMeUser();
-        const isMD = window.Store.MDBackend;
-        const newId = await window.Store.MsgKey.newId();
-        
-        const newMsgId = new window.Store.MsgKey({
-            from: meUser,
-            to: chat.id,
-            id: newId,
-            participant: isMD && chat.id.isGroup() ? meUser : undefined,
-            selfDir: 'out',
-        });
+        const meUser = window.Store.User.getMaybeMeUser()
+        const newMsgId = await window.WWebJS.chat.generateMessageID(chat)
 
         const extraOptions = options.extraOptions || {};
         delete options.extraOptions;
@@ -1253,32 +1238,5 @@ export const LoadUtils = () => {
         }
         await chat.presence.subscribe();
         return chat.presence.attributes.isOnline;
-    }
-    
-    window.extra = {
-        group: {
-            memberRequest: async (jid) => {
-                return WPP.group.getMembershipRequests(jid)
-            },
-            approve: async (jid, participant) => {
-                return WPP.group.approve(jid, participant)
-            },
-            reject: async (jid, memb) => {
-                return WPP.group.reject(jid, memb)
-            }
-        },
-        joinBeta: async (act) => {
-            return WPP.conn.joinWebBeta(act)
-        },
-        theme: window.mR.findModule((module) => module.setTheme && module.getTheme ? module : null),
-        status: {
-            text: async (capt, opt) => {
-                return WPP.status.sendTextStatus(capt, opt)
-            },
-            // masih belum dapat bekerja
-            image: async (base64) => {
-                return WPP.status.sendImageStatus(base64)
-            }
-        }
     }
 };
