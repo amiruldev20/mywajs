@@ -19,7 +19,7 @@ class LocalAuth extends BaseAuthStrategy {
             throw new Error('Invalid clientId. Only alphanumeric characters, underscores and hyphens are allowed.');
         }
 
-        this.dataPath = path.resolve(dataPath || './.wwebjs_auth/');
+        this.dataPath = path.resolve(dataPath || './.mywajs_auth/');
         this.clientId = clientId;
     }
 
@@ -46,7 +46,7 @@ class LocalAuth extends BaseAuthStrategy {
         if (this.userDataDir) {
             try {
                 return (fs.rmSync ? fs.rmSync : fs.rmdirSync).call(this, this.userDataDir, { recursive: true });
-            } catch {}
+            } catch { }
         }
     }
 
