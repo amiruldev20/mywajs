@@ -1,7 +1,7 @@
 
 import { EventEmitter } from 'events'
 import { AxiosInterceptorOptions } from 'axios'
-import * as playwright from 'playwright'
+import * as playwright from 'playwright-chromium'
 
 declare namespace WAWebJS {
 
@@ -12,7 +12,7 @@ declare namespace WAWebJS {
         public info: ClientInfo
 
         /** playwright page running WhatsApp Web */
-        playPage?: playwright.Page
+        mPage?: playwright.Page
 
         /** playwright browser running WhatsApp Web */
         pupBrowser?: playwright.Browser
