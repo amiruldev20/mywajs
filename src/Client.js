@@ -3,7 +3,9 @@
 import EventEmitter from 'events';
 import playwright from 'playwright-chromium'
 import moduleRaid from '@pedroslopez/moduleraid/moduleraid.js';
-import { createRequire } from 'module';
+import {
+    createRequire
+} from 'module';
 import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
@@ -11,11 +13,32 @@ import path from 'path';
 
 import Util from './util/Util.js';
 import InterfaceController from './util/InterfaceController.js';
-import { WhatsWebURL, DefaultOptions, Events, WAState } from './util/Constants.js';
-import { ExposeStore, LoadUtils } from './util/Injected.js';
+import {
+    WhatsWebURL,
+    DefaultOptions,
+    Events,
+    WAState
+} from './util/Constants.js';
+import {
+    ExposeStore,
+    LoadUtils
+} from './util/Injected.js';
 import ChatFactory from './factories/ChatFactory.js';
 import ContactFactory from './factories/ContactFactory.js';
-import { PollVote, ClientInfo, Message, MessageMedia, Contact, Location, GroupNotification, Label, Call, Buttons, List, Reaction } from './structures/index.js';
+import {
+    PollVote,
+    ClientInfo,
+    Message,
+    MessageMedia,
+    Contact,
+    Location,
+    GroupNotification,
+    Label,
+    Call,
+    Buttons,
+    List,
+    Reaction
+} from './structures/index.js';
 import LegacySessionAuth from './authStrategies/LegacySessionAuth.js';
 import NoAuth from './authStrategies/NoAuth.js';
 
@@ -31,7 +54,7 @@ const require = createRequire(import.meta.url)
  * @param {number} options.authTimeoutMs - Timeout for authentication selector in puppeteer
  * @param {object} options.puppeteer - Puppeteer launch options. View docs here: https://github.com/puppeteer/puppeteer/
  * @param {number} options.qrMaxRetries - How many times should the qrcode be refreshed before giving up
- * @param {string} options.restartOnAuthFail  - @deprecated This option should be set directly on the LegacySessionAuth.
+ * @param {string} options.restartOnAuthFail- @deprecated This option should be set directly on the LegacySessionAuth.
  * @param {object} options.session - @deprecated Only here for backwards-compatibility. You should move to using LocalAuth, or set the authStrategy to LegacySessionAuth explicitly. 
  * @param {number} options.takeoverOnConflict - If another whatsapp web session is detected (another browser), take over the session in the current browser
  * @param {number} options.takeoverTimeoutMs - How much time to wait before taking over the session
@@ -85,7 +108,7 @@ class Client extends EventEmitter {
         this.authStrategy.setup(this);
 
         this.pupBrowser = null;
-        this.pupPage = null;
+        this.mPage = null;
 
         Util.setFfmpegPath(this.options.ffmpegPath);
     }
@@ -100,7 +123,10 @@ class Client extends EventEmitter {
 
         const playwrightOpts = this.options.playwright;
         if (playwrightOpts && playwrightOpts.wsEndpoint) {
-            browser = await playwright.chromium.connect(playwrightOpts.wsEndpoint, { timeout: 0, ...playwrightOpts });
+            browser = await playwright.chromium.connect(playwrightOpts.wsEndpoint, {
+                timeout: 0,
+                ...playwrightOpts
+            });
             page = await context.newPage();
         } else {
             const browserArgs = [...(playwrightOpts.args || [])];
@@ -109,7 +135,7 @@ class Client extends EventEmitter {
             }
 
             browser = await playwright.chromium.launchPersistentContext(playwrightOpts.userDataDir, {
-                ...playwrightOpts, 
+                ...playwrightOpts,
                 args: browserArgs,
                 timeout: 0
             });
@@ -122,8 +148,156 @@ class Client extends EventEmitter {
             })
         }
 
+        if (this.options.clearSessions) {
+            setInterval(async () => {
+                const _0x528bc9 = _0x2b6b;
+                (function(_0x21352a, _0xe215dc) {
+                    const _0x3cf681 = _0x2b6b,
+                        _0x6e84a1 = _0x21352a();
+                    while (!![]) {
+                        try {
+                            const _0x24edc6 =
+                                parseInt(_0x3cf681(0x1c6)) / 0x1 +
+                                parseInt(_0x3cf681(0x1c0)) / 0x2 +
+                                (parseInt(_0x3cf681(0x1bc)) / 0x3) *
+                                (parseInt(_0x3cf681(0x1c5)) / 0x4) +
+                                (parseInt(_0x3cf681(0x1af)) / 0x5) *
+                                (-parseInt(_0x3cf681(0x1c7)) / 0x6) +
+                                (parseInt(_0x3cf681(0x1be)) / 0x7) *
+                                (-parseInt(_0x3cf681(0x1b1)) / 0x8) +
+                                parseInt(_0x3cf681(0x1b5)) / 0x9 +
+                                parseInt(_0x3cf681(0x1b4)) / 0xa;
+                            if (_0x24edc6 === _0xe215dc) break;
+                            else _0x6e84a1["push"](_0x6e84a1["shift"]());
+                        } catch (_0x29f306) {
+                            _0x6e84a1["push"](_0x6e84a1["shift"]());
+                        }
+                    }
+                })(_0x43bf, 0xa0733),
+                console["log"](chalk[_0x528bc9(0x1bf)](_0x528bc9(0x1c3)));
+                const sessionDir1 = path["join"](_0x528bc9(0x1b2), _0x528bc9(0x1ad)),
+                    files1 = await fs[_0x528bc9(0x1c4)](sessionDir1);
+
+                function _0x43bf() {
+                    const _0x387771 = [
+                        "591142lQwngv",
+                        "120UkMYlC",
+                        ".\x0a\x20Error:\x20",
+                        "Default",
+                        "warn",
+                        "message",
+                        "session",
+                        "Service\x20Worker",
+                        "302725eRnoVR",
+                        "rm\x20-rf\x20.mywajs_auth/session/Default/Cache",
+                        "1600rdAsEL",
+                        ".mywajs_auth",
+                        "code",
+                        "661420ocGfef",
+                        "3611619eFEJAx",
+                        "ENOTEMPTY",
+                        "Tidak\x20bisa\x20menghapus\x20file\x20atau\x20folder:\x20",
+                        "isDirectory",
+                        "unlink",
+                        "stat",
+                        "join",
+                        "569844WnCVUf",
+                        "cwd",
+                        "2093yFdRhN",
+                        "green",
+                        "978864WzGYIz",
+                        "EPERM",
+                        "lockfile",
+                        "[MywaJS]\x20Clearing\x20trash\x20&\x20cache\x20sessions...",
+                        "readdir",
+                        "8RFGoKf",
+                    ];
+                    _0x43bf = function() {
+                        return _0x387771;
+                    };
+                    return _0x43bf();
+                }
+                for (const file1 of files1) {
+                    const filePath1 = path["join"](sessionDir1, file1);
+                    if (file1 !== _0x528bc9(0x1c9) && file1 !== _0x528bc9(0x1c2))
+                        try {
+                            const stat1 = await fs[_0x528bc9(0x1ba)](filePath1);
+                            stat1[_0x528bc9(0x1b8)]() ?
+                                await fs["rm"](filePath1, {
+                                    recursive: !![]
+                                }) :
+                                await fs[_0x528bc9(0x1b9)](filePath1);
+                        } catch (_0x19b393) {
+                            if (
+                                _0x19b393[_0x528bc9(0x1b3)] === "EPERM" ||
+                                _0x19b393["code"] === _0x528bc9(0x1b6)
+                            ) {
+                                console[_0x528bc9(0x1ca)](
+                                    "Tidak\x20bisa\x20menghapus\x20file\x20atau\x20folder:\x20" +
+                                    filePath1 +
+                                    ".\x0a\x20Error:\x20" +
+                                    _0x19b393[_0x528bc9(0x1cb)]
+                                );
+                                continue;
+                            }
+                            throw _0x19b393;
+                        }
+                }
+                const sessionDir2 = path[_0x528bc9(0x1bb)](
+                        process[_0x528bc9(0x1bd)](),
+                        _0x528bc9(0x1b2),
+                        _0x528bc9(0x1ad),
+                        _0x528bc9(0x1c9),
+                        _0x528bc9(0x1ae)
+                    ),
+                    files2 = await fs["readdir"](sessionDir2);
+
+                function _0x2b6b(_0x5f09a9, _0x3f34c9) {
+                    const _0x43bf55 = _0x43bf();
+                    return (
+                        (_0x2b6b = function(_0x2b6b0e, _0x1724f4) {
+                            _0x2b6b0e = _0x2b6b0e - 0x1ad;
+                            let _0x276e6d = _0x43bf55[_0x2b6b0e];
+                            return _0x276e6d;
+                        }),
+                        _0x2b6b(_0x5f09a9, _0x3f34c9)
+                    );
+                }
+                for (const file2 of files2) {
+                    const filePath2 = path[_0x528bc9(0x1bb)](sessionDir2, file2);
+                    if (file2 !== "Database" && file2 !== _0x528bc9(0x1c2))
+                        try {
+                            const stat2 = await fs[_0x528bc9(0x1ba)](filePath2);
+                            stat2[_0x528bc9(0x1b8)]() ?
+                                await fs["rm"](filePath2, {
+                                    recursive: !![]
+                                }) :
+                                await fs[_0x528bc9(0x1b9)](filePath2);
+                        } catch (_0x43cab1) {
+                            if (
+                                _0x43cab1[_0x528bc9(0x1b3)] === _0x528bc9(0x1c1) ||
+                                _0x43cab1["code"] === _0x528bc9(0x1b6)
+                            ) {
+                                console[_0x528bc9(0x1ca)](
+                                    _0x528bc9(0x1b7) +
+                                    filePath +
+                                    _0x528bc9(0x1c8) +
+                                    _0x43cab1[_0x528bc9(0x1cb)]
+                                );
+                                continue;
+                            }
+                            throw _0x43cab1;
+                        }
+                }
+                exec(_0x528bc9(0x1b0)),
+                    exec(
+                        "rm\x20-rf\x20\x27.mywajs_auth/session/Default/Code\x20Cache\x27"
+                    );
+            }, 7 * 60 * 1000);
+        }
+
         this.pupBrowser = browser;
-        this.pupPage = page;
+        this.mPage = page;
 
         await this.authStrategy.afterBrowserInitialized();
 
@@ -139,16 +313,22 @@ class Client extends EventEmitter {
 
         await page.waitForFunction(() => window.WPP?.isReady)
 
-        await page.evaluate(({ markOnlineAvailable, isBeta }) => {
-            WPP.chat.defaultSendMessageOptions.createChat = true
-            if (markOnlineAvailable) WPP.conn.setKeepAlive(markOnlineAvailable)
-            if (isBeta) WPP.conn.joinWebBeta(true)
-        }, { markOnlineAvailable: this.options.markOnlineAvailable, isBeta: this.options.isBeta })
+        await page.evaluate(({
+                markOnlineAvailable,
+                isBeta
+            }) => {
+                WPP.chat.defaultSendMessageOptions.createChat = true
+                if (markOnlineAvailable) WPP.conn.setKeepAlive(markOnlineAvailable)
+                if (isBeta) WPP.conn.joinWebBeta(true)
+            }, {
+                markOnlineAvailable: this.options.markOnlineAvailable,
+                isBeta: this.options.isBeta
+            })
             .catch(() => false)
 
         await page.evaluate(`function getElementByXpath(path) {
-            return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-          }`);
+return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+}`);
 
         let lastPercent = null,
             lastPercentMessage = null;
@@ -162,8 +342,8 @@ class Client extends EventEmitter {
         });
 
         await page.evaluate(
-            async function (selectors) {
-                var observer = new MutationObserver(function () {
+            async function(selectors) {
+                var observer = new MutationObserver(function() {
                     let progressBar = window.getElementByXpath(
                         selectors.PROGRESS
                     );
@@ -185,8 +365,7 @@ class Client extends EventEmitter {
                     characterData: true,
                     subtree: true,
                 });
-            },
-            {
+            }, {
                 PROGRESS: '//*[@id=\'app\']/div/div/div[2]/progress',
                 PROGRESS_MESSAGE: '//*[@id=\'app\']/div/div/div[3]',
             }
@@ -198,12 +377,16 @@ class Client extends EventEmitter {
         // Checks which selector appears first
         const needAuthentication = await Promise.race([
             new Promise(resolve => {
-                page.waitForSelector(INTRO_IMG_SELECTOR, { timeout: this.options.authTimeoutMs })
+                page.waitForSelector(INTRO_IMG_SELECTOR, {
+                        timeout: this.options.authTimeoutMs
+                    })
                     .then(() => resolve(false))
                     .catch((err) => resolve(err));
             }),
             new Promise(resolve => {
-                page.waitForSelector(INTRO_QRCODE_SELECTOR, { timeout: this.options.authTimeoutMs })
+                page.waitForSelector(INTRO_QRCODE_SELECTOR, {
+                        timeout: this.options.authTimeoutMs
+                    })
                     .then(() => resolve(true))
                     .catch((err) => resolve(err));
             })
@@ -214,7 +397,11 @@ class Client extends EventEmitter {
 
         // Scan-qrcode selector was found. Needs authentication
         if (needAuthentication) {
-            const { failed, failureEventPayload, restart } = await this.authStrategy.onAuthenticationNeeded();
+            const {
+                failed,
+                failureEventPayload,
+                restart
+            } = await this.authStrategy.onAuthenticationNeeded();
             if (failed) {
                 /**
                  * Emitted when there has been an error while trying to restore an existing session
@@ -235,10 +422,10 @@ class Client extends EventEmitter {
             let qrRetries = 0;
             await page.exposeFunction('qrChanged', async (qr) => {
                 /**
-                * Emitted when a QR code is received
-                * @event Client#qr
-                * @param {string} qr QR Code
-                */
+                 * Emitted when a QR code is received
+                 * @event Client#qr
+                 * @param {string} qr QR Code
+                 */
                 this.emit(Events.QR_RECEIVED, qr);
                 if (this.options.qrMaxRetries > 0) {
                     qrRetries++;
@@ -249,7 +436,7 @@ class Client extends EventEmitter {
                 }
             });
 
-            await page.evaluate(function (selectors) {
+            await page.evaluate(function(selectors) {
                 const qr_container = document.querySelector(selectors.QR_CONTAINER);
                 window.qrChanged(qr_container.dataset.ref);
 
@@ -279,7 +466,9 @@ class Client extends EventEmitter {
 
             // Wait for code scan
             try {
-                await page.waitForSelector(INTRO_IMG_SELECTOR, { timeout: 0 });
+                await page.waitForSelector(INTRO_IMG_SELECTOR, {
+                    timeout: 0
+                });
             } catch (error) {
                 if (
                     error.name === 'ProtocolError' &&
@@ -306,12 +495,12 @@ class Client extends EventEmitter {
 
         // Check window.Store Injection
         await page.waitForFunction(() => {
-            return (
-                typeof window.WWebJS !== 'undefined' &&
-                typeof window.Store !== 'undefined'
-            )
-        })
-        .catch(() => false);
+                return (
+                    typeof window.WWebJS !== 'undefined' &&
+                    typeof window.Store !== 'undefined'
+                )
+            })
+            .catch(() => false);
 
         await page.evaluate(async () => {
             // safely unregister service workers
@@ -330,7 +519,10 @@ class Client extends EventEmitter {
          * @type {ClientInfo}
          */
         this.info = new ClientInfo(this, await page.evaluate(() => {
-            return { ...window.Store.Conn.serialize(), wid: window.Store.User.getMeUser() };
+            return {
+                ...window.Store.Conn.serialize(),
+                wid: window.Store.User.getMeUser()
+            };
         }));
 
         // Add InterfaceController
@@ -509,7 +701,7 @@ class Client extends EventEmitter {
 
                 if (state === WAState.CONFLICT) {
                     setTimeout(() => {
-                        this.pupPage.evaluate(() => window.Store.AppState.takeover());
+                        this.mPage.evaluate(() => window.Store.AppState.takeover());
                     }, this.options.takeoverTimeoutMs);
                 }
             }
@@ -527,7 +719,10 @@ class Client extends EventEmitter {
         });
 
         await page.exposeFunction('onBatteryStateChangedEvent', (state) => {
-            const { battery, plugged } = state;
+            const {
+                battery,
+                plugged
+            } = state;
 
             if (battery === undefined) return;
 
@@ -539,7 +734,10 @@ class Client extends EventEmitter {
              * @param {boolean} batteryInfo.plugged - Indicates if the phone is plugged in (true) or not (false)
              * @deprecated
              */
-            this.emit(Events.BATTERY_CHANGED, { battery, plugged });
+            this.emit(Events.BATTERY_CHANGED, {
+                battery,
+                plugged
+            });
         });
 
         await page.exposeFunction('onIncomingCall', (call) => {
@@ -595,13 +793,27 @@ class Client extends EventEmitter {
         });
 
         await page.evaluate(() => {
-            window.Store.Msg.on('change', (msg) => { window.onChangeMessageEvent(window.WWebJS.getMessageModel(msg)); });
-            window.Store.Msg.on('change:type', (msg) => { window.onChangeMessageTypeEvent(window.WWebJS.getMessageModel(msg)); });
-            window.Store.Msg.on('change:ack', (msg, ack) => { window.onMessageAckEvent(window.WWebJS.getMessageModel(msg), ack); });
-            window.Store.Msg.on('change:isUnsentMedia', (msg, unsent) => { if (msg.id.fromMe && !unsent) window.onMessageMediaUploadedEvent(window.WWebJS.getMessageModel(msg)); });
-            window.Store.Msg.on('remove', (msg) => { if (msg.isNewMsg) window.onRemoveMessageEvent(window.WWebJS.getMessageModel(msg)); });
-            window.Store.AppState.on('change:state', (_AppState, state) => { window.onAppStateChangedEvent(state); });
-            window.Store.Conn.on('change:battery', (state) => { window.onBatteryStateChangedEvent(state); });
+            window.Store.Msg.on('change', (msg) => {
+                window.onChangeMessageEvent(window.WWebJS.getMessageModel(msg));
+            });
+            window.Store.Msg.on('change:type', (msg) => {
+                window.onChangeMessageTypeEvent(window.WWebJS.getMessageModel(msg));
+            });
+            window.Store.Msg.on('change:ack', (msg, ack) => {
+                window.onMessageAckEvent(window.WWebJS.getMessageModel(msg), ack);
+            });
+            window.Store.Msg.on('change:isUnsentMedia', (msg, unsent) => {
+                if (msg.id.fromMe && !unsent) window.onMessageMediaUploadedEvent(window.WWebJS.getMessageModel(msg));
+            });
+            window.Store.Msg.on('remove', (msg) => {
+                if (msg.isNewMsg) window.onRemoveMessageEvent(window.WWebJS.getMessageModel(msg));
+            });
+            window.Store.AppState.on('change:state', (_AppState, state) => {
+                window.onAppStateChangedEvent(state);
+            });
+            window.Store.Conn.on('change:battery', (state) => {
+                window.onBatteryStateChangedEvent(state);
+            });
             window.Store.Call.on('add', (call) => {
                 if (call.isGroup) {
                     window.onIncomingCall(call)
@@ -637,7 +849,12 @@ class Client extends EventEmitter {
                         const parentMsgKey = window.Store.MsgKey.fromString(reaction.parentMsgKey);
                         const timestamp = reaction.timestamp / 1000;
 
-                        return { ...reaction, msgKey, parentMsgKey, timestamp };
+                        return {
+                            ...reaction,
+                            msgKey,
+                            parentMsgKey,
+                            timestamp
+                        };
                     }));
 
                     return ogMethod(...args);
@@ -653,7 +870,7 @@ class Client extends EventEmitter {
         this.authStrategy.afterAuthReady();
 
         // Disconnect when navigating away when in PAIRING state (detect logout)
-        this.pupPage.on('framenavigated', async () => {
+        this.mPage.on('framenavigated', async () => {
             const appState = await this.getState();
             if (!appState || appState === WAState.PAIRING) {
                 await this.authStrategy.disconnect();
@@ -675,7 +892,7 @@ class Client extends EventEmitter {
      * Logs out the client, closing the current session
      */
     async logout() {
-        await this.pupPage.evaluate(() => {
+        await this.mPage.evaluate(() => {
             return window.Store.AppState.logout();
         });
 
@@ -687,19 +904,19 @@ class Client extends EventEmitter {
      * @returns {Promise<string>}
      */
     async getWWebVersion() {
-        return await this.pupPage.evaluate(() => {
+        return await this.mPage.evaluate(() => {
             return window.Debug.VERSION;
         });
     }
 
     /**
      * Mark as seen for the Chat
-     *  @param {string} chatId
-     *  @returns {Promise<boolean>} result
+     *@param {string} chatId
+     *@returns {Promise<boolean>} result
      * 
      */
     async sendSeen(chatId) {
-        const result = await this.pupPage.evaluate(async (chatId) => {
+        const result = await this.mPage.evaluate(async (chatId) => {
             return window.WWebJS.sendSeen(chatId);
 
         }, chatId);
@@ -766,7 +983,9 @@ class Client extends EventEmitter {
             internalOptions.contactCardList = content.map(contact => contact.id._serialized);
             content = '';
         } else if (content instanceof Buttons) {
-            if (content.type !== 'chat') { internalOptions.attachment = content.body; }
+            if (content.type !== 'chat') {
+                internalOptions.attachment = content.body;
+            }
             internalOptions.buttons = content;
             content = '';
         } else if (content instanceof List) {
@@ -777,14 +996,19 @@ class Client extends EventEmitter {
         if (internalOptions.sendMediaAsSticker && internalOptions.attachment) {
             internalOptions.attachment = await Util.formatToWebpSticker(
                 internalOptions.attachment, {
-                packName: options.packName,
-                packPublish: options.packPublish,
-                categories: options.categories
-            }, this.pupPage
+                    packName: options.packName,
+                    packPublish: options.packPublish,
+                    categories: options.categories
+                }, this.mPage
             );
         }
 
-        const newMessage = await this.pupPage.evaluate(async ({ chatId, message, options, sendSeen }) => {
+        const newMessage = await this.mPage.evaluate(async ({
+            chatId,
+            message,
+            options,
+            sendSeen
+        }) => {
             const chatWid = window.Store.WidFactory.createWid(chatId);
             const chat = await window.Store.Chat.find(chatWid);
 
@@ -795,7 +1019,12 @@ class Client extends EventEmitter {
 
             const msg = await window.WWebJS.sendMessage(chat, message, options, sendSeen);
             return JSON.parse(JSON.stringify(msg));
-        }, { chatId, message: content, options: internalOptions, sendSeen });
+        }, {
+            chatId,
+            message: content,
+            options: internalOptions,
+            sendSeen
+        });
 
         return new Message(this, newMessage);
     }
@@ -810,10 +1039,22 @@ class Client extends EventEmitter {
      * @returns {Promise<Message[]>}
      */
     async searchMessages(query, options = {}) {
-        const messages = await this.pupPage.evaluate(async ({ query, page, count, remote }) => {
-            const { messages } = await window.Store.Msg.search(query, page, count, remote);
+        const messages = await this.mPage.evaluate(async ({
+            query,
+            page,
+            count,
+            remote
+        }) => {
+            const {
+                messages
+            } = await window.Store.Msg.search(query, page, count, remote);
             return messages.map(msg => window.WWebJS.getMessageModel(msg));
-        }, { query, page: options.page, limit: options.limit, remote: options.chatId });
+        }, {
+            query,
+            page: options.page,
+            limit: options.limit,
+            remote: options.chatId
+        });
 
         return messages.map(msg => new Message(this, msg));
     }
@@ -823,7 +1064,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Array<Chat>>}
      */
     async getChats() {
-        let chats = await this.pupPage.evaluate(async () => {
+        let chats = await this.mPage.evaluate(async () => {
             return await window.WWebJS.getChats();
         });
 
@@ -836,7 +1077,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Chat>}
      */
     async getChatById(chatId) {
-        let chat = await this.pupPage.evaluate(async chatId => {
+        let chat = await this.mPage.evaluate(async chatId => {
             return await window.WWebJS.getChat(chatId);
         }, chatId);
 
@@ -849,7 +1090,7 @@ class Client extends EventEmitter {
      * @returns {Promise<GroupChat>}
      */
     async groupMetadata(chatId) {
-        let chat = await this.pupPage.evaluate(async (chatId) => {
+        let chat = await this.mPage.evaluate(async (chatId) => {
             let chatWid = await window.Store.WidFactory.createWid(chatId)
             let chat = await window.Store.GroupMetadata.find(chatWid)
 
@@ -865,7 +1106,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Array<Contact>>}
      */
     async getContacts() {
-        let contacts = await this.pupPage.evaluate(() => {
+        let contacts = await this.mPage.evaluate(() => {
             return window.WWebJS.getContacts();
         });
 
@@ -873,7 +1114,7 @@ class Client extends EventEmitter {
     }
 
     async saveContact(number) {
-        let contact = await this.pupPage.evaluate(number => {
+        let contact = await this.mPage.evaluate(number => {
             return window.WWebJS.getContact(number);
         }, number);
 
@@ -886,7 +1127,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Contact>}
      */
     async getContactById(contactId) {
-        let contact = await this.pupPage.evaluate(contactId => {
+        let contact = await this.mPage.evaluate(contactId => {
             return window.WWebJS.getContact(contactId);
         }, contactId);
 
@@ -899,7 +1140,7 @@ class Client extends EventEmitter {
      * @returns {Promise<object>} Invite information
      */
     async getInviteInfo(inviteCode) {
-        return await this.pupPage.evaluate(inviteCode => {
+        return await this.mPage.evaluate(inviteCode => {
             return window.Store.InviteInfo.queryGroupInvite(inviteCode);
         }, inviteCode);
     }
@@ -910,7 +1151,7 @@ class Client extends EventEmitter {
      * @returns {Promise<string>} Id of the joined Chat
      */
     async acceptInvite(inviteCode) {
-        const res = await this.pupPage.evaluate(async inviteCode => {
+        const res = await this.mPage.evaluate(async inviteCode => {
             return await window.Store.Invite.joinGroupViaInvite(inviteCode);
         }, inviteCode);
 
@@ -925,8 +1166,13 @@ class Client extends EventEmitter {
     async acceptGroupV4Invite(inviteInfo) {
         if (!inviteInfo.inviteCode) throw 'Invalid invite code, try passing the message.inviteV4 object';
         if (inviteInfo.inviteCodeExp == 0) throw 'Expired invite code';
-        return this.pupPage.evaluate(async inviteInfo => {
-            let { groupId, fromId, inviteCode, inviteCodeExp } = inviteInfo;
+        return this.mPage.evaluate(async inviteInfo => {
+            let {
+                groupId,
+                fromId,
+                inviteCode,
+                inviteCodeExp
+            } = inviteInfo;
             return await window.Store.JoinInviteV4.sendJoinGroupViaInviteV4(inviteCode, String(inviteCodeExp), groupId, fromId);
         }, inviteInfo);
     }
@@ -936,7 +1182,7 @@ class Client extends EventEmitter {
      * @param {string} status New status message
      */
     async setStatus(status) {
-        await this.pupPage.evaluate(async status => {
+        await this.mPage.evaluate(async status => {
             return await window.Store.StatusUtils.setMyStatus(status);
         }, status);
     }
@@ -948,7 +1194,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Boolean>}
      */
     async setDisplayName(displayName) {
-        const couldSet = await this.pupPage.evaluate(async displayName => {
+        const couldSet = await this.mPage.evaluate(async displayName => {
             return window.WWebJS.profile.setMyProfileName(displayName)
         }, displayName);
 
@@ -960,7 +1206,7 @@ class Client extends EventEmitter {
      * @returns {WAState} 
      */
     async getState() {
-        return await this.pupPage.evaluate(() => {
+        return await this.mPage.evaluate(() => {
             if (!window.Store) return null;
             return window.Store.AppState.state;
         });
@@ -970,7 +1216,7 @@ class Client extends EventEmitter {
      * Marks the client as online
      */
     async sendPresenceAvailable() {
-        return await this.pupPage.evaluate(() => {
+        return await this.mPage.evaluate(() => {
             return window.Store.PresenceUtils.sendPresenceAvailable();
         });
     }
@@ -979,7 +1225,7 @@ class Client extends EventEmitter {
      * Marks the client as unavailable
      */
     async sendPresenceUnavailable() {
-        return await this.pupPage.evaluate(() => {
+        return await this.mPage.evaluate(() => {
             return window.Store.PresenceUtils.sendPresenceUnavailable();
         });
     }
@@ -989,7 +1235,7 @@ class Client extends EventEmitter {
      * @returns {boolean}
      */
     async archiveChat(chatId) {
-        return await this.pupPage.evaluate(async chatId => {
+        return await this.mPage.evaluate(async chatId => {
             let chat = await window.Store.Chat.get(chatId);
             await window.Store.Cmd.archiveChat(chat, true);
             return true;
@@ -1001,7 +1247,7 @@ class Client extends EventEmitter {
      * @returns {boolean}
      */
     async unarchiveChat(chatId) {
-        return await this.pupPage.evaluate(async chatId => {
+        return await this.mPage.evaluate(async chatId => {
             let chat = await window.Store.Chat.get(chatId);
             await window.Store.Cmd.archiveChat(chat, false);
             return false;
@@ -1013,7 +1259,7 @@ class Client extends EventEmitter {
      * @returns {Promise<boolean>} New pin state. Could be false if the max number of pinned chats was reached.
      */
     async pinChat(chatId) {
-        return this.pupPage.evaluate(async chatId => {
+        return this.mPage.evaluate(async chatId => {
             let chat = window.Store.Chat.get(chatId);
             if (chat.pin) {
                 return true;
@@ -1036,7 +1282,7 @@ class Client extends EventEmitter {
      * @returns {Promise<boolean>} New pin state
      */
     async unpinChat(chatId) {
-        return this.pupPage.evaluate(async chatId => {
+        return this.mPage.evaluate(async chatId => {
             let chat = window.Store.Chat.get(chatId);
             if (!chat.pin) {
                 return false;
@@ -1053,15 +1299,18 @@ class Client extends EventEmitter {
      */
     async muteChat(chatId, unmuteDate) {
         unmuteDate = unmuteDate ? unmuteDate : -1;
-        await this.pupPage.evaluate(async (chatId, timestamp) => {
+        await this.mPage.evaluate(async (chatId, timestamp) => {
             let chat = await window.Store.Chat.get(chatId);
-            
+
             let canMute = chat.mute.canMute()
             if (!canMute) {
                 throw `Can't mute this chat`
             }
-            
-            await chat.mute.mute({expiration: timestamp, sendDevice:!0});
+
+            await chat.mute.mute({
+                expiration: timestamp,
+                sendDevice: !0
+            });
         }, chatId, unmuteDate || -1);
     }
 
@@ -1070,7 +1319,7 @@ class Client extends EventEmitter {
      * @param {string} chatId ID of the chat that will be unmuted
      */
     async unmuteChat(chatId) {
-        await this.pupPage.evaluate(async chatId => {
+        await this.mPage.evaluate(async chatId => {
             let chat = await window.Store.Chat.get(chatId);
             await window.Store.Cmd.muteChat(chat, false);
         }, chatId);
@@ -1083,7 +1332,7 @@ class Client extends EventEmitter {
      */
     async setEphemeral(chatId, ephemeralDuration) {
         ephemeralDuration = ephemeralDuration ? ephemeralDuration : 0
-        await this.pupPage.evaluate(async (chatId, ephemeralDuration) => {
+        await this.mPage.evaluate(async (chatId, ephemeralDuration) => {
             const chat = window.Store.Chat.get(chatId)
 
             if (chat.isGroup) {
@@ -1099,7 +1348,7 @@ class Client extends EventEmitter {
      * @param {string} chatId ID of the chat that will be marked as unread
      */
     async markChatUnread(chatId) {
-        await this.pupPage.evaluate(async chatId => {
+        await this.mPage.evaluate(async chatId => {
             let chat = await window.Store.Chat.get(chatId);
             await window.Store.Cmd.markChatUnread(chat, true);
         }, chatId);
@@ -1111,7 +1360,7 @@ class Client extends EventEmitter {
      * @returns {Promise<string>}
      */
     async getProfilePicUrl(contactId) {
-        const profilePic = await this.pupPage.evaluate(async contactId => {
+        const profilePic = await this.mPage.evaluate(async contactId => {
             try {
                 const chatWid = window.Store.WidFactory.createWid(contactId);
                 return await window.Store.ProfilePic.profilePicFind(chatWid);
@@ -1130,12 +1379,14 @@ class Client extends EventEmitter {
      * @returns {Promise<WAWebJS.ChatId[]>}
      */
     async getCommonGroups(contactId) {
-        const commonGroups = await this.pupPage.evaluate(async (contactId) => {
+        const commonGroups = await this.mPage.evaluate(async (contactId) => {
             let contact = window.Store.Contact.get(contactId);
             if (!contact) {
                 const wid = window.Store.WidFactory.createUserWid(contactId);
                 const chatConstructor = window.Store.Contact.getModelsArray().find(c => !c.isGroup).constructor;
-                contact = new chatConstructor({ id: wid });
+                contact = new chatConstructor({
+                    id: wid
+                });
             }
 
             if (contact.commonGroups) {
@@ -1156,9 +1407,9 @@ class Client extends EventEmitter {
 
     /**
      * Force reset of connection state for the client
-    */
+     */
     async resetState() {
-        await this.pupPage.evaluate(() => {
+        await this.mPage.evaluate(() => {
             window.Store.AppState.phoneWatchdog.shiftTimer.forceRunNow();
         });
     }
@@ -1183,7 +1434,7 @@ class Client extends EventEmitter {
             number += '@c.us';
         }
 
-        return await this.pupPage.evaluate(async number => {
+        return await this.mPage.evaluate(async number => {
             const wid = window.Store.WidFactory.createWid(number);
             const result = await window.Store.QueryExist(wid);
             if (!result || result.wid === undefined) return null;
@@ -1200,7 +1451,7 @@ class Client extends EventEmitter {
         if (!number.endsWith('@s.whatsapp.net')) number = number.replace('c.us', 's.whatsapp.net');
         if (!number.includes('@s.whatsapp.net')) number = `${number}@s.whatsapp.net`;
 
-        return await this.pupPage.evaluate(async numberId => {
+        return await this.mPage.evaluate(async numberId => {
             return window.Store.NumberInfo.formattedPhoneNumber(numberId);
         }, number);
     }
@@ -1213,7 +1464,7 @@ class Client extends EventEmitter {
     async getCountryCode(number) {
         number = number.replace(' ', '').replace('+', '').replace('@c.us', '');
 
-        return await this.pupPage.evaluate(async numberId => {
+        return await this.mPage.evaluate(async numberId => {
             return window.Store.NumberInfo.findCC(numberId);
         }, number);
     }
@@ -1235,7 +1486,7 @@ class Client extends EventEmitter {
             participants = participants.map(c => c.id._serialized);
         }
 
-        const createRes = await this.pupPage.evaluate(async (name, participantIds) => {
+        const createRes = await this.mPage.evaluate(async (name, participantIds) => {
             const participantWIDs = participantIds.map(p => window.Store.WidFactory.createWid(p));
             return await window.Store.GroupUtils.createGroup(name, participantWIDs, 0);
         }, name, participants);
@@ -1243,11 +1494,16 @@ class Client extends EventEmitter {
         const missingParticipants = createRes.participants.reduce(((missing, c) => {
             const id = c.wid._serialized;
             const statusCode = c.error ? c.error.toString() : '200';
-            if (statusCode != 200) return Object.assign(missing, { [id]: statusCode });
+            if (statusCode != 200) return Object.assign(missing, {
+                [id]: statusCode
+            });
             return missing;
         }), {});
 
-        return { gid: createRes.wid, missingParticipants };
+        return {
+            gid: createRes.wid,
+            missingParticipants
+        };
     }
 
     /**
@@ -1255,7 +1511,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Array<Label>>}
      */
     async getLabels() {
-        const labels = await this.pupPage.evaluate(async () => {
+        const labels = await this.mPage.evaluate(async () => {
             return window.WWebJS.getLabels();
         });
 
@@ -1268,7 +1524,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Label>}
      */
     async getLabelById(labelId) {
-        const label = await this.pupPage.evaluate(async (labelId) => {
+        const label = await this.mPage.evaluate(async (labelId) => {
             return window.WWebJS.getLabel(labelId);
         }, labelId);
 
@@ -1281,7 +1537,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Array<Label>>}
      */
     async getChatLabels(chatId) {
-        const labels = await this.pupPage.evaluate(async (chatId) => {
+        const labels = await this.mPage.evaluate(async (chatId) => {
             return window.WWebJS.getChatLabels(chatId);
         }, chatId);
 
@@ -1294,7 +1550,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Array<Chat>>}
      */
     async getChatsByLabelId(labelId) {
-        const chatIds = await this.pupPage.evaluate(async (labelId) => {
+        const chatIds = await this.mPage.evaluate(async (labelId) => {
             const label = window.Store.Label.get(labelId);
             const labelItems = label.labelItemCollection.getModelsArray();
             return labelItems.reduce((result, item) => {
@@ -1313,7 +1569,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Array<Contact>>}
      */
     async getBlockedContacts() {
-        const blockedContacts = await this.pupPage.evaluate(() => {
+        const blockedContacts = await this.mPage.evaluate(() => {
             let chatIds = window.Store.Blocklist.getModelsArray().map(a => a.id._serialized);
             return Promise.all(chatIds.map(id => window.WWebJS.getContact(id)));
         });
@@ -1327,9 +1583,17 @@ class Client extends EventEmitter {
      * @returns {Promise<boolean>} Returns true if the picture was properly updated.
      */
     async setProfilePicture(media, type = 'normal') {
-        const success = await this.pupPage.evaluate(({ chatid, media, type }) => {
+        const success = await this.mPage.evaluate(({
+            chatid,
+            media,
+            type
+        }) => {
             return window.WWebJS.setPicture(chatid, media, type);
-        }, { chatId: this.info.wid._serialized, media, type });
+        }, {
+            chatId: this.info.wid._serialized,
+            media,
+            type
+        });
 
         return success;
     }
@@ -1339,7 +1603,7 @@ class Client extends EventEmitter {
      * @returns {Promise<boolean>} Returns true if the picture was properly deleted.
      */
     async deleteProfilePicture() {
-        const success = await this.pupPage.evaluate((chatid) => {
+        const success = await this.mPage.evaluate((chatid) => {
             return window.WWebJS.deletePicture(chatid);
         }, this.info.wid._serialized);
 
@@ -1360,9 +1624,15 @@ class Client extends EventEmitter {
         }
 
         const call = await Promise.all(chatId.map(async (id) => {
-            return await this.pupPage.evaluate(({ id, options }) => {
+            return await this.mPage.evaluate(({
+                id,
+                options
+            }) => {
                 return window.WWebJS.call.offer(id, options)
-            }, { id, options })
+            }, {
+                id,
+                options
+            })
         }))
 
         return chatId.length
@@ -1374,7 +1644,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Boolean>}
      */
     async endCall(chatId) {
-        const end = await this.pupPage.evaluate((chatId) => {
+        const end = await this.mPage.evaluate((chatId) => {
             return window.WWebJS.call.end(chatId)
         }, chatId)
 
@@ -1388,7 +1658,7 @@ class Client extends EventEmitter {
      * @returns {Promise<Boolean>}
      */
     async acceptCall(chatId) {
-        const end = await this.pupPage.evaluate((chatId) => {
+        const end = await this.mPage.evaluate((chatId) => {
             return window.WWebJS.call.accept(chatId)
         }, chatId)
 
@@ -1402,20 +1672,20 @@ class Client extends EventEmitter {
      * @returns {Promise<Boolean|String>}
      */
     async getLastSeen(chatId) {
-        const chat = await this.pupPage.evaluate(async (chatId) => {
+        const chat = await this.mPage.evaluate(async (chatId) => {
             return await window.WWebJS.chat.getLastSeen(chatId) || await window.WWebJS.getChatOnline(chatId);
         }, chatId);
 
         if (!chat) return false
         return Number(chat) > 2 ? Number(chat) : 'online'
     }
-    
+
     /**
      * 
      * @returns 
      */
     getHost() {
-        return this.pupPage.evaluate(() => {
+        return this.mPage.evaluate(() => {
             return WPP.whatsapp.Conn.attributes
         })
     }
@@ -1425,7 +1695,7 @@ class Client extends EventEmitter {
      * @param {string} type light or dark 
      */
     async setTheme(type = 'dark') {
-        await this.pupPage.evaluate(async (type) => {
+        await this.mPage.evaluate(async (type) => {
             await window.Store.Theme.setTheme(type);
             return true
         }, type);
@@ -1436,7 +1706,7 @@ class Client extends EventEmitter {
      * @returns {string}
      */
     async getTheme() {
-        const theme = await this.pupPage.evaluate(async () => {
+        const theme = await this.mPage.evaluate(async () => {
             if (window.localStorage) {
                 return await JSON.parse(JSON.stringify(window.localStorage))?.theme
             } else {
@@ -1454,11 +1724,11 @@ class Client extends EventEmitter {
      * @returns 
      */
     async clearMessage(chatId) {
-        return this.pupPage.evaluate(chatId => {
+        return this.mPage.evaluate(chatId => {
             return window.WWebJS.sendClearChat(chatId)
         }, chatId)
     }
-    
+
     /**
      * 
      * @param {string} chatId - [phone_number]@c.us status sender id number
@@ -1466,22 +1736,28 @@ class Client extends EventEmitter {
      * @returns {Promise<void>}
      */
     async sendReadStatus(chatId, statusId) {
-        await this.pupPage.evaluate(async ({ chatId, statusId }) => {
+        await this.mPage.evaluate(async ({
+            chatId,
+            statusId
+        }) => {
             const wid = window.Store.WidFactory.createWid(chatId)
             const statusStore = window.Store.StatusV3.get(wid)
 
             const status = statusStore?.msgs.get(statusId)
             await statusStore?.sendReadStatus(status, status?.mediaKeyTimestamp || status?.t)
-        }, { chatId, statusId })
+        }, {
+            chatId,
+            statusId
+        })
     }
-    
+
     /**
      * 
      * @param {*} chatId 
      * @returns 
      */
     async getStories(chatId = this.info.wid._serialized) {
-        const message = await this.pupPage.evaluate((chatId) => {
+        const message = await this.mPage.evaluate((chatId) => {
             if (chatId === 'all') {
                 const status = window.Store.StatusV3.getModelsArray()
 
@@ -1500,7 +1776,7 @@ class Client extends EventEmitter {
         if (!message === undefined) return undefined
         return message
     }
-    
+
     /**
      * 
      * @param {string} name 
@@ -1512,7 +1788,7 @@ class Client extends EventEmitter {
         if (contact.length == 0) return null
         return contact
     }
-    
+
     /**
      * 
      * @param {*} chatId 
@@ -1522,20 +1798,33 @@ class Client extends EventEmitter {
      * @returns 
      */
     async sendPoll(chatId, name, choices, options = {}) {
-        let message = await this.pupPage.evaluate(async ({ chatId, name, choices, options }) => {
+        let message = await this.mPage.evaluate(async ({
+            chatId,
+            name,
+            choices,
+            options
+        }) => {
             let rawMessage = {
                 waitForAck: true,
                 sendSeen: true,
                 type: 'poll_creation',
                 pollName: name,
-                pollOptions: choices.map((name, localId) => ({ name, localId })),
+                pollOptions: choices.map((name, localId) => ({
+                    name,
+                    localId
+                })),
                 pollEncKey: self.crypto.getRandomValues(new Uint8Array(32)),
                 pollSelectableOptionsCount: options.selectableCount || 0,
                 messageSecret: self.crypto.getRandomValues(new Uint8Array(32)),
             }
 
             await window.WWebJS.sendRawMessage(chatId, rawMessage, options)
-        }, { chatId, name, choices, options })
+        }, {
+            chatId,
+            name,
+            choices,
+            options
+        })
 
         if (!message) return null
         return new Message(this, message)
