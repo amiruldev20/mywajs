@@ -314,7 +314,7 @@ class Util {
         })
     }
 
-    static getFile(PATH, save) {
+    static async getFile(PATH, save) {
         try {
             let filename = 'Not Saved'
             let data
