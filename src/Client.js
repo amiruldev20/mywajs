@@ -928,6 +928,11 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         return result;
     }
 
+    async getName(jid) {
+        const contact = await this.getContactById(jid);
+        return contact.name || contact.pushname || contact.shortName || contact.number;
+    }
+    
     /**
      * Message options.
      * @typedef {Object} MessageSendOptions
