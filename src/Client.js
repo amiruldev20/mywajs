@@ -7,9 +7,10 @@ import {
     createRequire
 } from 'module';
 import chalk from 'chalk';
-import fs from 'fs';
+import {
+    promises as fs
+} from "fs";
 import path from 'path';
-
 
 import Util from './util/Util.js';
 import InterfaceController from './util/InterfaceController.js';
