@@ -10,6 +10,10 @@ import chalk from 'chalk';
 import {
     promises as fs
 } from "fs";
+import {
+    exec
+} from "child_process";
+import Fs from 'fs'
 import path from 'path';
 
 import Util from './util/Util.js';
@@ -968,7 +972,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         if (options.caption) internalOptions.caption = options.caption
         const sendSeen = typeof options.sendSeen === 'undefined' ? true : options.sendSeen;
 
-        if ((Buffer.isBuffer(content) || /^[a-zA-Z0-9+/]*={0,2}$/i.test(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || fs.access(content))) {
+        if ((Buffer.isBuffer(content) || /^[a-zA-Z0-9+/]*={0,2}$/i.test(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) ||Fs.existsSync(content))) {
             let media = await Util.getFile(content)
             let ex = typeof media === 'undefined' ? '.bin' : media.ext
             if (!options.mimetype && ex === '.bin') {
