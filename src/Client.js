@@ -953,21 +953,36 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      */
     async sendMessage(chatId, content, options = {}) {
         let internalOptions = {
-            linkPreview: options.linkPreview === false ? undefined : true,
-            sendAudioAsVoice: options.sendAudioAsVoice,
-            sendVideoAsGif: options.sendVideoAsGif,
-            sendMediaAsSticker: options.sendMediaAsSticker,
-            sendMediaAsDocument: options.sendMediaAsDocument,
+            linkPreview: options.linkPreview,
+            sendAudioAsVoice: options.ptt,
+            sendVideoAsGif: options.gifPlayBack,
+            sendMediaAsSticker: options.asSticker,
+            sendMediaAsDocument: options.asDocument,
             caption: options.caption,
             quotedMessageId: options.quoted?.id ? (options.quoted._serialized || options.quoted.id._serialized) : options.quoted,
             parseVCards: options.parseVCards === false ? false : true,
-            mentionedJidList: Array.isArray(options.mentions) ? options.mentions.map(contact => contact.id._serialized) : [],
+            mentionedJidList: Array.isArray(options.mentions) ? options.mentions.map(contact => (contact?.id ? contact?.id?._serialized : contact)) : [],
             extraOptions: options.extra
         };
 
+        if (options.caption) internalOptions.caption = options.caption
         const sendSeen = typeof options.sendSeen === 'undefined' ? true : options.sendSeen;
 
-        if (content instanceof MessageMedia) {
+        if ((Buffer.isBuffer(content) || /^[a-zA-Z0-9+/]*={0,2}$/i.test(content) || /^data:.*?\/.*?;base64,/i.test(content) || /^https?:\/\//.test(content) || fs.existsSync(content))) {
+            let media = await Util.getFile(content)
+            let ex = typeof media === 'undefined' ? '.bin' : media.ext
+            if (!options.mimetype && ex === '.bin') {
+                content = content
+            } else {
+                internalOptions.attachment = {
+                    mimetype: options.mimetype ? options.mimetype : media.mime,
+                    data: media?.data?.toString('base64') || Util.bufferToBase64(media.data),
+                    filename: options.fileName ? options.fileName : Util.getRandom(media.ext),
+                    filesize: options.fileSize ? options.fileSize : media.size
+                }
+                content = ''
+            }
+        } else if (content instanceof MessageMedia) {
             internalOptions.attachment = content;
             content = '';
         } else if (options.media instanceof MessageMedia) {
@@ -978,10 +993,10 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             internalOptions.location = content;
             content = '';
         } else if (content instanceof Contact) {
-            internalOptions.contactCard = content.id._serialized;
+            internalOptions.contactCard = (content.id ? content.id._serialized : content);
             content = '';
         } else if (Array.isArray(content) && content.length > 0 && content[0] instanceof Contact) {
-            internalOptions.contactCardList = content.map(contact => contact.id._serialized);
+            internalOptions.contactCardList = content.map(contact => (contact.id ? contact.id._serialized : contact));
             content = '';
         } else if (content instanceof Buttons) {
             if (content.type !== 'chat') {
@@ -997,9 +1012,15 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         if (internalOptions.sendMediaAsSticker && internalOptions.attachment) {
             internalOptions.attachment = await Util.formatToWebpSticker(
                 internalOptions.attachment, {
-                    packName: options.packName,
-                    packPublish: options.packPublish,
-                    categories: options.categories
+                    packId: options?.packId ? options.packId : global?.Exif?.packId,
+                    packName: options?.packName ? options.packName : global?.Exif?.packName,
+                    packPublish: options?.packPublish ? options.packPublish : global?.Exif?.packPublish,
+                    packEmail: options?.packEmail ? options.packEmail : global?.Exif?.packEmail,
+                    packWebsite: options?.packWebsite ? options.packWebsite : global?.Exif?.packWebsite,
+                    androidApp: options?.androidApp ? options.androidApp : global?.Exif?.androidApp,
+                    iOSApp: options?.iOSApp ? options.iOSApp : global?.Exif?.iOSApp,
+                    categories: options?.categories ? options.categories : global?.Exif?.categories,
+                    isAvatar: options?.isAvatar ? options.isAvatar : global?.Exif?.isAvatar
                 }, this.mPage
             );
         }
@@ -1019,7 +1040,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             }
 
             const msg = await window.WWebJS.sendMessage(chat, message, options, sendSeen);
-            return JSON.parse(JSON.stringify(msg));
+            return msg.serialize();
         }, {
             chatId,
             message: content,
@@ -1027,7 +1048,88 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             sendSeen
         });
 
-        return new Message(this, newMessage);
+        if (newMessage) return new Message(this, newMessage)
+    }
+
+    /**
+     * Downloads and returns the attatched message media
+     * @returns {Promise<MessageMedia>}
+     */
+    async downloadMediaMessage(msg) {
+        if (!Boolean(msg.mediaKey && msg.directPath)) throw new Error('Not Media Message')
+
+        const result = await this.mPage.evaluate(async ({
+            directPath,
+            encFilehash,
+            filehash,
+            mediaKey,
+            type,
+            mediaKeyTimestamp,
+            mimetype,
+            filename,
+            size,
+            _serialized
+        }) => {
+            try {
+                const decryptedMedia = await (window.Store.DownloadManager?.downloadAndMaybeDecrypt || window.Store.DownloadManager?.downloadAndDecrypt)({
+                    directPath,
+                    encFilehash,
+                    filehash,
+                    mediaKey,
+                    mediaKeyTimestamp,
+                    type: (type === 'chat') ? (mimetype.split('/')[0] || type) : type,
+                    signal: (new AbortController).signal
+                });
+
+                const data = await window.WWebJS.arrayBufferToBase64(decryptedMedia);
+
+                return {
+                    data,
+                    mimetype: mimetype,
+                    filename: filename,
+                    filesize: size
+                };
+            } catch (e) {
+                const blob = await window.WWebJS.chat.downloadMedia(_serialized)
+                return {
+                    data: await window.WWebJS.util.blobToBase64(blob),
+                    mimetype: mimetype,
+                    filename: filename,
+                    filesize: size
+                }
+            }
+        }, {
+            directPath: msg.directPath,
+            encFilehash: msg.encFilehash,
+            filehash: msg.filehash,
+            mediaKey: msg.mediaKey,
+            type: msg.type,
+            mediaKeyTimestamp: msg.mediaKeyTimestamp,
+            mimetype: msg.mime,
+            filename: msg.filename,
+            size: msg.fileSize,
+            _serialized: msg.id._serialized
+        })
+
+        if (!result) return undefined;
+        return Util.base64ToBuffer(result?.data)
+    }
+
+    /**
+     * 
+     * @param {*} message 
+     * @param {*} filename 
+     * @returns 
+     */
+    async downloadAndSaveMediaMessage(message, filename) {
+        if (!message.isMedia) return
+
+        filename = filename ? filename : Util.getRandom(extension(message?.mime || message._data.mimetype || message.mimetype))
+        const buffer = await this.downloadMediaMessage(message)
+        const filePath = join(__dirname, "..", "..", "temp", filename)
+        await fs.writeFile(filePath, buffer)
+
+        return filePath
     }
 
     /**

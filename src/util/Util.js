@@ -7,6 +7,9 @@ import ffmpeg from 'fluent-ffmpeg';
 import webp from 'node-webpmux';
 import { Readable } from 'stream'
 import fs from 'fs/promises';
+import axios from 'axios';
+import { fileTypeFromBuffer } from "file-type"
+
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 
 /**
@@ -15,6 +18,62 @@ const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 class Util {
     constructor() {
         throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
+    }
+
+    static sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    static getRandom(ext = "", length = "10") {
+        var result = ""
+        var character = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+        var characterLength = character.length
+        for (var i = 0; i < length; i++) {
+            result += character.charAt(Math.floor(Math.random() * characterLength))
+        }
+
+        return `${result}${ext ? `.${ext}` : ""}`
+    }
+
+    static bufferToBase64(buffer) {
+        if (!Buffer.isBuffer(buffer)) throw new Error("Buffer Not Detected")
+
+        var buf = new Buffer(buffer)
+        return buf.toString('base64')
+    }
+
+    static formatSize(bytes) {
+        if (bytes >= 1000000000) { bytes = (bytes / 1000000000).toFixed(2) + " GB"; }
+        else if (bytes >= 1000000) { bytes = (bytes / 1000000).toFixed(2) + " MB"; }
+        else if (bytes >= 1000) { bytes = (bytes / 1000).toFixed(2) + " KB"; }
+        else if (bytes > 1) { bytes = bytes + " bytes"; }
+        else if (bytes == 1) { bytes = bytes + " byte"; }
+        else { bytes = "0 bytes"; }
+        return bytes;
+    }
+
+    static isBase64(string) {
+        const regex = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/
+        return regex.test(string)
+    }
+
+    static isUrl(url) {
+        return url.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/, 'gi'))
+    }
+
+    static generateHash(length) {
+        var result = "";
+        var characters =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
+    static base64ToBuffer(base) {
+        return Buffer.from(base, 'base64')
     }
 
     static generateHash(length) {
@@ -145,39 +204,55 @@ class Util {
      * 
      * @returns {Promise<MessageMedia>} media in webp format
      */
-    static async formatToWebpSticker(media, metadata, mPage) {
+    static async formatToWebpSticker(media, metadata, playPage) {
         let webpMedia;
 
-        if (media.mimetype.includes('webp'))
-            webpMedia = { mimetype: 'image/webp', data: media.data, filename: undefined }
-        else if (media.mimetype.includes('image'))
-            webpMedia = await this.formatImageToWebpSticker(media, mPage);
-        else if (media.mimetype.includes('video'))
+        if (media.mimetype.includes("webp"))
+            webpMedia = {
+                mimetype: "image/webp",
+                data: media.data,
+                filename: undefined,
+            };
+        else if (media.mimetype.includes("image"))
+            webpMedia = await this.formatImageToWebpSticker(media, playPage);
+        else if (media.mimetype.includes("video"))
             webpMedia = await this.formatVideoToWebpSticker(media);
-        else
-            throw new Error('Invalid media format');
+        else throw new Error("Invalid media format");
 
-        if ((typeof metadata === 'object' && metadata !== null)) {
+        if (typeof metadata === "object" && metadata !== null) {
             const img = new webp.Image();
             const hash = this.generateHash(32);
             const json = {
                 "sticker-pack-id": metadata.packId ? metadata.packId : hash,
-                "sticker-pack-name": metadata.packName ? metadata.packName : 'Dika Ardnt.',
-                "sticker-pack-publisher": metadata.packPublish ? metadata.packPublish : 'Dika Ardnt.',
-                "sticker-pack-publisher-email": metadata.packEmail ? metadata.packEmail : '',
-                "sticker-pack-publisher-website": metadata.packWebsite ? metadata.packWebsite : 'https://instagram.com/cak_haho',
-                "android-app-store-link": metadata.androidApp ? metadata.androidApp : '',
-                "ios-app-store-link": metadata.iOSApp ? metadata.iOSApp : '',
-                "emojis": metadata.categories ? metadata.categories : [],
-                "is-avatar-sticker": metadata.isAvatar ? metadata.isAvatar : 0
+                "sticker-pack-name": metadata.packName
+                    ? metadata.packName
+                    : "MywaJS",
+                "sticker-pack-publisher": metadata.packPublish
+                    ? metadata.packPublish
+                    : "Amirul Dev",
+                "sticker-pack-publisher-email": metadata.packEmail
+                    ? metadata.packEmail
+                    : "",
+                "sticker-pack-publisher-website": metadata.packWebsite
+                    ? metadata.packWebsite
+                    : "https://instagram.com/amirul.dev",
+                "android-app-store-link": metadata.androidApp
+                    ? metadata.androidApp
+                    : "",
+                "ios-app-store-link": metadata.iOSApp ? metadata.iOSApp : "",
+                emojis: metadata.categories ? metadata.categories : [],
+                "is-avatar-sticker": metadata.isAvatar ? metadata.isAvatar : 0,
             };
-            let exifAttr = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00]);
-            let jsonBuffer = Buffer.from(JSON.stringify(json), 'utf8');
+            let exifAttr = Buffer.from([
+                0x49, 0x49, 0x2a, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57,
+                0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00,
+            ]);
+            let jsonBuffer = Buffer.from(JSON.stringify(json), "utf8");
             let exif = Buffer.concat([exifAttr, jsonBuffer]);
             exif.writeUIntLE(jsonBuffer.length, 14, 4);
-            await img.load(Buffer.from(webpMedia.data, 'base64'));
+            await img.load(Buffer.from(webpMedia.data, "base64"));
             img.exif = exif;
-            webpMedia.data = (await img.save(null)).toString('base64');
+            webpMedia.data = (await img.save(null)).toString("base64");
         }
 
         return webpMedia;
@@ -211,6 +286,72 @@ class Util {
         }
         return assertedColor;
     }
+
+    static fetchBuffer(string, options = {}) {
+        return new Promise(async (resolve, reject) => {
+            if (this.isUrl(string)) {
+                let buffer = await axios({
+                    url: string,
+                    method: "GET",
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36',
+                        'Referer': string
+                    },
+                    responseType: 'arraybuffer',
+                    ...options
+                })
+
+                resolve(buffer.data)
+            } else if (Buffer.isBuffer(string)) {
+                resolve(string)
+            } else if (/^data:.*?\/.*?;base64,/i.test(string)) {
+                let buffer = Buffer.from(string.split`,`[1], 'base64')
+                resolve(buffer)
+            } else {
+                let buffer = Fs.readFileSync(string)
+                resolve(buffer)
+            }
+        })
+    }
+
+    static getFile(PATH, save) {
+        try {
+            let filename = 'Not Saved'
+            let data
+            if (/^https?:\/\//.test(PATH)) {
+                data = await this.fetchBuffer(PATH)
+            } else if (/^data:.*?\/.*?;base64,/i.test(PATH) || this.isBase64(PATH)) {
+                data = Buffer.from(PATH.split`,`[1], 'base64')
+            } else if (fs.existsSync(PATH) && (fs.statSync(PATH)).isFile()) {
+                data = fs.readFileSync(PATH)
+            } else if (Buffer.isBuffer(PATH)) {
+                data = PATH
+            } else {
+                data = Buffer.alloc(20)
+            }
+
+            let type = await fileTypeFromBuffer(data) || {
+                mime: 'application/octet-stream',
+                ext: '.bin'
+            }
+
+            if (data && save) {
+                filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
+                fs.promises.writeFile(filename, data)
+            }
+            let size = Buffer.byteLength(data)
+            return {
+                filename,
+                size,
+                sizeH: this.formatSize(size),
+                ...type,
+                data
+            }
+        } catch { }
+    }
+
+
+
 }
 
 export default Util
