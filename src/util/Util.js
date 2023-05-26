@@ -7,6 +7,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import webp from 'node-webpmux';
 import { Readable } from 'stream'
 import fs from 'fs/promises';
+import Fs from 'fs';
 import axios from 'axios';
 import { fileTypeFromBuffer } from "file-type"
 
@@ -315,40 +316,40 @@ class Util {
     }
 
     static async getFile(PATH, save) {
-        try {
-            let filename = 'Not Saved'
-            let data
-            if (/^https?:\/\//.test(PATH)) {
-                data = await this.fetchBuffer(PATH)
-            } else if (/^data:.*?\/.*?;base64,/i.test(PATH) || this.isBase64(PATH)) {
-                data = Buffer.from(PATH.split`,`[1], 'base64')
-            } else if (fs.existsSync(PATH) && (fs.statSync(PATH)).isFile()) {
-                data = fs.readFileSync(PATH)
-            } else if (Buffer.isBuffer(PATH)) {
-                data = PATH
-            } else {
-                data = Buffer.alloc(20)
-            }
+    try {
+      let filename = 'Not Saved'
+      let data
+      if (/^https?:\/\//.test(PATH)) {
+        data = await this.fetchBuffer(PATH)
+      } else if (/^data:.*?\/.*?;base64,/i.test(PATH) || this.isBase64(PATH)) {
+        data = Buffer.from(PATH.split`,`[1], 'base64')
+      } else if (Fs.existsSync(PATH) && (Fs.statSync(PATH)).isFile()) {
+        data = Fs.readFileSync(PATH)
+      } else if (Buffer.isBuffer(PATH)) {
+        data = PATH
+      } else {
+        data = Buffer.alloc(20)
+      }
 
-            let type = await fileTypeFromBuffer(data) || {
-                mime: 'application/octet-stream',
-                ext: '.bin'
-            }
+      let type = await fileTypeFromBuffer(data) || {
+        mime: 'application/octet-stream',
+        ext: '.bin'
+      }
 
-            if (data && save) {
-                filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
-                fs.promises.writeFile(filename, data)
-            }
-            let size = Buffer.byteLength(data)
-            return {
-                filename,
-                size,
-                sizeH: this.formatSize(size),
-                ...type,
-                data
-            }
-        } catch { }
-    }
+      if (data && save) {
+        filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
+        Fs.promises.writeFile(filename, data)
+      }
+      let size = Buffer.byteLength(data)
+      return {
+        filename,
+        size,
+        sizeH: this.formatSize(size),
+        ...type,
+        data
+      }
+    } catch { }
+  }
 
 
 
