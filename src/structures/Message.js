@@ -559,7 +559,7 @@ class Message extends Base {
         return undefined;
     }
 
-    aaync find(string, text) {
+    async find(string, text) {
         if (new RegExp(string, "i").test(text)) {
             return true
         } else {
