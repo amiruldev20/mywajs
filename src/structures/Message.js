@@ -326,11 +326,15 @@ class Message extends Base {
      * @param {MessageSendOptions} [options]
      * @returns {Promise<Message>}
      */
-    async reply(content, options = {}) => this.client.sendMessage(options.from ? options.from : m.from, content, {
+    async reply(content, chatId, options = {}){
+        if (!chatId) {
+            chatId = this._getChatId();
+        }
+        this.client.sendMessage(chatId, content, {
         quoted: m,
         ...options
     })
-
+    }
     /**
      * React to this message with an emoji
      * @param {string} reaction - Emoji to react with. Send an empty string to remove the reaction.
