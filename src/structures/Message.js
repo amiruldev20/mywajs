@@ -331,7 +331,7 @@ class Message extends Base {
             chatId = this._getChatId();
         }
         this.client.sendMessage(chatId, content, {
-        quoted: m,
+        quoted: thi.id._serialized,
         ...options
     })
     }
