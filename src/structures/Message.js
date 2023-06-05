@@ -5,7 +5,9 @@ import MessageMedia from './MessageMedia.js';
 import Location from './Location.js';
 import Order from './Order.js';
 import Payment from './Payment.js';
-import { MessageTypes } from '../util/Constants.js';
+import {
+    MessageTypes
+} from '../util/Constants.js';
 import PollVote from './PollVote.js';
 
 /**
@@ -21,13 +23,13 @@ class Message extends Base {
 
     _patch(data) {
         this._data = data;
-        
+
         /**
          * MediaKey that represents the sticker 'ID'
          * @type {string}
          */
         this.mediaKey = data.mediaKey;
-        
+
         /**
          * ID that represents the message
          * @type {object}
@@ -68,7 +70,7 @@ class Message extends Base {
          * ID for the Chat that this message was sent to, except if the message was sent by the current user.
          * @type {string}
          */
-        this.from = (typeof (data.from) === 'object' && data.from !== null) ? data.from._serialized : data.from;
+        this.from = (typeof(data.from) === 'object' && data.from !== null) ? data.from._serialized : data.from;
 
         /**
          * ID for who this message is for.
@@ -77,13 +79,13 @@ class Message extends Base {
          * If the message is sent by another user, it will be the ID for the current user.
          * @type {string}
          */
-        this.to = (typeof (data.to) === 'object' && data.to !== null) ? data.to._serialized : data.to;
+        this.to = (typeof(data.to) === 'object' && data.to !== null) ? data.to._serialized : data.to;
 
         /**
          * If the message was sent to a group, this field will contain the user that sent the message.
          * @type {string}
          */
-        this.author = (typeof (data.author) === 'object' && data.author !== null) ? data.author._serialized : data.author;
+        this.author = (typeof(data.author) === 'object' && data.author !== null) ? data.author._serialized : data.author;
 
         /**
          * String that represents from which device type the message was sent
@@ -256,12 +258,12 @@ class Message extends Base {
     async reload() {
         const newData = await this.client.mPage.evaluate((msgId) => {
             const msg = window.Store.Msg.get(msgId);
-            if(!msg) return null;
+            if (!msg) return null;
             return window.WWebJS.getMessageModel(msg);
         }, this.id._serialized);
 
-        if(!newData) return null;
-        
+        if (!newData) return null;
+
         this._patch(newData);
         return this;
     }
@@ -273,7 +275,7 @@ class Message extends Base {
     get rawData() {
         return this._data;
     }
-    
+
     /**
      * Returns the Chat this message was sent in
      * @returns {Promise<Chat>}
@@ -324,31 +326,31 @@ class Message extends Base {
      * @param {MessageSendOptions} [options]
      * @returns {Promise<Message>}
      */
-    async reply(content, chatId, options = {}) {
-        if (!chatId) {
-            chatId = this._getChatId();
-        }
-
-        options = {
-            ...options,
-            quotedMessageId: this.id._serialized
-        };
-
-        return this.client.sendMessage(chatId, content, options);
-    }
+    async reply(content, options = {}) => this.client.sendMessage(options.from ? options.from : m.from, content, {
+        quoted: m,
+        ...options
+    })
 
     /**
      * React to this message with an emoji
      * @param {string} reaction - Emoji to react with. Send an empty string to remove the reaction.
      * @return {Promise}
      */
-    async react(reaction){
-        await this.client.mPage.evaluate(async ({ messageId, reaction }) => {
-            if (!messageId) { return undefined; }
-            
+    async react(reaction) {
+        await this.client.mPage.evaluate(async ({
+            messageId,
+            reaction
+        }) => {
+            if (!messageId) {
+                return undefined;
+            }
+
             const msg = await window.Store.Msg.get(messageId);
             await window.Store.sendReactionToMsg(msg, reaction);
-        }, { messageId: this.id._serialized, reaction });
+        }, {
+            messageId: this.id._serialized,
+            reaction
+        });
     }
 
     /**
@@ -368,12 +370,18 @@ class Message extends Base {
     async forward(chat) {
         const chatId = typeof chat === 'string' ? chat : chat.id._serialized;
 
-        await this.client.mPage.evaluate(async ({ msgId, chatId }) => {
+        await this.client.mPage.evaluate(async ({
+            msgId,
+            chatId
+        }) => {
             let msg = window.Store.Msg.get(msgId);
             let chat = window.Store.Chat.get(chatId);
 
             return await chat.forwardMessages([msg]);
-        }, { msgId: this.id._serialized, chatId });
+        }, {
+            msgId: this.id._serialized,
+            chatId
+        });
     }
 
     /**
@@ -385,7 +393,18 @@ class Message extends Base {
             return undefined;
         }
 
-        const result = await this.mPage.evaluate(async ({ directPath, encFilehash, filehash, mediaKey, type, mediaKeyTimestamp, mimetype, filename, size,  _serialized }) => {
+        const result = await this.mPage.evaluate(async ({
+            directPath,
+            encFilehash,
+            filehash,
+            mediaKey,
+            type,
+            mediaKeyTimestamp,
+            mimetype,
+            filename,
+            size,
+            _serialized
+        }) => {
             try {
                 const decryptedMedia = await (window.Store.DownloadManager?.downloadAndMaybeDecrypt || window.Store.DownloadManager?.downloadAndDecrypt)({
                     directPath,
@@ -414,7 +433,18 @@ class Message extends Base {
                     filesize: size
                 }
             }
-        }, { directPath: this.directPath, encFilehash: this.encFilehash, filehash: this.filehash, mediaKey: this.mediaKey, type: this.type, mediaKeyTimestamp: this.mediaKeyTimestamp, mimetype: this.mime, filename: this.filename, size: this.fileSize,  _serialized: this.id._serialized })
+        }, {
+            directPath: this.directPath,
+            encFilehash: this.encFilehash,
+            filehash: this.filehash,
+            mediaKey: this.mediaKey,
+            type: this.type,
+            mediaKeyTimestamp: this.mediaKeyTimestamp,
+            mimetype: this.mime,
+            filename: this.filename,
+            size: this.fileSize,
+            _serialized: this.id._serialized
+        })
 
         if (!result) return undefined
         return new MessageMedia(result.mimetype, result.data, result.filename, result.filesize);
@@ -425,17 +455,26 @@ class Message extends Base {
      * @param {?boolean} everyone If true and the message is sent by the current user or the user is an admin, will delete it for everyone in the chat.
      */
     async delete(everyone) {
-        await this.client.mPage.evaluate(async ({ msgId, everyone }) => {
+        await this.client.mPage.evaluate(async ({
+            msgId,
+            everyone
+        }) => {
             let msg = window.Store.Msg.get(msgId);
             let chat = await window.Store.Chat.find(msg.id.remote || msg.chat);
-            
+
             const canRevoke = window.Store.MsgActionChecks.canSenderRevokeMsg(msg) || window.Store.MsgActionChecks.canAdminRevokeMsg(msg);
             if (everyone && canRevoke) {
-                return window.Store.Cmd.sendRevokeMsgs(chat, [msg], { clearMedia: true, type: msg.id.fromMe ? 'Sender' : 'Admin' });
+                return window.Store.Cmd.sendRevokeMsgs(chat, [msg], {
+                    clearMedia: true,
+                    type: msg.id.fromMe ? 'Sender' : 'Admin'
+                });
             }
 
             return window.Store.Cmd.sendDeleteMsgs(chat, [msg], true);
-        }, { msgId: this.id._serialized, everyone });
+        }, {
+            msgId: this.id._serialized,
+            everyone
+        });
     }
 
     /**
@@ -444,7 +483,7 @@ class Message extends Base {
     async star() {
         await this.client.mPage.evaluate(async (msgId) => {
             let msg = window.Store.Msg.get(msgId);
-            
+
             if (window.Store.MsgActionChecks.canStarMsg(msg)) {
                 let chat = await window.Store.Chat.find(msg.id.remote);
                 return window.Store.Cmd.sendStarMsgs(chat, [msg], false);
@@ -499,13 +538,29 @@ class Message extends Base {
      */
     async getOrder() {
         if (this.type === MessageTypes.ORDER) {
-            const result = await this.client.mPage.evaluate(({ orderId, token, chatId }) => {
+            const result = await this.client.mPage.evaluate(({
+                orderId,
+                token,
+                chatId
+            }) => {
                 return window.WWebJS.getOrderDetail(orderId, token, chatId);
-            }, { orderId: this.orderId, token: this.token, chatId: this._getChatId()});
+            }, {
+                orderId: this.orderId,
+                token: this.token,
+                chatId: this._getChatId()
+            });
             if (!result) return undefined;
             return new Order(this.client, result);
         }
         return undefined;
+    }
+
+    aaync find(string, text) {
+        if (new RegExp(string, "i").test(text)) {
+            return true
+        } else {
+            return false
+        }
     }
     /**
      * Gets the payment details associated with a given message
@@ -515,7 +570,7 @@ class Message extends Base {
         if (this.type === MessageTypes.PAYMENT) {
             const msg = await this.client.mPage.evaluate(async (msgId) => {
                 const msg = window.Store.Msg.get(msgId);
-                if(!msg) return null;
+                if (!msg) return null;
                 return msg.serialize();
             }, this.id._serialized);
             return new Payment(this.client, msg);
@@ -533,7 +588,10 @@ class Message extends Base {
             return window.Store.PollVote.getForParent([parentMsgId]).map(a => a.serialize())[0];
         }, this.id._serialized);
         this.pollVotes = pollVotes.map((pollVote) => {
-            return new PollVote(this.client, {...pollVote, pollCreationMessage: this});
+            return new PollVote(this.client, {
+                ...pollVote,
+                pollCreationMessage: this
+            });
         });
         return;
     }
@@ -545,19 +603,28 @@ class Message extends Base {
      */
     async vote(selectedOptions) {
         if (this.type !== MessageTypes.POLL_CREATION) throw 'Invalid usage! Can only be used with a pollCreation message';
-        
-        return await this.client.mPage.evaluate(({ creationMsgId, selectedOptions }) => {
+
+        return await this.client.mPage.evaluate(({
+            creationMsgId,
+            selectedOptions
+        }) => {
             window.WWebJS.votePoll(creationMsgId, selectedOptions);
-        }, { creationMsgId: this.id._serialized, selectedOptions });
+        }, {
+            creationMsgId: this.id._serialized,
+            selectedOptions
+        });
     }
-    
+
     /**
      * 
      * @param {Boolean} block block or no user
      * @returns {Promise<void>}
      */
     async report(block = false) {
-        await this.client.mPage.evaluate(async ({ msgId, block }) => {
+        await this.client.mPage.evaluate(async ({
+            msgId,
+            block
+        }) => {
             let msg = await window.Store.Msg.get(msgId)
 
             if (block) {
@@ -565,7 +632,10 @@ class Message extends Base {
             } else {
                 return window.Store.GroupUtils.sendMessageReport(msg)
             }
-        }, { msgId: this.id._serialized, block })
+        }, {
+            msgId: this.id._serialized,
+            block
+        })
     }
 }
 
