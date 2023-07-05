@@ -1917,7 +1917,7 @@ get detail host
 set theme whatsapp web
 */
   async setTheme(type = "dark") {
-    if (opt !== "dark" && opt !== "light") {
+    if (type !== "dark" && type !== "light") {
       return {
         status: false,
         message: 'Invalid option. Only "dark" or "light" are allowed',
@@ -1925,13 +1925,13 @@ set theme whatsapp web
     }
 
     try {
-      await this.mPage.evaluate(async (opt) => {
-        await window.extra.theme[0].setTheme(opt);
-      }, opt);
+      await this.mPage.evaluate(async (type) => {
+        await window.extra.theme[0].setTheme(type);
+      }, type);
 
       return {
         status: 200,
-        message: `Successfully changed to ${opt} mode`,
+        message: `Successfully changed to ${type} mode`,
       };
     } catch (error) {
       return {
