@@ -1957,6 +1957,31 @@ get theme whatsapp web
     return theme;
   }
 
+  /*
+join whatsapp beta
+*/
+  async joinBeta(act) {
+    const res = await this.mPage.evaluate((act) => {
+      return window.extra.joinBeta(act);
+    }, act);
+    if (act == true) {
+      return `successfully entered beta mode`;
+    } else if (act == false) {
+      return `managed to get out of beta mode`;
+    }
+  }
+
+  /*
+retrieve the details of the incoming member request
+* jid groups
+*/
+  async getMemberRequest(jid) {
+    const res = await this.mPage.evaluate(async (jid) => {
+      return window.extra.group.memberRequest(jid);
+    }, jid);
+    return res;
+  }
+
   /**
    *
    * @param {string} chatId
