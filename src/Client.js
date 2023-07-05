@@ -2020,21 +2020,21 @@ accept call
   * bg color (hex)
   * font style (number)
 */
-  async sendStoryText(text, bgcolor, font) {
+  async sendStoryText(text, bgcolor, fonts) {
     if (!text) return "Input story text";
     if (!bgcolor) return "Input background color (hex)";
-    if (!font) return "Input style font (number)";
+    if (!fonts) return "Input style font (number)";
     try {
       await this.mPage.evaluate(
-        async ({ text, bgcolor, font }) => {
+        async ({ text, bgcolor, fonts }) => {
           await window.extra.status.text(text, {
             backgroundColor: bgcolor,
-            font: font,
+            font: fonts,
           });
         },
         text,
         bgcolor,
-        font
+        fonts
       );
 
       return {
@@ -2043,7 +2043,7 @@ accept call
  Caption:
  ${text}
  Background Color: ${bgcolor}
- Font Style: ${font}`,
+ Font Style: ${fonts}`,
       };
     } catch (error) {
       return {
