@@ -2025,7 +2025,7 @@ accept call
     if (!bg) return "Input background color (hex)";
     if (!fonts) return "Input style font (number)";
     try {
-      const res = await mywa.mPage.evaluate(
+      const res = await this.mPage.evaluate(
         async ({ text, bg, fonts }) => {
           return window.extra.status.text(text, {
             backgroundColor: bg,
