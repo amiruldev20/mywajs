@@ -2020,36 +2020,27 @@ accept call
   * bg color (hex)
   * font style (number)
 */
-  async sendStoryText(text, bgcolor, fonts) {
+  async sendStoryText(text, bg, fonts) {
     if (!text) return "Input story text";
-    if (!bgcolor) return "Input background color (hex)";
+    if (!bg) return "Input background color (hex)";
     if (!fonts) return "Input style font (number)";
     try {
-      await this.mPage.evaluate(
-        async ({ text, bgcolor, fonts }) => {
-          await window.extra.status.text(text, {
-            backgroundColor: bgcolor,
+      const res = await mywa.mPage.evaluate(
+        async ({ text, bg, fonts }) => {
+          return window.extra.status.text(text, {
+            backgroundColor: bg,
             font: fonts,
           });
         },
-        text,
-        bgcolor,
-        fonts
+        {
+          text,
+          bg,
+          fonts,
+        }
       );
-
-      return {
-        status: 200,
-        message: `Successfully upload story
- Caption:
- ${text}
- Background Color: ${bgcolor}
- Font Style: ${fonts}`,
-      };
+      return "Successfully sent status text to WhatsApp";
     } catch (error) {
-      return {
-        status: false,
-        message: "Can't upload story",
-      };
+      return "Failed to send status text to WhatsApp";
     }
   }
 
