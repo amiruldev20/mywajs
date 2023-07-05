@@ -72,7 +72,7 @@ export const ExposeStore = (moduleRaidStr) => {
     "promoteParticipants"
   )[0];
   window.Store.JoinInviteV4 = window.mR.findModule(
-    "sendJoinGroupViaInviteV4"
+    "queryGroupInviteV4"
   )[0];
   window.Store.findCommonGroups =
     window.mR.findModule("findCommonGroups")[0].findCommonGroups;
