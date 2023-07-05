@@ -2027,7 +2027,7 @@ accept call
     try {
       await this.mPage.evaluate(
         async ({ text, bgcolor, font }) => {
-          return window.extra.status.text(text, {
+          await window.extra.status.text(text, {
             backgroundColor: bgcolor,
             font: font,
           });
@@ -2036,9 +2036,20 @@ accept call
         bgcolor,
         font
       );
-      return `Successfully send story text`;
-    } catch {
-      return "cant send story";
+
+      return {
+        status: 200,
+        message: `Successfully upload story
+ Caption:
+ ${text}
+ Background Color: ${bgcolor}
+ Font Style: ${font}`,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: "Can't upload story",
+      };
     }
   }
 
