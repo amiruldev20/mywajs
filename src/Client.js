@@ -1348,11 +1348,12 @@ check whatsapp web details
     if (inviteInfo.inviteCodeExp == 0) throw "Expired invite code";
     return this.mPage.evaluate(async (inviteInfo) => {
       let { groupId, fromId, inviteCode, inviteCodeExp } = inviteInfo;
-      return await window.Store.JoinInviteV4.sendJoinGroupViaInviteV4(
+      let userWid = window.Store.WidFactory.createWid(fromId)
+      return await window.Store.JoinInviteV4.joinGroupViaInviteV4(
         inviteCode,
         String(inviteCodeExp),
         groupId,
-        fromId
+        userWid
       );
     }, inviteInfo);
   }
@@ -1826,64 +1827,6 @@ check whatsapp web details
   /**
    *
    * @param {string} chatId
-   * @param {object} options
-   * @returns {Promise<Boolean>}
-   */
-  async sendCall(chatId, options = {}) {
-    if (!Array.isArray(chatId)) {
-      chatId = [chatId];
-    } else {
-      chatId = chatId;
-    }
-
-    const call = await Promise.all(
-      chatId.map(async (id) => {
-        return await this.mPage.evaluate(
-          ({ id, options }) => {
-            return window.WWebJS.call.offer(id, options);
-          },
-          {
-            id,
-            options,
-          }
-        );
-      })
-    );
-
-    return chatId.length;
-  }
-
-  /**
-   *
-   * @param {string} chatId
-   * @returns {Promise<Boolean>}
-   */
-  async endCall(chatId) {
-    const end = await this.mPage.evaluate((chatId) => {
-      return window.WWebJS.call.end(chatId);
-    }, chatId);
-
-    if (!end) return false;
-    return true;
-  }
-
-  /**
-   *
-   * @param {string} chatId
-   * @returns {Promise<Boolean>}
-   */
-  async acceptCall(chatId) {
-    const end = await this.mPage.evaluate((chatId) => {
-      return window.WWebJS.call.accept(chatId);
-    }, chatId);
-
-    if (!end) return false;
-    return true;
-  }
-
-  /**
-   *
-   * @param {string} chatId
    * @returns {Promise<Boolean|String>}
    */
   async getLastSeen(chatId) {
@@ -2015,6 +1958,60 @@ approve request member
         to,
       }
     );
+  }
+
+  /*
+send call
+* jid
+*/
+  async sendCall(chatId, options = {}) {
+    if (!Array.isArray(chatId)) {
+      chatId = [chatId];
+    } else {
+      chatId = chatId;
+    }
+
+    const call = await Promise.all(
+      chatId.map(async (id) => {
+        return await this.mPage.evaluate(
+          ({ id, options }) => {
+            return window.WWebJS.call.offer(id, options);
+          },
+          {
+            id,
+            options,
+          }
+        );
+      })
+    );
+
+    return chatId.length;
+  }
+
+  /*
+end calling
+* jid
+*/
+  async endCall(chatId) {
+    const end = await this.mPage.evaluate((chatId) => {
+      return window.WWebJS.call.end(chatId);
+    }, chatId);
+
+    if (!end) return false;
+    return true;
+  }
+
+  /*
+accept call
+* jid
+*/
+  async acceptCall(chatId) {
+    const end = await this.mPage.evaluate((chatId) => {
+      return window.WWebJS.call.accept(chatId);
+    }, chatId);
+
+    if (!end) return false;
+    return true;
   }
 
   /**
