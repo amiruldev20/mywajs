@@ -1348,7 +1348,7 @@ check whatsapp web details
     if (inviteInfo.inviteCodeExp == 0) throw "Expired invite code";
     return this.mPage.evaluate(async (inviteInfo) => {
       let { groupId, fromId, inviteCode, inviteCodeExp } = inviteInfo;
-      let userWid = window.Store.WidFactory.createWid(fromId)
+      let userWid = window.Store.WidFactory.createWid(fromId);
       return await window.Store.JoinInviteV4.joinGroupViaInviteV4(
         inviteCode,
         String(inviteCodeExp),
@@ -2012,6 +2012,34 @@ accept call
 
     if (!end) return false;
     return true;
+  }
+
+  /*
+  send text status
+  * text
+  * bg color (hex)
+  * font style (number)
+*/
+  async sendStoryText(text, bgcolor, font) {
+    if (text) return "Input story text";
+    if (bgcolor) return "Input background color (hex)";
+    if (font) return "Input style font (number)";
+    try {
+      await this.mPage.evaluate(
+        async ({ text, bgcolor, font }) => {
+          return window.extra.status.text(text, {
+            backgroundColor: bgcolor,
+            font: font,
+          });
+        },
+        text,
+        bgcolor,
+        font
+      );
+      return `Successfully send story text`;
+    } catch {
+      return "cant send story";
+    }
   }
 
   /**
