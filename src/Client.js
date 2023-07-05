@@ -939,7 +939,7 @@ change name bot
 */
   async changeMyname(name) {
     try {
-      await mywa.mPage.evaluate((name) => {
+      await this.mPage.evaluate((name) => {
         return window.WWebJS.profile.setMyProfileName(name);
       }, name);
       return `successfully changed the bot name`;
