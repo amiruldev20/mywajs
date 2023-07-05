@@ -933,6 +933,21 @@ check whatsapp web details
     });
   }
 
+  /*
+change name bot
+* name
+*/
+  async changeMyname(name) {
+    try {
+      await mywa.mPage.evaluate((name) => {
+        return window.WWebJS.profile.setMyProfileName(name);
+      }, name);
+      return `successfully changed the bot name`;
+    } catch {
+      return `Can't change name`;
+    }
+  }
+  
   /**
    * Mark as seen for the Chat
    *@param {string} chatId
@@ -1366,20 +1381,6 @@ check whatsapp web details
     await this.mPage.evaluate(async (status) => {
       return await window.Store.StatusUtils.setMyStatus(status);
     }, status);
-  }
-
-  /**
-   * Sets the current user's display name.
-   * This is the name shown to WhatsApp users that have not added you as a contact beside your number in groups and in your profile.
-   * @param {string} displayName New display name
-   * @returns {Promise<Boolean>}
-   */
-  async setDisplayName(displayName) {
-    const couldSet = await this.mPage.evaluate(async (displayName) => {
-      return window.WWebJS.profile.setMyProfileName(displayName);
-    }, displayName);
-
-    return couldSet;
   }
 
   /**
