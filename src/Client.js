@@ -1982,6 +1982,41 @@ retrieve the details of the incoming member request
     return res;
   }
 
+  /*
+approve request member
+* jid groups
+* jid member
+*/
+  async approveRequest(jid, to) {
+    const res = await this.mPage.evaluate(
+      ({ jid, to }) => {
+        return window.extra.group.approve(jid, to);
+      },
+      {
+        jid,
+        to,
+      }
+    );
+    return res;
+  }
+
+  /*
+ reject request member
+ * jid groups
+ * jid member
+ */
+  async rejectRequest(jid, to) {
+    const res = await this.mPage.evaluate(
+      ({ jid, to }) => {
+        return window.extra.group.reject(jid, to);
+      },
+      {
+        jid,
+        to,
+      }
+    );
+  }
+
   /**
    *
    * @param {string} chatId
