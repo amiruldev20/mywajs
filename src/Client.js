@@ -2021,9 +2021,9 @@ accept call
   * font style (number)
 */
   async sendStoryText(text, bgcolor, font) {
-    if (text) return "Input story text";
-    if (bgcolor) return "Input background color (hex)";
-    if (font) return "Input style font (number)";
+    if (!text) return "Input story text";
+    if (!bgcolor) return "Input background color (hex)";
+    if (!font) return "Input style font (number)";
     try {
       await this.mPage.evaluate(
         async ({ text, bgcolor, font }) => {
@@ -2040,6 +2040,17 @@ accept call
     } catch {
       return "cant send story";
     }
+  }
+
+  /*
+get name with id
+* jid
+*/
+  async getName(jid) {
+    const contact = await this.getContactById(jid);
+    return (
+      contact.name || contact.pushname || contact.shortName || contact.number
+    );
   }
 
   /**
