@@ -1,7 +1,7 @@
-
 import { EventEmitter } from 'events'
 import { AxiosInterceptorOptions } from 'axios'
 import * as playwright from 'playwright-chromium'
+import PollVote from './src/structures/PollVote.js'
 
 declare namespace WAWebJS {
 
@@ -361,6 +361,12 @@ declare namespace WAWebJS {
 
         /** Emitted when the RemoteAuth session is saved successfully on the external Database */
         on(event: 'remote_session_saved', listener: () => void): this
+        
+        /** Emitted when a poll vote is received */
+        on(event: 'poll_vote', listener: (
+            /** The poll vote */
+            vote: PollVote
+        ) => void): this
     }
 
     /** Current connection information */
@@ -604,6 +610,7 @@ declare namespace WAWebJS {
         STATE_CHANGED = 'change_state',
         BATTERY_CHANGED = 'change_battery',
         REMOTE_SESSION_SAVED = 'remote_session_saved',
+        POLL_VOTE = 'poll_vote',
         CALL = 'call'
     }
 
@@ -667,6 +674,7 @@ declare namespace WAWebJS {
         PROTOCOL = 'protocol',
         REACTION = 'reaction',
         TEMPLATE_BUTTON_REPLY = 'template_button_reply',
+        POLL_CREATION = 'poll_creation',
     }
 
     /** Client status */
