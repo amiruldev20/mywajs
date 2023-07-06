@@ -960,7 +960,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     }
     !comment && (comment = '');
 
-    return this.mPage.evaluate(async (userId, groupId, comment) => {
+    return this.mPage.evaluate(async ({userId, groupId, comment}) => {
       const userWid = window.Store.WidFactory.createWid(userId);
       const user = await window.Store.Contact.find(userWid);
       const chatWid = window.Store.WidFactory.createWid(userId);
@@ -998,7 +998,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
       const groupName = group.formattedTitle || group.name;
       const status = await window.Store.GroupUtils.sendGroupInviteMessage(chat, groupId, groupName, inviteV4, inviteV4Exp, comment);
       return status === 'OK' ? true : false;
-    }, userId, groupId, comment);
+    }, {userId, groupId, comment});
   }
 
   /**
