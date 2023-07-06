@@ -71,9 +71,7 @@ export const ExposeStore = (moduleRaidStr) => {
   window.Store.GroupParticipants = window.mR.findModule(
     "promoteParticipants"
   )[0];
-  window.Store.JoinInviteV4 = window.mR.findModule(
-    "queryGroupInviteV4"
-  )[0];
+  window.Store.JoinInviteV4 = window.mR.findModule("queryGroupInviteV4")[0];
   window.Store.findCommonGroups =
     window.mR.findModule("findCommonGroups")[0].findCommonGroups;
   window.Store.findMessage = window.mR.findModule("msgFindQuery")[1];
@@ -1032,9 +1030,9 @@ export const LoadUtils = () => {
     }
 
     if (msg.type == "poll_creation") {
-      msg.pollVotes = window.Store.PollVote.getForParent([
-        msg.id._serialized,
-      ]).map((a) => a.serialize())[0];
+      msg.pollVotes = window.Store.PollVote.getForParent(msg.id)
+        .getModelsArray()
+        .map((a) => a.serialize());
     }
 
     delete msg.pendingAckUpdate;
@@ -1263,7 +1261,7 @@ export const LoadUtils = () => {
 
   window.WWebJS.votePoll = async (pollCreationMessageId, selectedOptions) => {
     const msg = window.Store.Msg.get(pollCreationMessageId);
-    if (msg.type !== "poll_creation")
+    if (msg.type != "poll_creation")
       throw "Quoted message is not a poll creation message!";
     let localIdSet = new Set();
     msg.pollOptions.map((a) => {
