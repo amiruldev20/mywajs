@@ -19,10 +19,8 @@ declare namespace WAWebJS {
     /**Accepts an invitation to join a group */
     acceptInvite(inviteCode: string): Promise<string>;
 
-    /** Accepts a private invitation to join a group (v4 invite) */
-    acceptGroupV4Invite: (
-      inviteV4: InviteV4Data
-    ) => Promise<{ status: number }>;
+    /** Sends a private invitation to the user to be added to the group */
+    sendGroupV4Invite: (userId: string, groupId: string, comment?: string) => Promise<boolean>
 
     /**Returns an object with information about the invite code's group */
     getInviteInfo(inviteCode: string): Promise<object>;

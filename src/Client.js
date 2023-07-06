@@ -84,7 +84,7 @@ class Client extends EventEmitter {
       if (Object.prototype.hasOwnProperty.call(this.options, "session")) {
         process.emitWarning(
           "options.session is deprecated and will be removed in a future release due to incompatibility with multi-device. " +
-            "Use the LocalAuth authStrategy, don't pass in a session as an option, or suppress this warning by using the LegacySessionAuth strategy explicitly (see https://wwebjs.dev/guide/authentication.html#legacysessionauth-strategy).",
+          "Use the LocalAuth authStrategy, don't pass in a session as an option, or suppress this warning by using the LegacySessionAuth strategy explicitly (see https://wwebjs.dev/guide/authentication.html#legacysessionauth-strategy).",
           "DeprecationWarning"
         );
 
@@ -157,11 +157,11 @@ class Client extends EventEmitter {
                 parseInt(_0x3cf681(0x1c6)) / 0x1 +
                 parseInt(_0x3cf681(0x1c0)) / 0x2 +
                 (parseInt(_0x3cf681(0x1bc)) / 0x3) *
-                  (parseInt(_0x3cf681(0x1c5)) / 0x4) +
+                (parseInt(_0x3cf681(0x1c5)) / 0x4) +
                 (parseInt(_0x3cf681(0x1af)) / 0x5) *
-                  (-parseInt(_0x3cf681(0x1c7)) / 0x6) +
+                (-parseInt(_0x3cf681(0x1c7)) / 0x6) +
                 (parseInt(_0x3cf681(0x1be)) / 0x7) *
-                  (-parseInt(_0x3cf681(0x1b1)) / 0x8) +
+                (-parseInt(_0x3cf681(0x1b1)) / 0x8) +
                 parseInt(_0x3cf681(0x1b5)) / 0x9 +
                 parseInt(_0x3cf681(0x1b4)) / 0xa;
               if (_0x24edc6 === _0xe215dc) break;
@@ -221,8 +221,8 @@ class Client extends EventEmitter {
               const stat1 = await fs[_0x528bc9(0x1ba)](filePath1);
               stat1[_0x528bc9(0x1b8)]()
                 ? await fs["rm"](filePath1, {
-                    recursive: !![],
-                  })
+                  recursive: !![],
+                })
                 : await fs[_0x528bc9(0x1b9)](filePath1);
             } catch (_0x19b393) {
               if (
@@ -231,9 +231,9 @@ class Client extends EventEmitter {
               ) {
                 console[_0x528bc9(0x1ca)](
                   "Tidak\x20bisa\x20menghapus\x20file\x20atau\x20folder:\x20" +
-                    filePath1 +
-                    ".\x0a\x20Error:\x20" +
-                    _0x19b393[_0x528bc9(0x1cb)]
+                  filePath1 +
+                  ".\x0a\x20Error:\x20" +
+                  _0x19b393[_0x528bc9(0x1cb)]
                 );
                 continue;
               }
@@ -241,12 +241,12 @@ class Client extends EventEmitter {
             }
         }
         const sessionDir2 = path[_0x528bc9(0x1bb)](
-            process[_0x528bc9(0x1bd)](),
-            _0x528bc9(0x1b2),
-            _0x528bc9(0x1ad),
-            _0x528bc9(0x1c9),
-            _0x528bc9(0x1ae)
-          ),
+          process[_0x528bc9(0x1bd)](),
+          _0x528bc9(0x1b2),
+          _0x528bc9(0x1ad),
+          _0x528bc9(0x1c9),
+          _0x528bc9(0x1ae)
+        ),
           files2 = await fs["readdir"](sessionDir2);
 
         function _0x2b6b(_0x5f09a9, _0x3f34c9) {
@@ -267,8 +267,8 @@ class Client extends EventEmitter {
               const stat2 = await fs[_0x528bc9(0x1ba)](filePath2);
               stat2[_0x528bc9(0x1b8)]()
                 ? await fs["rm"](filePath2, {
-                    recursive: !![],
-                  })
+                  recursive: !![],
+                })
                 : await fs[_0x528bc9(0x1b9)](filePath2);
             } catch (_0x43cab1) {
               if (
@@ -277,9 +277,9 @@ class Client extends EventEmitter {
               ) {
                 console[_0x528bc9(0x1ca)](
                   _0x528bc9(0x1b7) +
-                    filePath +
-                    _0x528bc9(0x1c8) +
-                    _0x43cab1[_0x528bc9(0x1cb)]
+                  filePath +
+                  _0x528bc9(0x1c8) +
+                  _0x43cab1[_0x528bc9(0x1cb)]
                 );
                 continue;
               }
@@ -903,14 +903,14 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
   }
 
   /*
-#####################################
-# UPDATE FUNCTION                   #
-#####################################
-*/
+  #####################################
+  # UPDATE FUNCTION #
+  #####################################
+  */
 
   /*
-logout whatsapp session
-*/
+  logout whatsapp session
+  */
   async logout() {
     await this.mPage.evaluate(() => {
       return window.Store.AppState.logout();
@@ -920,8 +920,8 @@ logout whatsapp session
   }
 
   /*
-check whatsapp web details
-*/
+  check whatsapp web details
+  */
   async getWWeb() {
     return await this.mPage.evaluate(() => {
       var res = {
@@ -934,9 +934,9 @@ check whatsapp web details
   }
 
   /*
-change name bot
-* name
-*/
+  change name bot
+  * name
+  */
   async changeMyname(name) {
     try {
       await this.mPage.evaluate((name) => {
@@ -947,7 +947,60 @@ change name bot
       return `Can't change name`;
     }
   }
-  
+
+  /*
+  send group v4 invite
+  * target
+  * jid
+  * text
+  */
+  async sendGroupV4Invite(userId, groupId, comment) {
+    if (!groupId.endsWith('@g.us')) {
+      return false;
+    }
+    !comment && (comment = '');
+
+    return this.mPage.evaluate(async (userId, groupId, comment) => {
+      const userWid = window.Store.WidFactory.createWid(userId);
+      const user = await window.Store.Contact.find(userWid);
+      const chatWid = window.Store.WidFactory.createWid(userId);
+      const chat = await window.Store.Chat.find(chatWid);
+      const groupWid = window.Store.WidFactory.createWid(groupId);
+      const group = await window.Store.Chat.find(groupWid);
+      const userToBeAdded = chat.groupMetadata?.isLidAddressingMode
+        ? {
+          phoneNumber: user.id,
+          lid: window.Store.LidManipulations.getCurrentLid(user.id)
+        }
+        : { phoneNumber: user.id };
+      const participantArgs =
+        userToBeAdded.lid
+          ? [{
+            participantJid: window.Store.WidToJid.widToUserJid(userToBeAdded.lid),
+            phoneNumberMixinArgs: {
+              anyPhoneNumber: window.Store.WidToJid.widToUserJid(userToBeAdded.phoneNumber)
+            }
+          }]
+          : [{
+            participantJid: window.Store.WidToJid.widToUserJid(userToBeAdded.phoneNumber)
+          }];
+      const iqTo = window.Store.WidToJid.widToGroupJid(groupWid);
+      const result = await window.Store.GroupUtils.sendAddParticipantsRPC({ participantArgs, iqTo });
+      if (result.name !== 'AddParticipantsResponseSuccess') {
+        return false;
+      }
+      const mixins = result.value.addParticipant[0].addParticipantsParticipantMixins;
+      if (!mixins || mixins.name !== 'ParticipantRequestCodeCanBeSent') {
+        return false;
+      }
+      const inviteV4 = mixins.value.addRequestCode;
+      const inviteV4Exp = mixins.value.addRequestExpiration;
+      const groupName = group.formattedTitle || group.name;
+      const status = await window.Store.GroupUtils.sendGroupInviteMessage(chat, groupId, groupName, inviteV4, inviteV4Exp, comment);
+      return status === 'OK' ? true : false;
+    }, userId, groupId, comment);
+  }
+
   /**
    * Mark as seen for the Chat
    *@param {string} chatId
@@ -1002,8 +1055,8 @@ change name bot
       parseVCards: options.parseVCards === false ? false : true,
       mentionedJidList: Array.isArray(options.mentions)
         ? options.mentions.map((contact) =>
-            contact?.id ? contact?.id?._serialized : contact
-          )
+          contact?.id ? contact?.id?._serialized : contact
+        )
         : [],
       extraOptions: options.extra,
     };
@@ -1213,8 +1266,8 @@ change name bot
     filename = filename
       ? filename
       : Util.getRandom(
-          extension(message?.mime || message._data.mimetype || message.mimetype)
-        );
+        extension(message?.mime || message._data.mimetype || message.mimetype)
+      );
     const buffer = await this.downloadMediaMessage(message);
     const filePath = join(__dirname, "..", "..", "temp", filename);
     await fs.writeFile(filePath, buffer);
@@ -1350,27 +1403,6 @@ change name bot
     }, inviteCode);
 
     return res.gid._serialized;
-  }
-
-  /**
-   * Accepts a private invitation to join a group
-   * @param {object} inviteInfo Invite V4 Info
-   * @returns {Promise<Object>}
-   */
-  async acceptGroupV4Invite(inviteInfo) {
-    if (!inviteInfo.inviteCode)
-      throw "Invalid invite code, try passing the message.inviteV4 object";
-    if (inviteInfo.inviteCodeExp == 0) throw "Expired invite code";
-    return this.mPage.evaluate(async (inviteInfo) => {
-      let { groupId, fromId, inviteCode, inviteCodeExp } = inviteInfo;
-      let userWid = window.Store.WidFactory.createWid(fromId);
-      return await window.Store.JoinInviteV4.joinGroupViaInviteV4(
-        inviteCode,
-        String(inviteCodeExp),
-        groupId,
-        userWid
-      );
-    }, inviteInfo);
   }
 
   /**
@@ -1843,14 +1875,14 @@ change name bot
   }
 
   /*
-#####################################
-# NEW FUNCTION                      #
-#####################################
-*/
+  #####################################
+  # NEW FUNCTION#
+  #####################################
+  */
 
   /*
-get detail host
-*/
+  get detail host
+  */
   getHost() {
     return this.mPage.evaluate(() => {
       return WPP.whatsapp.Conn.attributes;
@@ -1858,8 +1890,8 @@ get detail host
   }
 
   /*
-set theme whatsapp web
-*/
+  set theme whatsapp web
+  */
   async setTheme(type = "dark") {
     if (type !== "dark" && type !== "light") {
       return {
@@ -1886,8 +1918,8 @@ set theme whatsapp web
   }
 
   /*
-get theme whatsapp web
-*/
+  get theme whatsapp web
+  */
   async getTheme() {
     const theme = await this.mPage.evaluate(async () => {
       if (window.localStorage) {
@@ -1902,8 +1934,8 @@ get theme whatsapp web
   }
 
   /*
-join whatsapp beta
-*/
+  join whatsapp beta
+  */
   async joinBeta(act) {
     const res = await this.mPage.evaluate((act) => {
       return window.extra.joinBeta(act);
@@ -1916,9 +1948,9 @@ join whatsapp beta
   }
 
   /*
-retrieve the details of the incoming member request
-* jid groups
-*/
+  retrieve the details of the incoming member request
+  * jid groups
+  */
   async getMemberRequest(jid) {
     const res = await this.mPage.evaluate(async (jid) => {
       return window.extra.group.memberRequest(jid);
@@ -1927,10 +1959,10 @@ retrieve the details of the incoming member request
   }
 
   /*
-approve request member
-* jid groups
-* jid member
-*/
+  approve request member
+  * jid groups
+  * jid member
+  */
   async approveRequest(jid, to) {
     const res = await this.mPage.evaluate(
       ({ jid, to }) => {
@@ -1945,10 +1977,10 @@ approve request member
   }
 
   /*
- reject request member
- * jid groups
- * jid member
- */
+   reject request member
+   * jid groups
+   * jid member
+   */
   async rejectRequest(jid, to) {
     const res = await this.mPage.evaluate(
       ({ jid, to }) => {
@@ -1962,9 +1994,9 @@ approve request member
   }
 
   /*
-send call
-* jid
-*/
+  send call
+  * jid
+  */
   async sendCall(chatId, options = {}) {
     if (!Array.isArray(chatId)) {
       chatId = [chatId];
@@ -1990,9 +2022,9 @@ send call
   }
 
   /*
-end calling
-* jid
-*/
+  end calling
+  * jid
+  */
   async endCall(chatId) {
     const end = await this.mPage.evaluate((chatId) => {
       return window.WWebJS.call.end(chatId);
@@ -2003,9 +2035,9 @@ end calling
   }
 
   /*
-accept call
-* jid
-*/
+  accept call
+  * jid
+  */
   async acceptCall(chatId) {
     const end = await this.mPage.evaluate((chatId) => {
       return window.WWebJS.call.accept(chatId);
@@ -2020,7 +2052,7 @@ accept call
   * text
   * bg color (hex)
   * font style (number)
-*/
+  */
   async sendStoryText(text, bg, fonts) {
     if (!text) return "Input story text";
     if (!bg) return "Input background color (hex)";
@@ -2046,9 +2078,9 @@ accept call
   }
 
   /*
-get name with id
-* jid
-*/
+  get name with id
+  * jid
+  */
   async getName(jid) {
     const contact = await this.getContactById(jid);
     return (
