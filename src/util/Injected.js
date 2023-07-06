@@ -55,9 +55,9 @@ export const ExposeStore = (moduleRaidStr) => {
   )[0].default;
   window.Store.UserConstructor = window.mR.findModule((module) =>
     module.default &&
-    module.default.prototype &&
-    module.default.prototype.isServer &&
-    module.default.prototype.isUser
+      module.default.prototype &&
+      module.default.prototype.isServer &&
+      module.default.prototype.isUser
       ? module.default
       : null
   )[0].default;
@@ -71,7 +71,9 @@ export const ExposeStore = (moduleRaidStr) => {
   window.Store.GroupParticipants = window.mR.findModule(
     "promoteParticipants"
   )[0];
-  window.Store.JoinInviteV4 = window.mR.findModule("queryGroupInviteV4")[0];
+  window.Store.JoinInviteV4 = window.mR.findModule(
+    "queryGroupInviteV4"
+  )[0];
   window.Store.findCommonGroups =
     window.mR.findModule("findCommonGroups")[0].findCommonGroups;
   window.Store.findMessage = window.mR.findModule("msgFindQuery")[1];
@@ -112,6 +114,9 @@ export const ExposeStore = (moduleRaidStr) => {
     ...window.mR.findModule("waNoiseInfo")[0],
     ...window.mR.findModule("waSignalStore")[0].waSignalStore,
   };
+  window.Store.LidManipulations = window.mR.findModule('getCurrentLid')[0];
+  window.Store.WidToJid = window.mR.findModule('widToUserJid')[0];
+  window.Store.JidToWid = window.mR.findModule('userJidToUserWid')[0];
   window.Store.StickerTools = {
     ...window.mR.findModule("toWebpSticker")[0],
     ...window.mR.findModule("addWebpMetadata")[0],
@@ -123,6 +128,10 @@ export const ExposeStore = (moduleRaidStr) => {
     ...window.mR.findModule("sendExitGroup")[0],
     ...window.mR.findModule("sendSetPicture")[0],
     ...window.mR.findModule("sendMessageReport")[0],
+    sendAddParticipantsRPC:
+      window.mR.findModule('sendAddParticipantsRPC')[0].sendAddParticipantsRPC,
+    sendGroupInviteMessage:
+      window.mR.findModule('sendGroupInviteMessage')[0].sendGroupInviteMessage
   };
 
   if (!window.Store.Chat._find) {
@@ -131,8 +140,8 @@ export const ExposeStore = (moduleRaidStr) => {
       return target
         ? Promise.resolve(target)
         : Promise.resolve({
-            id: e,
-          });
+          id: e,
+        });
     };
   }
 
@@ -158,8 +167,8 @@ export const ExposeStore = (moduleRaidStr) => {
     const results = window.mR.findModule((m) =>
       names.includes(
         m.default?.prototype?.proxyName ||
-          m[name]?.prototype?.proxyName ||
-          m[baseName]?.prototype?.proxyName
+        m[name]?.prototype?.proxyName ||
+        m[baseName]?.prototype?.proxyName
       )
     )[0];
 
@@ -709,10 +718,10 @@ export const LoadUtils = () => {
       attOptions = options.sendMediaAsSticker
         ? await window.WWebJS.processStickerData(options.attachment)
         : await window.WWebJS.processMediaData(options.attachment, {
-            forceVoice: options.sendAudioAsVoice,
-            forceDocument: options.sendMediaAsDocument,
-            forceGif: options.sendVideoAsGif,
-          });
+          forceVoice: options.sendAudioAsVoice,
+          forceDocument: options.sendMediaAsDocument,
+          forceGif: options.sendVideoAsGif,
+        });
 
       attOptions.caption = options.caption ? options.caption : "";
       content = options.sendMediaAsSticker ? undefined : attOptions.preview;
@@ -1030,9 +1039,9 @@ export const LoadUtils = () => {
     }
 
     if (msg.type == "poll_creation") {
-      msg.pollVotes = window.Store.PollVote.getForParent(msg.id)
-        .getModelsArray()
-        .map((a) => a.serialize());
+      msg.pollVotes = window.Store.PollVote.getForParent([
+        msg.id._serialized,
+      ]).map((a) => a.serialize())[0];
     }
 
     delete msg.pendingAckUpdate;
@@ -1261,7 +1270,7 @@ export const LoadUtils = () => {
 
   window.WWebJS.votePoll = async (pollCreationMessageId, selectedOptions) => {
     const msg = window.Store.Msg.get(pollCreationMessageId);
-    if (msg.type != "poll_creation")
+    if (msg.type !== "poll_creation")
       throw "Quoted message is not a poll creation message!";
     let localIdSet = new Set();
     msg.pollOptions.map((a) => {
@@ -1316,27 +1325,27 @@ export const LoadUtils = () => {
     const thumbnail =
       type === "long"
         ? await window.WWebJS.cropAndResizeImage(media, {
-            asDataUrl: true,
-            mimetype: "image/jpeg",
-            size: 120,
-          })
+          asDataUrl: true,
+          mimetype: "image/jpeg",
+          size: 120,
+        })
         : await window.WWebJS.cropAndResizeImage(media, {
-            asDataUrl: true,
-            mimetype: "image/jpeg",
-            size: 96,
-          });
+          asDataUrl: true,
+          mimetype: "image/jpeg",
+          size: 96,
+        });
     const profilePic =
       type === "long"
         ? await window.WWebJS.cropAndResizeImage(media, {
-            asDataUrl: true,
-            mimetype: "image/jpeg",
-            size: 720,
-          })
+          asDataUrl: true,
+          mimetype: "image/jpeg",
+          size: 720,
+        })
         : await window.WWebJS.cropAndResizeImage(media, {
-            asDataUrl: true,
-            mimetype: "image/jpeg",
-            size: 640,
-          });
+          asDataUrl: true,
+          mimetype: "image/jpeg",
+          size: 640,
+        });
 
     const chatWid = window.Store.WidFactory.createWid(chatid);
     try {
