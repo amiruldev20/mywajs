@@ -84,7 +84,7 @@ class Client extends EventEmitter {
       if (Object.prototype.hasOwnProperty.call(this.options, "session")) {
         process.emitWarning(
           "options.session is deprecated and will be removed in a future release due to incompatibility with multi-device. " +
-          "Use the LocalAuth authStrategy, don't pass in a session as an option, or suppress this warning by using the LegacySessionAuth strategy explicitly (see https://wwebjs.dev/guide/authentication.html#legacysessionauth-strategy).",
+            "Use the LocalAuth authStrategy, don't pass in a session as an option, or suppress this warning by using the LegacySessionAuth strategy explicitly (see https://wwebjs.dev/guide/authentication.html#legacysessionauth-strategy).",
           "DeprecationWarning"
         );
 
@@ -157,11 +157,11 @@ class Client extends EventEmitter {
                 parseInt(_0x3cf681(0x1c6)) / 0x1 +
                 parseInt(_0x3cf681(0x1c0)) / 0x2 +
                 (parseInt(_0x3cf681(0x1bc)) / 0x3) *
-                (parseInt(_0x3cf681(0x1c5)) / 0x4) +
+                  (parseInt(_0x3cf681(0x1c5)) / 0x4) +
                 (parseInt(_0x3cf681(0x1af)) / 0x5) *
-                (-parseInt(_0x3cf681(0x1c7)) / 0x6) +
+                  (-parseInt(_0x3cf681(0x1c7)) / 0x6) +
                 (parseInt(_0x3cf681(0x1be)) / 0x7) *
-                (-parseInt(_0x3cf681(0x1b1)) / 0x8) +
+                  (-parseInt(_0x3cf681(0x1b1)) / 0x8) +
                 parseInt(_0x3cf681(0x1b5)) / 0x9 +
                 parseInt(_0x3cf681(0x1b4)) / 0xa;
               if (_0x24edc6 === _0xe215dc) break;
@@ -221,8 +221,8 @@ class Client extends EventEmitter {
               const stat1 = await fs[_0x528bc9(0x1ba)](filePath1);
               stat1[_0x528bc9(0x1b8)]()
                 ? await fs["rm"](filePath1, {
-                  recursive: !![],
-                })
+                    recursive: !![],
+                  })
                 : await fs[_0x528bc9(0x1b9)](filePath1);
             } catch (_0x19b393) {
               if (
@@ -231,9 +231,9 @@ class Client extends EventEmitter {
               ) {
                 console[_0x528bc9(0x1ca)](
                   "Tidak\x20bisa\x20menghapus\x20file\x20atau\x20folder:\x20" +
-                  filePath1 +
-                  ".\x0a\x20Error:\x20" +
-                  _0x19b393[_0x528bc9(0x1cb)]
+                    filePath1 +
+                    ".\x0a\x20Error:\x20" +
+                    _0x19b393[_0x528bc9(0x1cb)]
                 );
                 continue;
               }
@@ -241,12 +241,12 @@ class Client extends EventEmitter {
             }
         }
         const sessionDir2 = path[_0x528bc9(0x1bb)](
-          process[_0x528bc9(0x1bd)](),
-          _0x528bc9(0x1b2),
-          _0x528bc9(0x1ad),
-          _0x528bc9(0x1c9),
-          _0x528bc9(0x1ae)
-        ),
+            process[_0x528bc9(0x1bd)](),
+            _0x528bc9(0x1b2),
+            _0x528bc9(0x1ad),
+            _0x528bc9(0x1c9),
+            _0x528bc9(0x1ae)
+          ),
           files2 = await fs["readdir"](sessionDir2);
 
         function _0x2b6b(_0x5f09a9, _0x3f34c9) {
@@ -267,8 +267,8 @@ class Client extends EventEmitter {
               const stat2 = await fs[_0x528bc9(0x1ba)](filePath2);
               stat2[_0x528bc9(0x1b8)]()
                 ? await fs["rm"](filePath2, {
-                  recursive: !![],
-                })
+                    recursive: !![],
+                  })
                 : await fs[_0x528bc9(0x1b9)](filePath2);
             } catch (_0x43cab1) {
               if (
@@ -277,9 +277,9 @@ class Client extends EventEmitter {
               ) {
                 console[_0x528bc9(0x1ca)](
                   _0x528bc9(0x1b7) +
-                  filePath +
-                  _0x528bc9(0x1c8) +
-                  _0x43cab1[_0x528bc9(0x1cb)]
+                    filePath +
+                    _0x528bc9(0x1c8) +
+                    _0x43cab1[_0x528bc9(0x1cb)]
                 );
                 continue;
               }
@@ -955,50 +955,73 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
   * text
   */
   async sendGroupV4Invite(userId, groupId, comment) {
-    if (!groupId.endsWith('@g.us')) {
+    if (!groupId.endsWith("@g.us")) {
       return false;
     }
-    !comment && (comment = '');
+    !comment && (comment = "");
 
-    return this.mPage.evaluate(async ({userId, groupId, comment}) => {
-      const userWid = window.Store.WidFactory.createWid(userId);
-      const user = await window.Store.Contact.find(userWid);
-      const chatWid = window.Store.WidFactory.createWid(userId);
-      const chat = await window.Store.Chat.find(chatWid);
-      const groupWid = window.Store.WidFactory.createWid(groupId);
-      const group = await window.Store.Chat.find(groupWid);
-      const userToBeAdded = chat.groupMetadata?.isLidAddressingMode
-        ? {
-          phoneNumber: user.id,
-          lid: window.Store.LidManipulations.getCurrentLid(user.id)
-        }
-        : { phoneNumber: user.id };
-      const participantArgs =
-        userToBeAdded.lid
-          ? [{
-            participantJid: window.Store.WidToJid.widToUserJid(userToBeAdded.lid),
-            phoneNumberMixinArgs: {
-              anyPhoneNumber: window.Store.WidToJid.widToUserJid(userToBeAdded.phoneNumber)
+    return this.mPage.evaluate(
+      async ({ userId, groupId, comment }) => {
+        const userWid = window.Store.WidFactory.createWid(userId);
+        const user = await window.Store.Contact.find(userWid);
+        const chatWid = window.Store.WidFactory.createWid(userId);
+        const chat = await window.Store.Chat.find(chatWid);
+        const groupWid = window.Store.WidFactory.createWid(groupId);
+        const group = await window.Store.Chat.find(groupWid);
+        const userToBeAdded = chat.groupMetadata?.isLidAddressingMode
+          ? {
+              phoneNumber: user.id,
+              lid: window.Store.LidManipulations.getCurrentLid(user.id),
             }
-          }]
-          : [{
-            participantJid: window.Store.WidToJid.widToUserJid(userToBeAdded.phoneNumber)
-          }];
-      const iqTo = window.Store.WidToJid.widToGroupJid(groupWid);
-      const result = await window.Store.GroupUtils.sendAddParticipantsRPC({ participantArgs, iqTo });
-      if (result.name !== 'AddParticipantsResponseSuccess') {
-        return false;
-      }
-      const mixins = result.value.addParticipant[0].addParticipantsParticipantMixins;
-      if (!mixins || mixins.name !== 'ParticipantRequestCodeCanBeSent') {
-        return false;
-      }
-      const inviteV4 = mixins.value.addRequestCode;
-      const inviteV4Exp = mixins.value.addRequestExpiration;
-      const groupName = group.formattedTitle || group.name;
-      const status = await window.Store.GroupUtils.sendGroupInviteMessage(chat, groupId, groupName, inviteV4, inviteV4Exp, comment);
-      return status === 'OK' ? true : false;
-    }, {userId, groupId, comment});
+          : { phoneNumber: user.id };
+        const participantArgs = userToBeAdded.lid
+          ? [
+              {
+                participantJid: window.Store.WidToJid.widToUserJid(
+                  userToBeAdded.lid
+                ),
+                phoneNumberMixinArgs: {
+                  anyPhoneNumber: window.Store.WidToJid.widToUserJid(
+                    userToBeAdded.phoneNumber
+                  ),
+                },
+              },
+            ]
+          : [
+              {
+                participantJid: window.Store.WidToJid.widToUserJid(
+                  userToBeAdded.phoneNumber
+                ),
+              },
+            ];
+        const iqTo = window.Store.WidToJid.widToGroupJid(groupWid);
+        const result = await window.Store.GroupUtils.sendAddParticipantsRPC({
+          participantArgs,
+          iqTo,
+        });
+        if (result.name !== "AddParticipantsResponseSuccess") {
+          return false;
+        }
+        const mixins =
+          result.value.addParticipant[0].addParticipantsParticipantMixins;
+        if (!mixins || mixins.name !== "ParticipantRequestCodeCanBeSent") {
+          return false;
+        }
+        const inviteV4 = mixins.value.addRequestCode;
+        const inviteV4Exp = mixins.value.addRequestExpiration;
+        const groupName = group.formattedTitle || group.name;
+        const status = await window.Store.GroupUtils.sendGroupInviteMessage(
+          chat,
+          groupId,
+          groupName,
+          inviteV4,
+          inviteV4Exp,
+          comment
+        );
+        return status === "OK" ? true : false;
+      },
+      { userId, groupId, comment }
+    );
   }
 
   /**
@@ -1055,8 +1078,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
       parseVCards: options.parseVCards === false ? false : true,
       mentionedJidList: Array.isArray(options.mentions)
         ? options.mentions.map((contact) =>
-          contact?.id ? contact?.id?._serialized : contact
-        )
+            contact?.id ? contact?.id?._serialized : contact
+          )
         : [],
       extraOptions: options.extra,
     };
@@ -1266,8 +1289,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     filename = filename
       ? filename
       : Util.getRandom(
-        extension(message?.mime || message._data.mimetype || message.mimetype)
-      );
+          extension(message?.mime || message._data.mimetype || message.mimetype)
+        );
     const buffer = await this.downloadMediaMessage(message);
     const filePath = join(__dirname, "..", "..", "temp", filename);
     await fs.writeFile(filePath, buffer);
@@ -2088,6 +2111,65 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     );
   }
 
+  /*
+send file
+* jid
+* url or buffer
+* options
+*/
+  async sendFile(chatId, pathOrBase64, nameOrOptions) {
+    if (typeof nameOrOptions === "string") {
+      options.filename = nameOrOptions;
+      nameOrOptions = {};
+    }
+
+    const fileContent = Util.getFile(pathOrBase64);
+    var view = nameOrOptions.view ? true : false;
+    var ptt = nameOrOptions.ptt ? true : false;
+    let options = {
+      type: nameOrOptions?.type ? nameOrOptions.type : "auto-detect",
+      filename: nameOrOptions?.filename ? nameOrOptions.filename : "",
+      mimetype: fileContent.mime,
+      isViewOnce: view,
+      isPtt: ptt,
+    };
+
+    const base64 = `data:${(await fileContent).mime};base64,${(
+      await fileContent
+    ).data.toString("base64")}`;
+
+    if (!!nameOrOptions?.quoted) {
+      options.quotedMsg =
+        typeof nameOrOptions.quoted === "object"
+          ? nameOrOptions.quoted.id._serialized
+          : nameOrOptions.quoted || nameOrOptions.quoted._serialized;
+
+      delete nameOrOptions.quoted;
+    }
+
+    if (nameOrOptions?.mentions) {
+      options.mentionedJidList = Array.isArray(options.mentions)
+        ? options.mentions.map((contact) =>
+            contact?.id ? contact?.id?._serialized : contact
+          )
+        : [];
+
+      delete nameOrOptions.mentions;
+    }
+
+    options = {
+      ...nameOrOptions,
+      ...options,
+    };
+
+    const msg = await this.mPage.evaluate(
+      async ({ chatId, base64, options }) => {
+        return WPP.chat.sendFileMessage(chatId, base64, options);
+      },
+      { chatId, base64, options }
+    );
+  }
+  
   /**
    *
    * @param {string} chatId
