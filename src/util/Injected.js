@@ -23,6 +23,7 @@ export const ExposeStore = (moduleRaidStr) => {
   window.Store.InviteInfo = window.mR.findModule("queryGroupInvite")[0];
   window.Store.Label =
     window.mR.findModule("LabelCollection")[0].LabelCollection;
+  window.Store.ContactCollection = window.mR.findModule('ContactCollection')[0].ContactCollection;
   window.Store.MediaPrep = window.mR.findModule("prepRawMedia")[0];
   window.Store.MediaObject = window.mR.findModule("getOrCreateMediaObject")[0];
   window.Store.NumberInfo = window.mR.findModule("formattedPhoneNumber")[0];
@@ -186,6 +187,8 @@ export const ExposeStore = (moduleRaidStr) => {
     ) => callback(oldFunct, args);
   };
 
+  window.injectToFunction({ name: 'typeAttributeFromProtobuf', index: 0, property: 'typeAttributeFromProtobuf' }, (func, args) => { const [proto] = args; return proto.groupInviteMessage ? 'text' : func(...args); });
+
   // Find Template models
   window.Store.TemplateButtonModel = window.findProxyModel(
     "TemplateButtonModel"
@@ -306,32 +309,32 @@ export const ExposeStore = (moduleRaidStr) => {
         const proto = func(...args);
         if (proto.templateMessage) {
           /*
-                proto.viewOnceMessage = {
-                    message: {
-                        templateMessage: proto.templateMessage,
-                    },
-                };
-                delete proto.templateMessage;
-                */
+          proto.viewOnceMessage = {
+          message: {
+          templateMessage: proto.templateMessage,
+          },
+          };
+          delete proto.templateMessage;
+          */
         }
         /*
-            if (proto.buttonsMessage) {
-                proto.viewOnceMessage = {
-                    message: {
-                        buttonsMessage: proto.buttonsMessage,
-                    },
-                };
-                delete proto.buttonsMessage;
-            }
-            if (proto.listMessage) {
-                proto.viewOnceMessage = {
-                    message: {
-                        listMessage: proto.listMessage,
-                    },
-                };
-                delete proto.listMessage;
-            }
-            */
+        if (proto.buttonsMessage) {
+        proto.viewOnceMessage = {
+        message: {
+        buttonsMessage: proto.buttonsMessage,
+        },
+        };
+        delete proto.buttonsMessage;
+        }
+        if (proto.listMessage) {
+        proto.viewOnceMessage = {
+        message: {
+        listMessage: proto.listMessage,
+        },
+        };
+        delete proto.listMessage;
+        }
+        */
         return proto;
       }
     );
@@ -649,42 +652,42 @@ export const LoadUtils = () => {
     returnObject.footer = buttonsOptions.footer;
 
     /**if (buttonsOptions.useTemplateButtons) {
-            returnObject.isFromTemplate = true;
-            returnObject.hydratedButtons = buttonsOptions.buttons;
-            returnObject.buttons = new window.Store.TemplateButtonCollection();
-
-            returnObject.buttons.add(
-                returnObject.hydratedButtons.map((button, index) => {
-                    const i = `${null != button.index ? button.index : index}`;
-
-                    if (button.urlButton) {
-                        return new window.Store.TemplateButtonModel({
-                            id: i,
-                            displayText: button.urlButton?.displayText,
-                            url: button.urlButton?.url,
-                            subtype: 'url',
-                        });
-                    }
-
-                    if (button.callButton) {
-                        return new window.Store.TemplateButtonModel({
-                            id: i,
-                            displayText: button.callButton.displayText,
-                            phoneNumber: button.callButton.phoneNumber,
-                            subtype: 'call',
-                        });
-                    }
-
-                    return new window.Store.TemplateButtonModel({
-                        id: i,
-                        displayText: button.quickReplyButton?.displayText,
-                        selectionId: button.quickReplyButton?.id,
-                        subtype: 'quick_reply',
-                    });
-                })
-            );
-        }
-        else {*/
+    returnObject.isFromTemplate = true;
+    returnObject.hydratedButtons = buttonsOptions.buttons;
+    returnObject.buttons = new window.Store.TemplateButtonCollection();
+    
+    returnObject.buttons.add(
+    returnObject.hydratedButtons.map((button, index) => {
+    const i = `${null != button.index ? button.index : index}`;
+    
+    if (button.urlButton) {
+    return new window.Store.TemplateButtonModel({
+    id: i,
+    displayText: button.urlButton?.displayText,
+    url: button.urlButton?.url,
+    subtype: 'url',
+    });
+    }
+    
+    if (button.callButton) {
+    return new window.Store.TemplateButtonModel({
+    id: i,
+    displayText: button.callButton.displayText,
+    phoneNumber: button.callButton.phoneNumber,
+    subtype: 'call',
+    });
+    }
+    
+    return new window.Store.TemplateButtonModel({
+    id: i,
+    displayText: button.quickReplyButton?.displayText,
+    selectionId: button.quickReplyButton?.id,
+    subtype: 'quick_reply',
+    });
+    })
+    );
+    }
+    else {*/
     returnObject.isDynamicReplyButtonsMsg = true;
 
     returnObject.dynamicReplyButtons = buttonsOptions.buttons.map(
@@ -1445,4 +1448,103 @@ export const LoadUtils = () => {
     await chat.presence.subscribe();
     return chat.presence.attributes.isOnline;
   };
+
+  window.WWebJS.getProfilePicThumbBase64 = async (chatWid) => {
+    const profilePicCollection = window.Store.ProfilePicThumb.get(chatWid);
+
+    const _readImageAsBase64 = (imageBlob) => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = function () {
+          const base64Image = reader.result;
+          if (base64Image == null) {
+            resolve(undefined);
+          } else {
+            const base64Data = base64Image.toString().split(',')[1];
+            resolve(base64Data);
+          }
+        };
+        reader.readAsDataURL(imageBlob);
+      });
+    };
+
+    if (profilePicCollection?.img) {
+      try {
+        const response = await fetch(profilePicCollection.img);
+        if (response.ok) {
+          const imageBlob = await response.blob();
+          if (imageBlob) {
+            const base64Image = await _readImageAsBase64(imageBlob);
+            return base64Image;
+          }
+        }
+      } catch (error) { /* empty */ }
+    }
+    return undefined;
+  };
+
+  window.WWebJS.getAddParticipantsRpcResult = async (chatMetadata, chatWid, participantWid) => {
+    const participantLidArgs = chatMetadata?.isLidAddressingMode
+      ? {
+        phoneNumber: participantWid,
+        lid: window.Store.LidManipulations.getCurrentLid(participantWid)
+      }
+      : { phoneNumber: participantWid };
+
+    const iqTo = window.Store.WidToJid.widToGroupJid(chatWid);
+
+    const participantArgs =
+      participantLidArgs.lid
+        ? [{
+          participantJid: window.Store.WidToJid.widToUserJid(participantLidArgs.lid),
+          phoneNumberMixinArgs: {
+            anyPhoneNumber: window.Store.WidToJid.widToUserJid(participantLidArgs.phoneNumber)
+          }
+        }]
+        : [{
+          participantJid: window.Store.WidToJid.widToUserJid(participantLidArgs.phoneNumber)
+        }];
+
+    let result, participant;
+    const data = {
+      name: undefined,
+      code: undefined,
+      message: undefined,
+      inviteV4Code: undefined,
+      inviteV4CodeExp: undefined
+    };
+
+    try {
+      result = await window.Store.GroupUtils.sendAddParticipantsRPC({ participantArgs, iqTo });
+      [participant] = result.value.addParticipant;
+    } catch (err) {
+      data.code = -1;
+      data.message = 'SmaxParsingFailure: failed to parse the response of <AddParticipants>';
+      return data;
+    }
+
+    if (result.name === 'AddParticipantsResponseSuccess') {
+      const participantMixins = participant.addParticipantsParticipantMixins;
+      const code = participantMixins?.value.error ?? '200';
+      data.name = participantMixins?.name;
+      data.code = +code;
+      data.inviteV4Code = participantMixins?.value.addRequestCode;
+      data.inviteV4CodeExp = participantMixins?.value.addRequestExpiration?.toString();
+    }
+
+    else if (result.name === 'AddParticipantsResponseClientError') {
+      const { code: code, text: message } = result.value.errorAddParticipantsClientErrors.value;
+      data.code = +code;
+      data.message = message;
+    }
+
+    else if (result.name === 'AddParticipantsResponseServerError') {
+      const { code: code, text: message } = result.value.errorServerErrors.value;
+      data.code = +code;
+      data.message = message;
+    }
+
+    return data;
+  };
+  // end
 };

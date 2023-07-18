@@ -84,7 +84,7 @@ class Client extends EventEmitter {
       if (Object.prototype.hasOwnProperty.call(this.options, "session")) {
         process.emitWarning(
           "options.session is deprecated and will be removed in a future release due to incompatibility with multi-device. " +
-            "Use the LocalAuth authStrategy, don't pass in a session as an option, or suppress this warning by using the LegacySessionAuth strategy explicitly (see https://wwebjs.dev/guide/authentication.html#legacysessionauth-strategy).",
+          "Use the LocalAuth authStrategy, don't pass in a session as an option, or suppress this warning by using the LegacySessionAuth strategy explicitly (see https://wwebjs.dev/guide/authentication.html#legacysessionauth-strategy).",
           "DeprecationWarning"
         );
 
@@ -157,11 +157,11 @@ class Client extends EventEmitter {
                 parseInt(_0x3cf681(0x1c6)) / 0x1 +
                 parseInt(_0x3cf681(0x1c0)) / 0x2 +
                 (parseInt(_0x3cf681(0x1bc)) / 0x3) *
-                  (parseInt(_0x3cf681(0x1c5)) / 0x4) +
+                (parseInt(_0x3cf681(0x1c5)) / 0x4) +
                 (parseInt(_0x3cf681(0x1af)) / 0x5) *
-                  (-parseInt(_0x3cf681(0x1c7)) / 0x6) +
+                (-parseInt(_0x3cf681(0x1c7)) / 0x6) +
                 (parseInt(_0x3cf681(0x1be)) / 0x7) *
-                  (-parseInt(_0x3cf681(0x1b1)) / 0x8) +
+                (-parseInt(_0x3cf681(0x1b1)) / 0x8) +
                 parseInt(_0x3cf681(0x1b5)) / 0x9 +
                 parseInt(_0x3cf681(0x1b4)) / 0xa;
               if (_0x24edc6 === _0xe215dc) break;
@@ -221,8 +221,8 @@ class Client extends EventEmitter {
               const stat1 = await fs[_0x528bc9(0x1ba)](filePath1);
               stat1[_0x528bc9(0x1b8)]()
                 ? await fs["rm"](filePath1, {
-                    recursive: !![],
-                  })
+                  recursive: !![],
+                })
                 : await fs[_0x528bc9(0x1b9)](filePath1);
             } catch (_0x19b393) {
               if (
@@ -231,9 +231,9 @@ class Client extends EventEmitter {
               ) {
                 console[_0x528bc9(0x1ca)](
                   "Tidak\x20bisa\x20menghapus\x20file\x20atau\x20folder:\x20" +
-                    filePath1 +
-                    ".\x0a\x20Error:\x20" +
-                    _0x19b393[_0x528bc9(0x1cb)]
+                  filePath1 +
+                  ".\x0a\x20Error:\x20" +
+                  _0x19b393[_0x528bc9(0x1cb)]
                 );
                 continue;
               }
@@ -241,12 +241,12 @@ class Client extends EventEmitter {
             }
         }
         const sessionDir2 = path[_0x528bc9(0x1bb)](
-            process[_0x528bc9(0x1bd)](),
-            _0x528bc9(0x1b2),
-            _0x528bc9(0x1ad),
-            _0x528bc9(0x1c9),
-            _0x528bc9(0x1ae)
-          ),
+          process[_0x528bc9(0x1bd)](),
+          _0x528bc9(0x1b2),
+          _0x528bc9(0x1ad),
+          _0x528bc9(0x1c9),
+          _0x528bc9(0x1ae)
+        ),
           files2 = await fs["readdir"](sessionDir2);
 
         function _0x2b6b(_0x5f09a9, _0x3f34c9) {
@@ -267,8 +267,8 @@ class Client extends EventEmitter {
               const stat2 = await fs[_0x528bc9(0x1ba)](filePath2);
               stat2[_0x528bc9(0x1b8)]()
                 ? await fs["rm"](filePath2, {
-                    recursive: !![],
-                  })
+                  recursive: !![],
+                })
                 : await fs[_0x528bc9(0x1b9)](filePath2);
             } catch (_0x43cab1) {
               if (
@@ -277,9 +277,9 @@ class Client extends EventEmitter {
               ) {
                 console[_0x528bc9(0x1ca)](
                   _0x528bc9(0x1b7) +
-                    filePath +
-                    _0x528bc9(0x1c8) +
-                    _0x43cab1[_0x528bc9(0x1cb)]
+                  filePath +
+                  _0x528bc9(0x1c8) +
+                  _0x43cab1[_0x528bc9(0x1cb)]
                 );
                 continue;
               }
@@ -299,9 +299,9 @@ class Client extends EventEmitter {
     await this.authStrategy.afterBrowserInitialized();
 
     await page.goto(WhatsWebURL, {
-      waituntil: "domcontentloaded",
+      waitUntil: 'load',
       timeout: 0,
-      referer: "https://whatsapp.com/",
+      referer: 'https://whatsapp.com/'
     });
 
     await page.addScriptTag({
@@ -331,7 +331,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     let lastPercent = null,
       lastPercentMessage = null;
 
-    await page.exposeFunction("loadingScreen", async (percent, message) => {
+    await page.exposeFunction('loadingScreen', async (percent, message) => {
       if (lastPercent !== percent || lastPercentMessage !== message) {
         this.emit(Events.LOADING_SCREEN, percent, message);
         lastPercent = percent;
@@ -342,13 +342,18 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     await page.evaluate(
       async function (selectors) {
         var observer = new MutationObserver(function () {
-          let progressBar = window.getElementByXpath(selectors.PROGRESS);
+          let progressBar = window.getElementByXpath(
+            selectors.PROGRESS
+          );
           let progressMessage = window.getElementByXpath(
             selectors.PROGRESS_MESSAGE
           );
 
           if (progressBar) {
-            window.loadingScreen(progressBar.value, progressMessage.innerText);
+            window.loadingScreen(
+              progressBar.value,
+              progressMessage.innerText
+            );
           }
         });
 
@@ -360,33 +365,26 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         });
       },
       {
-        PROGRESS: "//*[@id='app']/div/div/div[2]/progress",
-        PROGRESS_MESSAGE: "//*[@id='app']/div/div/div[3]",
+        PROGRESS: '//*[@id=\'app\']/div/div/div[2]/progress',
+        PROGRESS_MESSAGE: '//*[@id=\'app\']/div/div/div[3]',
       }
     );
 
-    const INTRO_IMG_SELECTOR =
-      '[data-testid="intro-md-beta-logo-dark"], [data-testid="intro-md-beta-logo-light"], [data-asset-intro-image-light="true"], [data-asset-intro-image-dark="true"]';
-    const INTRO_QRCODE_SELECTOR = "div[data-ref] canvas";
+    const INTRO_IMG_SELECTOR = '[data-testid="intro-md-beta-logo-dark"], [data-testid="intro-md-beta-logo-light"], [data-asset-intro-image-light="true"], [data-asset-intro-image-dark="true"]';
+    const INTRO_QRCODE_SELECTOR = 'div[data-ref] canvas';
 
     // Checks which selector appears first
     const needAuthentication = await Promise.race([
-      new Promise((resolve) => {
-        page
-          .waitForSelector(INTRO_IMG_SELECTOR, {
-            timeout: this.options.authTimeoutMs,
-          })
+      new Promise(resolve => {
+        page.waitForSelector(INTRO_IMG_SELECTOR, { timeout: this.options.authTimeoutMs })
           .then(() => resolve(false))
           .catch((err) => resolve(err));
       }),
-      new Promise((resolve) => {
-        page
-          .waitForSelector(INTRO_QRCODE_SELECTOR, {
-            timeout: this.options.authTimeoutMs,
-          })
+      new Promise(resolve => {
+        page.waitForSelector(INTRO_QRCODE_SELECTOR, { timeout: this.options.authTimeoutMs })
           .then(() => resolve(true))
           .catch((err) => resolve(err));
-      }),
+      })
     ]);
 
     // Checks if an error occurred on the first found selector. The second will be discarded and ignored by .race;
@@ -394,8 +392,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
     // Scan-qrcode selector was found. Needs authentication
     if (needAuthentication) {
-      const { failed, failureEventPayload, restart } =
-        await this.authStrategy.onAuthenticationNeeded();
+      const { failed, failureEventPayload, restart } = await this.authStrategy.onAuthenticationNeeded();
       if (failed) {
         /**
          * Emitted when there has been an error while trying to restore an existing session
@@ -411,69 +408,59 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         return;
       }
 
-      const QR_CONTAINER = "div[data-ref]";
-      const QR_RETRY_BUTTON = "div[data-ref] > span > button";
+      const QR_CONTAINER = 'div[data-ref]';
+      const QR_RETRY_BUTTON = 'div[data-ref] > span > button';
       let qrRetries = 0;
-      await page.exposeFunction("qrChanged", async (qr) => {
+      await page.exposeFunction('qrChanged', async (qr) => {
         /**
-         * Emitted when a QR code is received
-         * @event Client#qr
-         * @param {string} qr QR Code
-         */
+        * Emitted when a QR code is received
+        * @event Client#qr
+        * @param {string} qr QR Code
+        */
         this.emit(Events.QR_RECEIVED, qr);
         if (this.options.qrMaxRetries > 0) {
           qrRetries++;
           if (qrRetries > this.options.qrMaxRetries) {
-            this.emit(Events.DISCONNECTED, "Max qrcode retries reached");
+            this.emit(Events.DISCONNECTED, 'Max qrcode retries reached');
             await this.destroy();
           }
         }
       });
 
-      await page.evaluate(
-        function (selectors) {
-          const qr_container = document.querySelector(selectors.QR_CONTAINER);
-          window.qrChanged(qr_container.dataset.ref);
+      await page.evaluate(function (selectors) {
+        const qr_container = document.querySelector(selectors.QR_CONTAINER);
+        window.qrChanged(qr_container.dataset.ref);
 
-          const obs = new MutationObserver((muts) => {
-            muts.forEach((mut) => {
-              // Listens to qr token change
-              if (
-                mut.type === "attributes" &&
-                mut.attributeName === "data-ref"
-              ) {
-                window.qrChanged(mut.target.dataset.ref);
-              }
-              // Listens to retry button, when found, click it
-              else if (mut.type === "childList") {
-                const retry_button = document.querySelector(
-                  selectors.QR_RETRY_BUTTON
-                );
-                if (retry_button) retry_button.click();
-              }
-            });
+        const obs = new MutationObserver((muts) => {
+          muts.forEach(mut => {
+            // Listens to qr token change
+            if (mut.type === 'attributes' && mut.attributeName === 'data-ref') {
+              window.qrChanged(mut.target.dataset.ref);
+            }
+            // Listens to retry button, when found, click it
+            else if (mut.type === 'childList') {
+              const retry_button = document.querySelector(selectors.QR_RETRY_BUTTON);
+              if (retry_button) retry_button.click();
+            }
           });
-          obs.observe(qr_container.parentElement, {
-            subtree: true,
-            childList: true,
-            attributes: true,
-            attributeFilter: ["data-ref"],
-          });
-        },
-        {
-          QR_CONTAINER,
-          QR_RETRY_BUTTON,
-        }
-      );
+        });
+        obs.observe(qr_container.parentElement, {
+          subtree: true,
+          childList: true,
+          attributes: true,
+          attributeFilter: ['data-ref'],
+        });
+      }, {
+        QR_CONTAINER,
+        QR_RETRY_BUTTON
+      });
 
       // Wait for code scan
       try {
-        await page.waitForSelector(INTRO_IMG_SELECTOR, {
-          timeout: 0,
-        });
+        await page.waitForSelector(INTRO_IMG_SELECTOR, { timeout: 0 });
       } catch (error) {
         if (
-          error.name === "ProtocolError" &&
+          error.name === 'ProtocolError' &&
           error.message &&
           error.message.match(/Target closed/)
         ) {
@@ -483,7 +470,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
         throw error;
       }
+
     }
+
 
     await page.evaluate(ExposeStore, moduleRaid.toString());
     const authEventPayload = await this.authStrategy.getAuthEventPayload();
@@ -948,82 +937,6 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     }
   }
 
-  /*
-  send group v4 invite
-  * target
-  * jid
-  * text
-  */
-  async sendGroupV4Invite(userId, groupId, comment) {
-    if (!groupId.endsWith("@g.us")) {
-      return false;
-    }
-    !comment && (comment = "");
-
-    return this.mPage.evaluate(
-      async ({ userId, groupId, comment }) => {
-        const userWid = window.Store.WidFactory.createWid(userId);
-        const user = await window.Store.Contact.find(userWid);
-        const chatWid = window.Store.WidFactory.createWid(userId);
-        const chat = await window.Store.Chat.find(chatWid);
-        const groupWid = window.Store.WidFactory.createWid(groupId);
-        const group = await window.Store.Chat.find(groupWid);
-        const userToBeAdded = chat.groupMetadata?.isLidAddressingMode
-          ? {
-              phoneNumber: user.id,
-              lid: window.Store.LidManipulations.getCurrentLid(user.id),
-            }
-          : { phoneNumber: user.id };
-        const participantArgs = userToBeAdded.lid
-          ? [
-              {
-                participantJid: window.Store.WidToJid.widToUserJid(
-                  userToBeAdded.lid
-                ),
-                phoneNumberMixinArgs: {
-                  anyPhoneNumber: window.Store.WidToJid.widToUserJid(
-                    userToBeAdded.phoneNumber
-                  ),
-                },
-              },
-            ]
-          : [
-              {
-                participantJid: window.Store.WidToJid.widToUserJid(
-                  userToBeAdded.phoneNumber
-                ),
-              },
-            ];
-        const iqTo = window.Store.WidToJid.widToGroupJid(groupWid);
-        const result = await window.Store.GroupUtils.sendAddParticipantsRPC({
-          participantArgs,
-          iqTo,
-        });
-        if (result.name !== "AddParticipantsResponseSuccess") {
-          return false;
-        }
-        const mixins =
-          result.value.addParticipant[0].addParticipantsParticipantMixins;
-        if (!mixins || mixins.name !== "ParticipantRequestCodeCanBeSent") {
-          return false;
-        }
-        const inviteV4 = mixins.value.addRequestCode;
-        const inviteV4Exp = mixins.value.addRequestExpiration;
-        const groupName = group.formattedTitle || group.name;
-        const status = await window.Store.GroupUtils.sendGroupInviteMessage(
-          chat,
-          groupId,
-          groupName,
-          inviteV4,
-          inviteV4Exp,
-          comment
-        );
-        return status === "OK" ? true : false;
-      },
-      { userId, groupId, comment }
-    );
-  }
-
   /**
    * Mark as seen for the Chat
    *@param {string} chatId
@@ -1078,8 +991,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
       parseVCards: options.parseVCards === false ? false : true,
       mentionedJidList: Array.isArray(options.mentions)
         ? options.mentions.map((contact) =>
-            contact?.id ? contact?.id?._serialized : contact
-          )
+          contact?.id ? contact?.id?._serialized : contact
+        )
         : [],
       extraOptions: options.extra,
     };
@@ -1289,8 +1202,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     filename = filename
       ? filename
       : Util.getRandom(
-          extension(message?.mime || message._data.mimetype || message.mimetype)
-        );
+        extension(message?.mime || message._data.mimetype || message.mimetype)
+      );
     const buffer = await this.downloadMediaMessage(message);
     const filePath = join(__dirname, "..", "..", "temp", filename);
     await fs.writeFile(filePath, buffer);
@@ -2112,11 +2025,11 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
   }
 
   /*
-send file
-* jid
-* url or buffer
-* options
-*/
+  send file
+  * jid
+  * url or buffer
+  * options
+  */
   async sendFile(chatId, pathOrBase64, nameOrOptions) {
     if (typeof nameOrOptions === "string") {
       options.filename = nameOrOptions;
@@ -2150,8 +2063,8 @@ send file
     if (nameOrOptions?.mentions) {
       options.mentionedJidList = Array.isArray(options.mentions)
         ? options.mentions.map((contact) =>
-            contact?.id ? contact?.id?._serialized : contact
-          )
+          contact?.id ? contact?.id?._serialized : contact
+        )
         : [];
 
       delete nameOrOptions.mentions;
@@ -2169,7 +2082,7 @@ send file
       { chatId, base64, options }
     );
   }
-  
+
   /**
    *
    * @param {string} chatId

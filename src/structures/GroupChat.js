@@ -58,16 +58,100 @@ class GroupChat extends Chat {
      * @param {Array<string>} participantIds 
      * @returns {Promise<Object>}
      */
-    async addParticipants(participantIds) {
-        if (!Array.isArray(participantIds)) {
-            participantIds = [participantIds]
-        } else {
-            participantIds = participantIds
-        }
+    async addParticipants(participantIds, options = {}) {
+        const data = await this.client.mPage.evaluate(async ({ groupId, participantIds, options }) => {
+            const { sleep = 500, autoSendInviteV4 = true, comment = '' } = options;
+            const groupWid = window.Store.WidFactory.createWid(groupId);
+            const group = await window.Store.Chat.find(groupWid);
+            !Array.isArray(participantIds) && (participantIds = [participantIds]);
 
-        return await this.client.mPage.evaluate(async ({ chatId, participants }) => {
-            return await window.WWebJS.group.addParticipants(chatId, participants);
-        }, { chatId: this.id._serialized, participants: participantIds });
+            let participantsToAdd = await Promise.all(participantIds.map(async p => {
+                const wid = window.Store.WidFactory.createWid(p);
+                return await window.Store.Contact.find(wid);
+            }));
+
+            const data = {};
+
+            const resultCodes = {
+                default: 'AddParticipantsError: An unknown error occupied while adding a participant',
+                isGroupEmpty: 'AddParticipantsError: You can\'t add a participant to an empty group',
+                iAmNotAdmin: 'AddParticipantsError: You have no admin rights to add a participant to a group',
+                200: 'The participant was added successfully',
+                403: 'The participant can be added by sending private invitation only',
+                408: 'You cannot add this participant because they recently left the group',
+                409: 'The participant is already a group member',
+                417: 'The participant can\'t be added to the community. You can invite them privately to join this group through its invite link',
+                419: 'The participant can\'t be added because the group is full'
+            };
+
+            const groupMetadata = group.groupMetadata;
+            const groupParticipants = groupMetadata?.participants;
+
+            if (!groupParticipants) {
+                return resultCodes.isGroupEmpty;
+            }
+
+            if (!groupParticipants.canAdd()) {
+                return resultCodes.iAmNotAdmin;
+            }
+
+            for (const participant of participantsToAdd) {
+                const participantId = participant.id._serialized;
+
+                data[participantId] = {
+                    code: undefined,
+                    message: undefined,
+                    isInviteV4Sent: false
+                };
+
+                if (groupParticipants.some(p => p.id._serialized === participantId)) {
+                    data[participantId].code = 409;
+                    data[participantId].message = resultCodes[409];
+                    continue;
+                }
+
+                const result =
+                    await window.WWebJS.getAddParticipantsRpcResult(groupMetadata, groupWid, participant.id);
+                const code = result.code;
+
+                if (code === 403) {
+                    window.Store.ContactCollection.gadd(participant.id, { silent: true });
+                }
+
+                data[participantId].code = code;
+                data[participantId].message = code === -1
+                    ? result.message
+                    : resultCodes[code] || resultCodes.default;
+
+                if (autoSendInviteV4 && [403, 417].includes(code)) {
+                    let userChat, isInviteV4Sent = false;
+
+                    if (result.name === 'ParticipantRequestCodeCanBeSent' &&
+                        (userChat = await window.Store.Chat.find(participant.id))) {
+                        const groupName = group.formattedTitle || group.name;
+                        const res = await window.Store.GroupUtils.sendGroupInviteMessage(
+                            userChat,
+                            group.id._serialized,
+                            groupName,
+                            result.inviteV4Code,
+                            result.inviteV4CodeExp,
+                            comment,
+                            await window.WWebJS.getProfilePicThumbBase64(groupWid)
+                        );
+                        isInviteV4Sent = res === 'OK';
+                    }
+
+                    data[participantId].isInviteV4Sent = isInviteV4Sent;
+                }
+
+                sleep && participantsToAdd.length > 1 &&
+                    await new Promise(resolve => setTimeout(resolve, sleep));
+            }
+
+            return JSON.stringify(data);
+        }, { groupId: this.id._serialized, participantIds, options });
+
+        return JSON.parse(data);
     }
 
     /**
@@ -115,7 +199,7 @@ class GroupChat extends Chat {
         } else {
             participantIds = participantIds
         }
-        
+
         return await this.client.mPage.evaluate(async ({ chatId, participantIds }) => {
             return await window.WWebJS.group.demoteParticipants(chatId, participantIds)
         }, { chatId: this.id._serialized, participantIds });
@@ -310,11 +394,11 @@ class GroupChat extends Chat {
 
             const SpamFlow = window.Store.SpamFlow
             if (!(type in SpamFlow)) throw `Type Not Found\n\n${Object.keys(SpamFlow).join('\n')}`
-            
+
             return await window.Store.GroupUtils.sendSpamExitClear(chat, SpamFlow[type])
         }, { chatId: this.id._serialized, type })
     }
-    
+
     /**
      * 
      * @param {String} participant 
