@@ -308,7 +308,7 @@ class Client extends EventEmitter {
       path: require.resolve("@wppconnect/wa-js"),
     });
 
-    await page.waitForFunction(() => window.WPP?.isReady);
+    await page.waitForFunction(() => window.WPP?.isReady, { timeout: 60000 });
 
     await page
       .evaluate(
