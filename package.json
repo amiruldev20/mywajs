@@ -42,6 +42,7 @@
     "file-type": "^18.2.1",
     "link-preview-js": "latest",
     "mime-types": "latest",
+    "mime": "latest",
     "node-webpmux": "^3.1.0",
     "os": "latest",
     "path": "^0.12.7",
