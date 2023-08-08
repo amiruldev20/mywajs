@@ -18,7 +18,8 @@ export {
     List, 
     Buttons, 
     PollVote, 
-    Call
+    Call,
+    LinkingMethod
 } from './src/structures/index.js';
 
 // Auth Strategies

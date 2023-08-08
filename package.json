@@ -1,6 +1,6 @@
 {
   "name": "mywajs",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "remake wwebjs using playwright and wajs",
   "main": "./index.js",
   "typings": "./index.d.ts",
@@ -41,7 +41,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "file-type": "^18.2.1",
     "link-preview-js": "latest",
-    "mime": "^3.0.0",
+    "mime-types": "^3.0.0",
     "node-webpmux": "^3.1.0",
     "os": "latest",
     "path": "^0.12.7",

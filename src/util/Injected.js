@@ -1273,10 +1273,9 @@ export const LoadUtils = () => {
 
   window.WWebJS.votePoll = async (pollCreationMessageId, selectedOptions) => {
     const msg = window.Store.Msg.get(pollCreationMessageId);
-    if (msg.type !== "poll_creation")
-      throw "Quoted message is not a poll creation message!";
+    if (msg.type !== 'poll_creation') throw 'Quoted message is not a poll creation message!';
     let localIdSet = new Set();
-    msg.pollOptions.map((a) => {
+    msg.pollOptions.map(a => {
       for (const option of selectedOptions) {
         if (a.name == option) localIdSet.add(a.localId);
       }
