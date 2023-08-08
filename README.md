@@ -15,6 +15,7 @@
 
 </p>
 
+### new linked device with phone (check docs)
 #### tq to: pedro (whatsapp-web.js) & edgard (wjs)
 
 ## Testing run
