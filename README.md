@@ -2,7 +2,7 @@
 # MYWAJS
 [COMMUNITY - CLICK HERE](https://chat.whatsapp.com/BIHE3USWr4lAnahwJTQEOX) - [DOCS MYWAJS - CLICK HERE](https://github.com/amiruldev20/mywajs/blob/v2/docs/home.md)
 
- > *NB*: this is whatsapp-web.js repo added with wajs wpp. Previously, permits had been granted to WPP
+ > *NB*: this is whatsapp-web.js fork with features from wajs wpp. Previously, permits had been granted by WPP
  
  <p align="center">
 <img width="" src="https://img.shields.io/github/repo-size/amiruldev20/mywajs?color=green&label=Repo%20Size&style=for-the-badge&logo=appveyor">
@@ -15,11 +15,11 @@
 
 </p>
 
-### new linked device with phone (check docs)
-#### tq to: pedro (whatsapp-web.js) & edgard (wjs)
+### New linked device with phone (check docs)
+#### Thanks to: pedro (whatsapp-web.js) & edgard (wjs)
 
-## Testing run
-| Platform | Work |
+## TESTED ON:
+| Platform | Status |
 | ---------|------|
 | Replit | ✅ |
 | VPS | ✅ |
@@ -28,7 +28,7 @@
 | Termux | ✅ |
 | Rdp | ✅ |
 
- ##  FUNCTION EXTRA
+ ##  EXTRA FUNCTION:
 | Feature  | Status |
 | ------------- | ------------- |
 | Convert ES Module To CommonJS | ✅ |
