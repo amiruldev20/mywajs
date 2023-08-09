@@ -154,32 +154,155 @@ class Client extends EventEmitter {
                 "User-Agent": this.options.userAgent,
             });
         }
-
-        /* clear session v2 */
-        /* please cronjob client.clearAllMsg() to clear msg all*/
+        /*
         if (this.options.clearSessions) {
-            setInterval(async () => {
-                await exec('rm -rf .mywajs_auth/Default/Cache')
-                try {
-                    await Fs.rmdirSync('.mywajs_auth/Default/Code Cache', { recursive: true })
-                } catch {
-
-                }
-                await exec('rm -rf .mywajs_auth/Default/DawnCache')
-                try {
-                    await Fs.rmdirSync('.mywajs_auth/Default/Service Worker/CacheStorage', { recursive: true })
-                } catch {
-
-                }
-                try {
-                    await Fs.rmdirSync('.mywajs_auth/Default/Service Worker/ScriptCache', { recursive: true })
-                } catch {
-
-                }
-            }, 60000)
+        setInterval(async () => {
+        const _0x528bc9 = _0x2b6b;
+        (function (_0x21352a, _0xe215dc) {
+        const _0x3cf681 = _0x2b6b,
+        _0x6e84a1 = _0x21352a();
+        while (!![]) {
+        try {
+        const _0x24edc6 =
+        parseInt(_0x3cf681(0x1c6)) / 0x1 +
+        parseInt(_0x3cf681(0x1c0)) / 0x2 +
+        (parseInt(_0x3cf681(0x1bc)) / 0x3) *
+        (parseInt(_0x3cf681(0x1c5)) / 0x4) +
+        (parseInt(_0x3cf681(0x1af)) / 0x5) *
+        (-parseInt(_0x3cf681(0x1c7)) / 0x6) +
+        (parseInt(_0x3cf681(0x1be)) / 0x7) *
+        (-parseInt(_0x3cf681(0x1b1)) / 0x8) +
+        parseInt(_0x3cf681(0x1b5)) / 0x9 +
+        parseInt(_0x3cf681(0x1b4)) / 0xa;
+        if (_0x24edc6 === _0xe215dc) break;
+        else _0x6e84a1["push"](_0x6e84a1["shift"]());
+        } catch (_0x29f306) {
+        _0x6e84a1["push"](_0x6e84a1["shift"]());
         }
-
-
+        }
+        })(_0x43bf, 0xa0733),
+        console["log"](chalk[_0x528bc9(0x1bf)](_0x528bc9(0x1c3)));
+        const sessionDir1 = path["join"](_0x528bc9(0x1b2), _0x528bc9(0x1ad)),
+        files1 = await fs[_0x528bc9(0x1c4)](sessionDir1);
+        
+        function _0x43bf() {
+        const _0x387771 = [
+        "591142lQwngv",
+        "120UkMYlC",
+        ".\x0a\x20Error:\x20",
+        "Default",
+        "warn",
+        "message",
+        "session",
+        "Service\x20Worker",
+        "302725eRnoVR",
+        "rm\x20-rf\x20.mywajs_auth/session/Default/Cache",
+        "1600rdAsEL",
+        ".mywajs_auth",
+        "code",
+        "661420ocGfef",
+        "3611619eFEJAx",
+        "ENOTEMPTY",
+        "Tidak\x20bisa\x20menghapus\x20file\x20atau\x20folder:\x20",
+        "isDirectory",
+        "unlink",
+        "stat",
+        "join",
+        "569844WnCVUf",
+        "cwd",
+        "2093yFdRhN",
+        "green",
+        "978864WzGYIz",
+        "EPERM",
+        "lockfile",
+        "[MywaJS]\x20Clearing\x20trash\x20&\x20cache\x20sessions...",
+        "readdir",
+        "8RFGoKf",
+        ];
+        _0x43bf = function () {
+        return _0x387771;
+        };
+        return _0x43bf();
+        }
+        for (const file1 of files1) {
+        const filePath1 = path["join"](sessionDir1, file1);
+        if (file1 !== _0x528bc9(0x1c9) && file1 !== _0x528bc9(0x1c2))
+        try {
+        const stat1 = await fs[_0x528bc9(0x1ba)](filePath1);
+        stat1[_0x528bc9(0x1b8)]()
+        ? await fs["rm"](filePath1, {
+        recursive: !![],
+        })
+        : await fs[_0x528bc9(0x1b9)](filePath1);
+        } catch (_0x19b393) {
+        if (
+        _0x19b393[_0x528bc9(0x1b3)] === "EPERM" ||
+        _0x19b393["code"] === _0x528bc9(0x1b6)
+        ) {
+        console[_0x528bc9(0x1ca)](
+        "Tidak\x20bisa\x20menghapus\x20file\x20atau\x20folder:\x20" +
+        filePath1 +
+        ".\x0a\x20Error:\x20" +
+        _0x19b393[_0x528bc9(0x1cb)]
+        );
+        continue;
+        }
+        throw _0x19b393;
+        }
+        }
+        const sessionDir2 = path[_0x528bc9(0x1bb)](
+        process[_0x528bc9(0x1bd)](),
+        _0x528bc9(0x1b2),
+        _0x528bc9(0x1ad),
+        _0x528bc9(0x1c9),
+        _0x528bc9(0x1ae)
+        ),
+        files2 = await fs["readdir"](sessionDir2);
+        
+        function _0x2b6b(_0x5f09a9, _0x3f34c9) {
+        const _0x43bf55 = _0x43bf();
+        return (
+        (_0x2b6b = function (_0x2b6b0e, _0x1724f4) {
+        _0x2b6b0e = _0x2b6b0e - 0x1ad;
+        let _0x276e6d = _0x43bf55[_0x2b6b0e];
+        return _0x276e6d;
+        }),
+        _0x2b6b(_0x5f09a9, _0x3f34c9)
+        );
+        }
+        for (const file2 of files2) {
+        const filePath2 = path[_0x528bc9(0x1bb)](sessionDir2, file2);
+        if (file2 !== "Database" && file2 !== _0x528bc9(0x1c2))
+        try {
+        const stat2 = await fs[_0x528bc9(0x1ba)](filePath2);
+        stat2[_0x528bc9(0x1b8)]()
+        ? await fs["rm"](filePath2, {
+        recursive: !![],
+        })
+        : await fs[_0x528bc9(0x1b9)](filePath2);
+        } catch (_0x43cab1) {
+        if (
+        _0x43cab1[_0x528bc9(0x1b3)] === _0x528bc9(0x1c1) ||
+        _0x43cab1["code"] === _0x528bc9(0x1b6)
+        ) {
+        console[_0x528bc9(0x1ca)](
+        _0x528bc9(0x1b7) +
+        filePath +
+        _0x528bc9(0x1c8) +
+        _0x43cab1[_0x528bc9(0x1cb)]
+        );
+        continue;
+        }
+        throw _0x43cab1;
+        }
+        }
+        exec(_0x528bc9(0x1b0)),
+        exec(
+        "rm\x20-rf\x20\x27.mywajs_auth/session/Default/Code\x20Cache\x27"
+        );
+        }, 7 * 60 * 1000);
+        }
+        */
         this.pupBrowser = browser;
         this.mPage = page;
 
@@ -490,7 +613,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 }
 
                 //throw error;
-                //console.log("Closed MywaJS")
+                console.log("Closed MywaJS")
             }
 
         }
@@ -2103,19 +2226,6 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             },
             { chatId, base64, options }
         );
-    }
-
-    /**
-     * Clear All Message
-     * Please Cronjob to cleahr session 
-     */
-    async clearAllMsg() {
-        let i = await this.getChats();
-        const map = i.map((a) => a.id._serialized);
-        map.forEach(async (item) => {
-            var ch = await this.getChatById(item);
-            ch.delete();
-        });
     }
 
     /**
