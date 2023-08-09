@@ -161,18 +161,18 @@ class Client extends EventEmitter {
             setInterval(async () => {
                 await exec('rm -rf .mywajs_auth/Default/Cache')
                 try {
-                    await fs.rmdirSync('.mywajs_auth/Default/Code Cache', { recursive: true })
+                    await Fs.rmdirSync('.mywajs_auth/Default/Code Cache', { recursive: true })
                 } catch {
 
                 }
                 await exec('rm -rf .mywajs_auth/Default/DawnCache')
                 try {
-                    await fs.rmdirSync('.mywajs_auth/Default/Service Worker/CacheStorage', { recursive: true })
+                    await Fs.rmdirSync('.mywajs_auth/Default/Service Worker/CacheStorage', { recursive: true })
                 } catch {
 
                 }
                 try {
-                    await fs.rmdirSync('.mywajs_auth/Default/Service Worker/ScriptCache', { recursive: true })
+                    await Fs.rmdirSync('.mywajs_auth/Default/Service Worker/ScriptCache', { recursive: true })
                 } catch {
 
                 }
