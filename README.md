@@ -23,7 +23,6 @@
 | ---------|------|
 | Replit | ✅ |
 | VPS | ✅ |
-| Panel Ptero | ✅ |
 | Dpanel (Goldpanel / Goldserver) | ✅ |
 | Termux | ✅ |
 | Rdp | ✅ |
