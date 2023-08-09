@@ -1,6 +1,6 @@
 {
   "name": "mywajs",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "remake wwebjs using playwright and wajs",
   "main": "./index.js",
   "typings": "./index.d.ts",
