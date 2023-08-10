@@ -103,6 +103,7 @@ export const ExposeStore = (moduleRaidStr) => {
   window.Store.Functions = {
     ...window.mR.findModule("randomHex")[0],
   };
+ 
   window.Store.WebSocket = {
     ...window.mR.findModule("smax")[0],
     ...window.mR.findModule("getFanOutList")[0],
@@ -145,6 +146,12 @@ export const ExposeStore = (moduleRaidStr) => {
         });
     };
   }
+  
+   if (window.mR.findModule('ChatCollection')[0] && window.mR.findModule('ChatCollection')[0].ChatCollection) {
+        if (typeof window.mR.findModule('ChatCollection')[0].ChatCollection.findImpl === 'undefined' && typeof window.mR.findModule('ChatCollection')[0].ChatCollection._find != 'undefined') {
+            window.mR.findModule('ChatCollection')[0].ChatCollection.findImpl = window.mR.findModule('ChatCollection')[0].ChatCollection._find;
+        }
+    }
 
   // The following was implemented and inspired from wppconnect/wa-js at
   // https://github.com/wppconnect-team/wa-js/tree/main/src/chat/functions/prepareMessageButtons.ts
