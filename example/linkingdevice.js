@@ -4,36 +4,17 @@ import util from 'util'
 const client = new Client({
     linkingMethod: new LinkingMethod({
         phone: {
-            number: "6285155060279"
+            number: "628xx"
         },
     }),
     playwright: {
-        headless: false,
-        devtools: false,
-        args: [
-            '--aggressive-tab-discard',
-            '--disable-accelerated-2d-canvas',
-            '--disable-application-cache',
-            '--disable-cache',
-            '--disable-dev-shm-usage',
-            '--disable-gpu',
-            '--disable-offline-load-stale-cache',
-            '--disable-setuid-sandbox',
-            '--disable-setuid-sandbox',
-            '--disk-cache-size=0',
-            '--ignore-certificate-errors',
-            '--no-first-run',
-            '--no-sandbox',
-            '--no-zygote',
-        ],
-        bypassCSP: true,
-        userDataDir: ".mywajs_auth"
-    },
-    markOnlineAvailable: true,
-    qrMaxRetries: 6,
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
-    takeoverTimeoutMs: 'Infinity'
-})
+       headless: true,
+       devtools: false,
+       userDataDir: ".mywajs_auth"
+   },
+   markOnlineAvailable: true,
+   authTimeoutMs: 60000
+  })
 
 client.initialize();
 
@@ -116,6 +97,31 @@ client.on('message', async msg => {
         const id = msg.body.split(" ")[1]
         const get = await client.getMessageById(id)
         msg.reply(util.format(get))
+
+    } else if (msg.body.startsWith("inviteinfo ")) {
+        // get detail code invite
+        const code = msg.body.split(" ")[1]
+        const get = await client.getInviteInfo(code)
+        msg.reply(util.format(get))
+
+    } else if (msg.body.startsWith("acclink ")) {
+        // accept invite via link
+        const get = msg.body.split(" ")[1]
+        const code = get.replace("https://chat.whatsapp.com/", "")
+        const acc = await client.acceptInvite(code)
+        msg.reply(util.format(acc))
+
+    } else if (msg.body.startsWith("setbio ")) {
+        // set status bio
+        const txt = msg.body.split(" ")[1]
+        const res = await client.setStatus(txt)
+        msg.reply(util.format(res))
+
+    } else if (msg.body.startsWith("setname ")) {
+        // set name bot
+        const name = msg.body.split(" ")[1]
+        await client.setName(name)
+        msg.reply("done")
 
     } else if (msg.body.startsWith('!subject ')) {
         // Change the group subject
