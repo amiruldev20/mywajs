@@ -1817,6 +1817,134 @@ class Client extends EventEmitter {
             return await window.Store.Label.addOrRemoveLabels(actions, chats);
         }, labelIds, chatIds);
     }
+
+    /*********************************/
+    //PAGE NEW FUNCTION              //
+    /********************************/
+
+    /*
+     * Group metadata
+     * param:
+     * chatId (string)
+     */
+    async groupMetadata(chatId) {
+        let chat = await this.mPage.evaluate(async (chatId) => {
+            let chatWid = await window.Store.WidFactory.createWid(chatId);
+            let chat = await window.Store.GroupMetadata.find(chatWid);
+
+            return chat.serialize();
+        }, chatId);
+
+        if (!chat) return false;
+        return chat;
+    }
+
+    /*
+     * Get name whatsapp
+     * param:
+     * jid (string)
+     */
+    async getName(jid) {
+        const contact = await this.getContactById(jid);
+        return (
+            contact.name || contact.pushname || contact.shortName || contact.number
+        );
+    }
+
+    /*
+     * Download media
+     * param:
+     * msg (object media)
+     */
+    async downloadMediaMessage(msg) {
+        if (!Boolean(msg.mediaKey && msg.directPath))
+            throw new Error("Not Media Message");
+
+        const result = await this.mPage.evaluate(
+            async ({
+                directPath,
+                encFilehash,
+                filehash,
+                mediaKey,
+                type,
+                mediaKeyTimestamp,
+                mimetype,
+                filename,
+                size,
+                _serialized,
+            }) => {
+                try {
+                    const decryptedMedia = await (
+                        window.Store.DownloadManager?.downloadAndMaybeDecrypt ||
+                        window.Store.DownloadManager?.downloadAndDecrypt
+                    )({
+                        directPath,
+                        encFilehash,
+                        filehash,
+                        mediaKey,
+                        mediaKeyTimestamp,
+                        type: type === "chat" ? mimetype.split("/")[0] || type : type,
+                        signal: new AbortController().signal,
+                    });
+
+                    const data = await window.WWebJS.arrayBufferToBase64(decryptedMedia);
+
+                    return {
+                        data,
+                        mimetype: mimetype,
+                        filename: filename,
+                        filesize: size,
+                    };
+                } catch (e) {
+                    const blob = await window.WWebJS.chat.downloadMedia(_serialized);
+                    return {
+                        data: await window.WWebJS.util.blobToBase64(blob),
+                        mimetype: mimetype,
+                        filename: filename,
+                        filesize: size,
+                    };
+                }
+            }, {
+                directPath: msg.directPath,
+                encFilehash: msg.encFilehash,
+                filehash: msg.filehash,
+                mediaKey: msg.mediaKey,
+                type: msg.type,
+                mediaKeyTimestamp: msg.mediaKeyTimestamp,
+                mimetype: msg.mime,
+                filename: msg.filename,
+                size: msg.fileSize,
+                _serialized: msg.id._serialized,
+            }
+        );
+
+        if (!result) return undefined;
+        return Util.base64ToBuffer(result?.data);
+    }
+
+    /*
+     * Download media and save
+     * param:
+     * message (object media)
+     * filename (string)
+     */
+    async downloadAndSaveMediaMessage(message, filename) {
+        if (!message.isMedia) return;
+
+        filename = filename ?
+            filename :
+            Util.getRandom(
+                extension(message?.mime || message._data.mimetype || message.mimetype)
+            );
+        const buffer = await this.downloadMediaMessage(message);
+        const filePath = join(__dirname, "..", "..", "temp", filename);
+        await fs.writeFile(filePath, buffer);
+
+        return filePath;
+    }
+
+
+
 }
 
 export default Client;
