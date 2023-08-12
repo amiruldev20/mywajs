@@ -1,8 +1,17 @@
+/*
+ * MywaJS 2023
+ * re-developed wwebjs
+ * using with playwright & wajs
+ * contact:
+ * wa: 085157489446
+ * ig: amirul.dev
+ */
+
 'use strict';
 
-import Base from './Base.js';
+import Base from './Base.js'
 // eslint-disable-next-line no-unused-vars
-import Chat from './Chat.js';
+import Chat from './Chat.js'
 
 /**
  * WhatsApp Business Label information

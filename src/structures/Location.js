@@ -1,3 +1,12 @@
+/*
+ * MywaJS 2023
+ * re-developed wwebjs
+ * using with playwright & wajs
+ * contact:
+ * wa: 085157489446
+ * ig: amirul.dev
+ */
+
 'use strict';
 
 /**
@@ -30,4 +39,4 @@ class Location {
     }
 }
 
-export default Location
+export default Location;

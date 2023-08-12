@@ -1,3 +1,12 @@
+/*
+ * MywaJS 2023
+ * re-developed wwebjs
+ * using with playwright & wajs
+ * contact:
+ * wa: 085157489446
+ * ig: amirul.dev
+ */
+
 'use strict';
 
 import path from 'path';
@@ -12,6 +21,7 @@ import axios from 'axios';
 import { fileTypeFromBuffer } from "file-type"
 
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+
 
 /**
  * Utility methods
@@ -143,7 +153,7 @@ class Util {
             `${Crypto.randomBytes(6).readUIntLE(0, 6).toString(36)}.webp`
         );
 
-        const stream = new Readable();
+        const stream = new (require('stream').Readable)();
         const buffer = Buffer.from(
             media.data.replace(`data:${media.mimetype};base64,`, ''),
             'base64'
@@ -266,93 +276,6 @@ class Util {
     static setFfmpegPath(path) {
         ffmpeg.setFfmpegPath(path);
     }
-
-    /**
-     * 
-     * @param {*} color hex
-     * @returns 
-     */
-    static assertColor(color) {
-        let assertedColor;
-        if (typeof color === 'number') {
-            assertedColor = color > 0 ? color : 0xffffffff + Number(color) + 1;
-        } else if (typeof color === 'string') {
-            let hex = color.trim().replace('#', '');
-            if (hex.length <= 6) {
-                hex = 'FF' + hex.padStart(6, '0');
-            }
-            assertedColor = parseInt(hex, 16);
-        } else {
-            throw new Error(color);
-        }
-        return assertedColor;
-    }
-
-    static fetchBuffer(string, options = {}) {
-        return new Promise(async (resolve, reject) => {
-            if (this.isUrl(string)) {
-                let buffer = await axios({
-                    url: string,
-                    method: "GET",
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36',
-                        'Referer': string
-                    },
-                    responseType: 'arraybuffer',
-                    ...options
-                })
-
-                resolve(buffer.data)
-            } else if (Buffer.isBuffer(string)) {
-                resolve(string)
-            } else if (/^data:.*?\/.*?;base64,/i.test(string)) {
-                let buffer = Buffer.from(string.split`,`[1], 'base64')
-                resolve(buffer)
-            } else {
-                let buffer = Fs.readFileSync(string)
-                resolve(buffer)
-            }
-        })
-    }
-
-    static async getFile(PATH, save) {
-    try {
-      let filename = 'Not Saved'
-      let data
-      if (/^https?:\/\//.test(PATH)) {
-        data = await this.fetchBuffer(PATH)
-      } else if (/^data:.*?\/.*?;base64,/i.test(PATH) || this.isBase64(PATH)) {
-        data = Buffer.from(PATH.split`,`[1], 'base64')
-      } else if (Fs.existsSync(PATH) && (Fs.statSync(PATH)).isFile()) {
-        data = Fs.readFileSync(PATH)
-      } else if (Buffer.isBuffer(PATH)) {
-        data = PATH
-      } else {
-        data = Buffer.alloc(20)
-      }
-
-      let type = await fileTypeFromBuffer(data) || {
-        mime: 'application/octet-stream',
-        ext: '.bin'
-      }
-
-      if (data && save) {
-        filename = path.join(__dirname, "..", "..", 'temp', new Date * 1 + "." + type.ext)
-        Fs.promises.writeFile(filename, data)
-      }
-      let size = Buffer.byteLength(data)
-      return {
-        filename,
-        size,
-        sizeH: this.formatSize(size),
-        ...type,
-        data
-      }
-    } catch { }
-  }
-
-
-
 }
 
-export default Util
+export default Util;

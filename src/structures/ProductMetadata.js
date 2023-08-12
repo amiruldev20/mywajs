@@ -1,4 +1,13 @@
-import Base from './Base.js';
+/*
+ * MywaJS 2023
+ * re-developed wwebjs
+ * using with playwright & wajs
+ * contact:
+ * wa: 085157489446
+ * ig: amirul.dev
+ */
+
+import Base from './Base.js'
 
 class ProductMetadata extends Base {
     constructor(client, data) {

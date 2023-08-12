@@ -1,6 +1,15 @@
+/*
+ * MywaJS 2023
+ * re-developed wwebjs
+ * using with playwright & wajs
+ * contact:
+ * wa: 085157489446
+ * ig: amirul.dev
+ */
+
 'use strict';
 
-import BaseAuthStrategy from './BaseAuthStrategy.js'
+import BaseAuthStrategy from "./BaseAuthStrategy.js"
 
 /**
  * Legacy session auth strategy

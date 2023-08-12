@@ -1,3 +1,12 @@
+/*
+ * MywaJS 2023
+ * re-developed wwebjs
+ * using with playwright & wajs
+ * contact:
+ * wa: 085157489446
+ * ig: amirul.dev
+ */
+
 'use strict';
 
 import fs from 'fs';
@@ -73,7 +82,7 @@ class MessageMedia {
 
         async function fetchData (url, options) {
             const reqOptions = Object.assign({ headers: { accept: 'image/* video/* text/* audio/*' } }, options);
-            const response = await axios.get(url, reqOptions);
+            const response = await fetch(url, reqOptions);
             const mime = response.headers.get('Content-Type');
             const size = response.headers.get('Content-Length');
 
