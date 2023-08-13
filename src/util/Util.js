@@ -21,6 +21,7 @@ import {
 import fs from 'fs/promises';
 import Fs from 'fs';
 import axios from 'axios';
+import BodyForm from "form-data";
 import {
     fileTypeFromBuffer
 } from "file-type"
@@ -398,6 +399,26 @@ class Util {
             throw e
         }
     }
+    
+    /* upload media */
+    static upload(buffer, exts) {
+		return new Promise(async (resolve, reject) => {
+			const { ext, data: buffers } = await this.getFile(buffer)
+			const form = new BodyForm();
+			form.append("files[]", buffers, this.getRandom(exts || ext))
+			await axios({
+				url: "https://pomf.lain.la/upload.php",
+				method: "POST",
+				headers: {
+					"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+					...form.getHeaders()
+				},
+				data: form
+			}).then((data) => {
+				resolve(data.data.files[0])
+			}).catch((err) => resolve(err))
+		})
+	}
 
 
 

