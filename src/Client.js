@@ -26,7 +26,7 @@ import {
 } from "./util/Injected.js";
 import ChatFactory from "./factories/ChatFactory.js";
 import ContactFactory from "./factories/ContactFactory.js";
-import WebCacheFactory from './webCache/WebCacheFactory.js';
+
 import {
     PollVote,
     ClientInfo,
@@ -239,7 +239,6 @@ class Client extends EventEmitter {
         this.mPage = page;
 
         await this.authStrategy.afterBrowserInitialized();
-        // await this.initWebVersionCache();
 
         await page.goto(WhatsWebURL, {
             waitUntil: 'load',
@@ -1083,36 +1082,6 @@ class Client extends EventEmitter {
      * Update function by Amirul Dev
      */
 
-
-    /*
-     * Version web cache
-     */
-    async initWebVersionCache() {
-        const {
-            type: webCacheType,
-            ...webCacheOptions
-        } = this.options.webVersionCache;
-        const webCache = WebCacheFactory.createWebCache(webCacheType, webCacheOptions);
-
-        const requestedVersion = this.options.webVersion;
-        const versionContent = await webCache.resolve(requestedVersion);
-
-        if (versionContent) {
-            await this.mPage.route(WhatsWebURL, (route) => {
-                route.fulfill({
-                    status: 200,
-                    contentType: 'text/html',
-                    body: versionContent,
-                });
-            });
-        } else {
-            this.mPage.on('response', async (res) => {
-                if (res.ok() && res.url() === WhatsWebURL) {
-                    await webCache.persist(await res.text());
-                }
-            });
-        }
-    }
 
     /*
      * Close client
