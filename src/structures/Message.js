@@ -394,12 +394,12 @@ class Message extends Base {
     async forward(chat) {
         const chatId = typeof chat === 'string' ? chat : chat.id._serialized;
 
-        await this.client.mPage.evaluate(async (msgId, chatId) => {
+        await this.client.mPage.evaluate(async ({msgId, chatId}) => {
             let msg = window.Store.Msg.get(msgId);
             let chat = window.Store.Chat.get(chatId);
 
             return await chat.forwardMessages([msg]);
-        }, this.id._serialized, chatId);
+        }, {msgId: this.id._serialized, chatId});
     }
 
     /**
@@ -463,7 +463,7 @@ class Message extends Base {
      * @param {?boolean} everyone If true and the message is sent by the current user or the user is an admin, will delete it for everyone in the chat.
      */
     async delete(everyone) {
-        await this.client.mPage.evaluate(async (msgId, everyone) => {
+        await this.client.mPage.evaluate(async ({msgId, everyone}) => {
             let msg = window.Store.Msg.get(msgId);
             let chat = await window.Store.Chat.find(msg.id.remote);
 
@@ -473,7 +473,7 @@ class Message extends Base {
             }
 
             return window.Store.Cmd.sendDeleteMsgs(chat, [msg], true);
-        }, this.id._serialized, everyone);
+        }, {msgId: this.id._serialized, everyone});
     }
 
     /**
@@ -536,9 +536,9 @@ class Message extends Base {
      */
     async getOrder() {
         if (this.type === MessageTypes.ORDER) {
-            const result = await this.client.mPage.evaluate((orderId, token, chatId) => {
+            const result = await this.client.mPage.evaluate(({orderId, token, chatId}) => {
                 return window.WWebJS.getOrderDetail(orderId, token, chatId);
-            }, this.orderId, this.token, this._getChatId());
+            }, {orderId: this.orderId, token: this.token, chatId: this._getChatId()});
             if (!result) return undefined;
             return new Order(this.client, result);
         }
@@ -617,7 +617,7 @@ class Message extends Base {
         if (!this.fromMe) {
             return null;
         }
-        const messageEdit = await this.client.mPage.evaluate(async (msgId, message, options) => {
+        const messageEdit = await this.client.mPage.evaluate(async ({msgId, message, options}) => {
             let msg = window.Store.Msg.get(msgId);
             if (!msg) return null;
 
@@ -627,7 +627,7 @@ class Message extends Base {
                 return msgEdit.serialize();
             }
             return null;
-        }, this.id._serialized, content, internalOptions);
+        }, {msgId: this.id._serialized, content, internalOptions});
         if (messageEdit) {
             return new Message(this.client, messageEdit);
         }

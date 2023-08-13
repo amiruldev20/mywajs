@@ -6,7 +6,6 @@
  * wa: 085157489446
  * ig: amirul.dev
  */
-
 'use strict';
 
 // Exposes the internal Store to the WhatsApp Web client
@@ -72,7 +71,7 @@ export const ExposeStore = (moduleRaidStr) => {
         ...window.mR.findModule('toWebpSticker')[0],
         ...window.mR.findModule('addWebpMetadata')[0]
     };
-  
+
     window.Store.GroupUtils = {
         ...window.mR.findModule('createGroup')[0],
         ...window.mR.findModule('setGroupDescription')[0],
@@ -95,6 +94,14 @@ export const ExposeStore = (moduleRaidStr) => {
         }
     }
 
+    // VERSION >= 2.2330.X
+    const _getLinkPreview = window.mR.findModule('getLinkPreview');
+    if (_getLinkPreview && _getLinkPreview[0].getLinkPreview && _getLinkPreview[0].getLinkPreview.length === 0) {
+        window.Store.getLinkPreview = _getLinkPreview[0].getLinkPreview;
+    } else {
+        window.Store.getLinkPreview = () => null;
+    }
+
     // TODO remove these once everybody has been updated to WWebJS with legacy sessions removed
     const _linkPreview = window.mR.findModule('queryLinkPreview');
     if (_linkPreview && _linkPreview[0] && _linkPreview[0].default) {
@@ -102,20 +109,22 @@ export const ExposeStore = (moduleRaidStr) => {
     }
 
     const _isMDBackend = window.mR.findModule('isMDBackend');
-    if(_isMDBackend && _isMDBackend[0] && _isMDBackend[0].isMDBackend) {
+    if (_isMDBackend && _isMDBackend[0] && _isMDBackend[0].isMDBackend) {
         window.Store.MDBackend = _isMDBackend[0].isMDBackend();
     } else {
         window.Store.MDBackend = true;
     }
 
     const _features = window.mR.findModule('FEATURE_CHANGE_EVENT')[0];
-    if(_features) {
+    if (_features) {
         window.Store.Features = _features.LegacyPhoneFeatures;
     }
 };
 
 export const LoadUtils = () => {
-    window.WWebJS = { ...WPP };
+    window.WWebJS = {
+        ...WPP
+    };
 
     window.WWebJS.sendSeen = async (chatId) => {
         let chat = window.Store.Chat.get(chatId);
@@ -130,16 +139,16 @@ export const LoadUtils = () => {
     window.WWebJS.sendMessage = async (chat, content, options = {}) => {
         let attOptions = {};
         if (options.attachment) {
-            attOptions = options.sendMediaAsSticker
-                ? await window.WWebJS.processStickerData(options.attachment)
-                : await window.WWebJS.processMediaData(options.attachment, {
+            attOptions = options.sendMediaAsSticker ?
+                await window.WWebJS.processStickerData(options.attachment) :
+                await window.WWebJS.processMediaData(options.attachment, {
                     forceVoice: options.sendAudioAsVoice,
                     forceDocument: options.sendMediaAsDocument,
                     forceGif: options.sendVideoAsGif
                 });
-            
-            if (options.caption){
-                attOptions.caption = options.caption; 
+
+            if (options.caption) {
+                attOptions.caption = options.caption;
             }
             content = options.sendMediaAsSticker ? undefined : attOptions.preview;
             attOptions.isViewOnce = options.isViewOnce;
@@ -152,8 +161,8 @@ export const LoadUtils = () => {
             let quotedMessage = window.Store.Msg.get(options.quotedMessageId);
 
             // TODO remove .canReply() once all clients are updated to >= v2.2241.6
-            const canReply = window.Store.ReplyUtils ? 
-                window.Store.ReplyUtils.canReplyMsg(quotedMessage.unsafe()) : 
+            const canReply = window.Store.ReplyUtils ?
+                window.Store.ReplyUtils.canReplyMsg(quotedMessage.unsafe()) :
                 quotedMessage.canReply();
 
             if (canReply) {
@@ -195,7 +204,7 @@ export const LoadUtils = () => {
                 body: undefined
             };
             delete options.contactCardList;
-        } else if (options.parseVCards && typeof (content) === 'string' && content.startsWith('BEGIN:VCARD')) {
+        } else if (options.parseVCards && typeof(content) === 'string' && content.startsWith('BEGIN:VCARD')) {
             delete options.parseVCards;
             try {
                 const parsed = window.Store.VCard.parseVcard(content);
@@ -214,19 +223,37 @@ export const LoadUtils = () => {
             delete options.linkPreview;
 
             // Not supported yet by WhatsApp Web on MD
-            if(!window.Store.MDBackend) {
+            if (!window.Store.MDBackend) {
                 const link = window.Store.Validators.findLink(content);
                 if (link) {
                     const preview = await window.Store.Wap.queryLinkPreview(link.url);
                     preview.preview = true;
                     preview.subtype = 'url';
-                    options = { ...options, ...preview };
+                    options = {
+                        ...options,
+                        ...preview
+                    };
+                }
+            } else {
+                const link = window.Store.Validators.findLink(content);
+                if (link) {
+                    try {
+                        const preview = await window.Store.getLinkPreview(link);
+                        if (preview) {
+                            preview.data.subtype = 'url';
+                            options = {
+                                ...options,
+                                ...preview.data
+                            };
+                        }
+                    } catch {
+                        /** empty */ }
                 }
             }
         }
-        
+
         let buttonOptions = {};
-        if(options.buttons){
+        if (options.buttons) {
             let caption;
             if (options.buttons.type === 'chat') {
                 content = options.buttons.body;
@@ -268,7 +295,7 @@ export const LoadUtils = () => {
         const meUser = window.Store.User.getMaybeMeUser();
         const isMD = window.Store.MDBackend;
         const newId = await window.Store.MsgKey.newId();
-        
+
         const newMsgId = new window.Store.MsgKey({
             from: meUser,
             to: chat.id,
@@ -308,12 +335,12 @@ export const LoadUtils = () => {
         await window.Store.SendMessage.addAndSendMsgToChat(chat, message);
         return window.Store.Msg.get(newMsgId._serialized);
     };
-	
+
     window.WWebJS.editMessage = async (msg, content, options = {}) => {
 
         const extraOptions = options.extraOptions || {};
         delete options.extraOptions;
-        
+
         if (options.mentionedJidList) {
             options.mentionedJidList = options.mentionedJidList.map(cId => window.Store.Contact.get(cId).id);
         }
@@ -322,13 +349,16 @@ export const LoadUtils = () => {
             options.linkPreview = null;
 
             // Not supported yet by WhatsApp Web on MD
-            if(!window.Store.MDBackend) {
+            if (!window.Store.MDBackend) {
                 const link = window.Store.Validators.findLink(content);
                 if (link) {
                     const preview = await window.Store.Wap.queryLinkPreview(link.url);
                     preview.preview = true;
                     preview.subtype = 'url';
-                    options = { ...options, ...preview };
+                    options = {
+                        ...options,
+                        ...preview
+                    };
                 }
             }
         }
@@ -385,10 +415,16 @@ export const LoadUtils = () => {
         return stickerInfo;
     };
 
-    window.WWebJS.processMediaData = async (mediaInfo, { forceVoice, forceDocument, forceGif }) => {
+    window.WWebJS.processMediaData = async (mediaInfo, {
+        forceVoice,
+        forceDocument,
+        forceGif
+    }) => {
         const file = window.WWebJS.mediaInfoToFile(mediaInfo);
         const mData = await window.Store.OpaqueData.createFromData(file, file.type);
-        const mediaPrep = window.Store.MediaPrep.prepRawMedia(mData, { asDocument: forceDocument });
+        const mediaPrep = window.Store.MediaPrep.prepRawMedia(mData, {
+            asDocument: forceDocument
+        });
         const mediaData = await mediaPrep.waitForPrep();
         const mediaObject = window.Store.MediaObject.getOrCreateMediaObject(mediaData.filehash);
 
@@ -469,7 +505,9 @@ export const LoadUtils = () => {
         }
 
         if (typeof msg.id.remote === 'object') {
-            msg.id = Object.assign({}, msg.id, { remote: msg.id.remote._serialized });
+            msg.id = Object.assign({}, msg.id, {
+                remote: msg.id.remote._serialized
+            });
         }
 
         delete msg.pendingAckUpdate;
@@ -490,7 +528,7 @@ export const LoadUtils = () => {
             await window.Store.GroupMetadata.update(chatWid);
             res.groupMetadata = chat.groupMetadata.serialize();
         }
-        
+
         res.lastMessage = null;
         if (res.msgs && res.msgs.length) {
             const lastMessage = chat.lastReceivedKey ? window.Store.Msg.get(chat.lastReceivedKey._serialized) : null;
@@ -498,7 +536,7 @@ export const LoadUtils = () => {
                 res.lastMessage = window.WWebJS.getMessageModel(lastMessage);
             }
         }
-        
+
         delete res.msgs;
         delete res.msgUnsyncedButtonReplyMsgs;
         delete res.unsyncedButtonReplies;
@@ -528,49 +566,48 @@ export const LoadUtils = () => {
         }
 
         // TODO: remove useOldImplementation and its checks once all clients are updated to >= v2.2327.4
-        const useOldImplementation
-            = window.compareWwebVersions(window.Debug.VERSION, '<', '2.2327.4');
+        const useOldImplementation = window.compareWwebVersions(window.Debug.VERSION, '<', '2.2327.4');
 
-        res.isMe = useOldImplementation
-            ? contact.isMe
-            : window.Store.ContactMethods.getIsMe(contact);
-        res.isUser = useOldImplementation
-            ? contact.isUser
-            : window.Store.ContactMethods.getIsUser(contact);
-        res.isGroup = useOldImplementation
-            ? contact.isGroup
-            : window.Store.ContactMethods.getIsGroup(contact);
-        res.isWAContact = useOldImplementation
-            ? contact.isWAContact
-            : window.Store.ContactMethods.getIsWAContact(contact);
-        res.isMyContact = useOldImplementation
-            ? contact.isMyContact
-            : window.Store.ContactMethods.getIsMyContact(contact);
+        res.isMe = useOldImplementation ?
+            contact.isMe :
+            window.Store.ContactMethods.getIsMe(contact);
+        res.isUser = useOldImplementation ?
+            contact.isUser :
+            window.Store.ContactMethods.getIsUser(contact);
+        res.isGroup = useOldImplementation ?
+            contact.isGroup :
+            window.Store.ContactMethods.getIsGroup(contact);
+        res.isWAContact = useOldImplementation ?
+            contact.isWAContact :
+            window.Store.ContactMethods.getIsWAContact(contact);
+        res.isMyContact = useOldImplementation ?
+            contact.isMyContact :
+            window.Store.ContactMethods.getIsMyContact(contact);
         res.isBlocked = contact.isContactBlocked;
-        res.userid = useOldImplementation
-            ? contact.userid
-            : window.Store.ContactMethods.getUserid(contact);
-        res.isEnterprise = useOldImplementation
-            ? contact.isEnterprise
-            : window.Store.ContactMethods.getIsEnterprise(contact);
-        res.verifiedName = useOldImplementation
-            ? contact.verifiedName
-            : window.Store.ContactMethods.getVerifiedName(contact);
-        res.verifiedLevel = useOldImplementation
-            ? contact.verifiedLevel
-            : window.Store.ContactMethods.getVerifiedLevel(contact);
-        res.statusMute = useOldImplementation
-            ? contact.statusMute
-            : window.Store.ContactMethods.getStatusMute(contact);
-        res.name = useOldImplementation
-            ? contact.name
-            : window.Store.ContactMethods.getName(contact);
-        res.shortName = useOldImplementation
-            ? contact.shortName
-            : window.Store.ContactMethods.getShortName(contact);
-        res.pushname = useOldImplementation
-            ? contact.pushname
-            : window.Store.ContactMethods.getPushname(contact);
+        res.userid = useOldImplementation ?
+            contact.userid :
+            window.Store.ContactMethods.getUserid(contact);
+        res.isEnterprise = useOldImplementation ?
+            contact.isEnterprise :
+            window.Store.ContactMethods.getIsEnterprise(contact);
+        res.verifiedName = useOldImplementation ?
+            contact.verifiedName :
+            window.Store.ContactMethods.getVerifiedName(contact);
+        res.verifiedLevel = useOldImplementation ?
+            contact.verifiedLevel :
+            window.Store.ContactMethods.getVerifiedLevel(contact);
+        res.statusMute = useOldImplementation ?
+            contact.statusMute :
+            window.Store.ContactMethods.getStatusMute(contact);
+        res.name = useOldImplementation ?
+            contact.name :
+            window.Store.ContactMethods.getName(contact);
+        res.shortName = useOldImplementation ?
+            contact.shortName :
+            window.Store.ContactMethods.getShortName(contact);
+        res.pushname = useOldImplementation ?
+            contact.pushname :
+            window.Store.ContactMethods.getPushname(contact);
 
         return res;
     };
@@ -588,7 +625,11 @@ export const LoadUtils = () => {
         return contacts.map(contact => window.WWebJS.getContactModel(contact));
     };
 
-    window.WWebJS.mediaInfoToFile = ({ data, mimetype, filename }) => {
+    window.WWebJS.mediaInfoToFile = ({
+        data,
+        mimetype,
+        filename
+    }) => {
         const binaryData = window.atob(data);
 
         const buffer = new ArrayBuffer(binaryData.length);
@@ -597,7 +638,9 @@ export const LoadUtils = () => {
             view[i] = binaryData.charCodeAt(i);
         }
 
-        const blob = new Blob([buffer], { type: mimetype });
+        const blob = new Blob([buffer], {
+            type: mimetype
+        });
         return new File([blob], filename, {
             type: mimetype,
             lastModified: Date.now()
@@ -703,17 +746,17 @@ export const LoadUtils = () => {
             chatId = window.Store.WidFactory.createWid(chatId);
         }
         switch (state) {
-        case 'typing':
-            await window.Store.ChatState.sendChatStateComposing(chatId);
-            break;
-        case 'recording':
-            await window.Store.ChatState.sendChatStateRecording(chatId);
-            break;
-        case 'stop':
-            await window.Store.ChatState.sendChatStatePaused(chatId);
-            break;
-        default:
-            throw 'Invalid chatstate';
+            case 'typing':
+                await window.Store.ChatState.sendChatStateComposing(chatId);
+                break;
+            case 'recording':
+                await window.Store.ChatState.sendChatStateRecording(chatId);
+                break;
+            case 'stop':
+                await window.Store.ChatState.sendChatStatePaused(chatId);
+                break;
+            default:
+                throw 'Invalid chatstate';
         }
 
         return true;
@@ -780,9 +823,14 @@ export const LoadUtils = () => {
         if (options.mimetype && !options.mimetype.includes('image'))
             delete options.mimetype;
 
-        options = Object.assign({ size: 640, mimetype: media.mimetype, quality: .75, asDataUrl: false }, options);
+        options = Object.assign({
+            size: 640,
+            mimetype: media.mimetype,
+            quality: .75,
+            asDataUrl: false
+        }, options);
 
-        const img = await new Promise ((resolve, reject) => {
+        const img = await new Promise((resolve, reject) => {
             const img = new Image();
             img.onload = () => resolve(img);
             img.onerror = reject;
@@ -812,8 +860,16 @@ export const LoadUtils = () => {
     };
 
     window.WWebJS.setPicture = async (chatid, media) => {
-        const thumbnail = await window.WWebJS.cropAndResizeImage(media, { asDataUrl: true, mimetype: 'image/jpeg', size: 96 });
-        const profilePic = await window.WWebJS.cropAndResizeImage(media, { asDataUrl: true, mimetype: 'image/jpeg', size: 640 });
+        const thumbnail = await window.WWebJS.cropAndResizeImage(media, {
+            asDataUrl: true,
+            mimetype: 'image/jpeg',
+            size: 96
+        });
+        const profilePic = await window.WWebJS.cropAndResizeImage(media, {
+            asDataUrl: true,
+            mimetype: 'image/jpeg',
+            size: 640
+        });
 
         const chatWid = window.Store.WidFactory.createWid(chatid);
         try {
@@ -823,7 +879,7 @@ export const LoadUtils = () => {
             const res = await window.Store.GroupUtils.sendSetPicture(chatWid, thumbnail, profilePic);
             return res ? res.status === 200 : false;
         } catch (err) {
-            if(err.name === 'ServerStatusCodeError') return false;
+            if (err.name === 'ServerStatusCodeError') return false;
             throw err;
         }
     };
@@ -837,7 +893,7 @@ export const LoadUtils = () => {
             const res = await window.Store.GroupUtils.requestDeletePicture(chatWid);
             return res ? res.status === 200 : false;
         } catch (err) {
-            if(err.name === 'ServerStatusCodeError') return false;
+            if (err.name === 'ServerStatusCodeError') return false;
             throw err;
         }
     };
