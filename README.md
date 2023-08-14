@@ -34,3 +34,15 @@ docs? check folder docs
 | Login via phone | ✅ |
 | Multi Device | ✅ |
 | Join Wa Beta | ✅ |
+| Change theme | ✅ |
+| Send polling | ✅ |
+| Read story | ✅ |
+| Get story | ✅ |
+| Send call | ✅ |
+| Accept call | ✅ |
+| Reject call | ✅ |
+| Screenshot whatsapp web | ✅ |
+| Screenshot custom url | ✅ |
+| Get member request | ✅ |
+| Accept member request | ✅ |
+| Reject member request | ✅ |
