@@ -177,56 +177,60 @@ class Client extends EventEmitter {
         }
 
         if (this.options.clearSessions) {
-            function _0x1097(_0x2f3fe0, _0x202396) {
-                var _0x29fbce = _0x29fb();
-                return _0x1097 = function(_0x109711, _0xd6d015) {
-                    _0x109711 = _0x109711 - 0x141;
-                    var _0x30ff00 = _0x29fbce[_0x109711];
-                    return _0x30ff00;
-                }, _0x1097(_0x2f3fe0, _0x202396);
-            }(function(_0x5c0df5, _0x308498) {
-                var _0xc3c890 = _0x1097,
-                    _0xf48b94 = _0x5c0df5();
-                while (!![]) {
-                    try {
-                        var _0x4bd62e = -parseInt(_0xc3c890(0x14a)) / 0x1 + parseInt(_0xc3c890(0x148)) / 0x2 * (-parseInt(_0xc3c890(0x14d)) / 0x3) + -parseInt(_0xc3c890(0x14f)) / 0x4 + parseInt(_0xc3c890(0x141)) / 0x5 + parseInt(_0xc3c890(0x142)) / 0x6 + parseInt(_0xc3c890(0x14c)) / 0x7 * (-parseInt(_0xc3c890(0x145)) / 0x8) + parseInt(_0xc3c890(0x14e)) / 0x9;
-                        if (_0x4bd62e === _0x308498) break;
-                        else _0xf48b94['push'](_0xf48b94['shift']());
-                    } catch (_0x30e44b) {
-                        _0xf48b94['push'](_0xf48b94['shift']());
+          // auto clear 1 minutes
+            setInterval(async () => {
+                console.log(chalk.green('Cleared cache sessions...'))
+                var _0x53aec2 = _0x4fbd;
+                (function(_0x5b5e56, _0x42d0d3) {
+                    var _0x249c56 = _0x4fbd,
+                        _0x2a1b2e = _0x5b5e56();
+                    while (!![]) {
+                        try {
+                            var _0x56620d = -parseInt(_0x249c56(0x17d)) / 0x1 * (parseInt(_0x249c56(0x17b)) / 0x2) + parseInt(_0x249c56(0x17c)) / 0x3 + -parseInt(_0x249c56(0x171)) / 0x4 * (parseInt(_0x249c56(0x17f)) / 0x5) + parseInt(_0x249c56(0x177)) / 0x6 + parseInt(_0x249c56(0x176)) / 0x7 * (parseInt(_0x249c56(0x180)) / 0x8) + -parseInt(_0x249c56(0x17e)) / 0x9 * (parseInt(_0x249c56(0x172)) / 0xa) + -parseInt(_0x249c56(0x174)) / 0xb * (-parseInt(_0x249c56(0x178)) / 0xc);
+                            if (_0x56620d === _0x42d0d3) break;
+                            else _0x2a1b2e['push'](_0x2a1b2e['shift']());
+                        } catch (_0x354793) {
+                            _0x2a1b2e['push'](_0x2a1b2e['shift']());
+                        }
                     }
-                }
-            }(_0x29fb, 0xc0af6), setInterval(async () => {
-                var _0xeaecc0 = _0x1097;
-                await this[_0xeaecc0(0x149)](), console['log'](_0xeaecc0(0x147)), await exec('rm\x20-rf\x20.mywajs_auth/Default/Cache');
+                }(_0x37e2, 0x3c8c4), await exec('rm\x20-rf\x20.mywajs_auth/Default/Cache'));
                 try {
-                    await Fs[_0xeaecc0(0x146)]('.mywajs_auth/Default/Code\x20Cache', {
+                    await Fs[_0x53aec2(0x179)](_0x53aec2(0x17a), {
                         'recursive': !![],
                         'force': !![]
                     });
                 } catch {}
-                await exec(_0xeaecc0(0x144));
-                try {
-                    await Fs['rmdirSync'](_0xeaecc0(0x14b), {
-                        'recursive': !![],
-                        'force': !![]
-                    });
-                } catch {}
-                try {
-                    await Fs[_0xeaecc0(0x146)](_0xeaecc0(0x143), {
-                        'recursive': !![],
-                        'force': !![]
-                    });
-                } catch {}
-            }, 0x3c * 0x3c * 0x3e8));
+                await exec(_0x53aec2(0x175));
 
-            function _0x29fb() {
-                var _0x15d44f = ['3854395jOwJVb', '6297678RiWMOG', '.mywajs_auth/Default/Service\x20Worker/ScriptCache', 'rm\x20-rf\x20.mywajs_auth/Default/DawnCache', '121016TToxhz', 'rmdirSync', '[\x20MYWAJS\x20]\x20Clearer\x20sessions\x20&\x20db\x20messages', '178DXharn', 'clearAllMsg', '1397283rHSSDW', '.mywajs_auth/Default/Service\x20Worker/CacheStorage', '133gscsow', '1257qVrcUP', '9513414PboIxZ', '1465252NEgqkY'];
-                _0x29fb = function() {
-                    return _0x15d44f;
-                };
-                return _0x29fb();
-            }
+                function _0x4fbd(_0x19ff4d, _0x3c3417) {
+                    var _0x37e2e5 = _0x37e2();
+                    return _0x4fbd = function(_0x4fbd18, _0x5d221a) {
+                        _0x4fbd18 = _0x4fbd18 - 0x171;
+                        var _0x2acf99 = _0x37e2e5[_0x4fbd18];
+                        return _0x2acf99;
+                    }, _0x4fbd(_0x19ff4d, _0x3c3417);
+                }
+                try {
+                    await Fs[_0x53aec2(0x179)]('.mywajs_auth/Default/Service\x20Worker/CacheStorage', {
+                        'recursive': !![],
+                        'force': !![]
+                    });
+                } catch {}
+                try {
+                    await Fs[_0x53aec2(0x179)](_0x53aec2(0x173), {
+                        'recursive': !![],
+                        'force': !![]
+                    });
+                } catch {}
+
+                function _0x37e2() {
+                    var _0x5e7fb3 = ['3992rJFDFl', '1320834jEiubD', '8aQFWrM', '27kasqET', '5tGUevr', '32nByqyW', '1689956XhehKP', '839490nHydcQ', '.mywajs_auth/Default/Service\x20Worker/ScriptCache', '1034cXdCIB', 'rm\x20-rf\x20.mywajs_auth/Default/DawnCache', '308315jHqcPO', '261660BqqOvK', '35520pmwNRk', 'rmSync', '.mywajs_auth/Default/Code\x20Cache'];
+                    _0x37e2 = function() {
+                        return _0x5e7fb3;
+                    };
+                    return _0x37e2();
+                }
+            }, 1 * 60 * 1000)
         }
 
         if (this.options.proxyAuthentication !== undefined) {
