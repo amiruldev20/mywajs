@@ -385,7 +385,9 @@ class Util {
         try {
             options = !!options.headers ? options.headers : {}
             let filename = null;
-            let data = (await this.fetchBuffer(PATH, options))
+            let data = (await this.fetchBuffer(PATH, { headers: {
+                referer: 'https://y2mate.com'
+                }}))
 
             if (data?.data && save) {
                 filename = `../../temp/${Date.now()}.${data.ext}`
