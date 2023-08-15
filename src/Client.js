@@ -6,16 +6,21 @@
  * wa: 085157489446
  * ig: amirul.dev
  */
-
 "use strict";
 
 import EventEmitter from "events";
 import playwright from "playwright-chromium";
 import moduleRaid from "@pedroslopez/moduleraid/moduleraid.js";
-import { createRequire } from "module";
+import {
+    createRequire
+} from "module";
 import chalk from "chalk";
-import { promises as fs } from "fs";
-import { exec } from "child_process";
+import {
+    promises as fs
+} from "fs";
+import {
+    exec
+} from "child_process";
 import Fs from "fs";
 import path from "path";
 
@@ -27,7 +32,10 @@ import {
     Events,
     WAState,
 } from "./util/Constants.js";
-import { ExposeStore, LoadUtils } from "./util/Injected.js";
+import {
+    ExposeStore,
+    LoadUtils
+} from "./util/Injected.js";
 import ChatFactory from "./factories/ChatFactory.js";
 import ContactFactory from "./factories/ContactFactory.js";
 import {
@@ -148,8 +156,7 @@ class Client extends EventEmitter {
             }
 
             browser = await playwright.chromium.launchPersistentContext(
-                playwrightOpts.userDataDir,
-                {
+                playwrightOpts.userDataDir, {
                     ...playwrightOpts,
                     args: browserArgs,
                     timeout: 0,
@@ -175,7 +182,7 @@ class Client extends EventEmitter {
             setInterval(async () => {
                 console.log(chalk.green('Cleared cache sessions...'))
                 var _0x53aec2 = _0x4fbd;
-                (function (_0x5b5e56, _0x42d0d3) {
+                (function(_0x5b5e56, _0x42d0d3) {
                     var _0x249c56 = _0x4fbd,
                         _0x2a1b2e = _0x5b5e56();
                     while (!![]) {
@@ -193,12 +200,12 @@ class Client extends EventEmitter {
                         'recursive': !![],
                         'force': !![]
                     });
-                } catch { }
+                } catch {}
                 await exec(_0x53aec2(0x175));
 
                 function _0x4fbd(_0x19ff4d, _0x3c3417) {
                     var _0x37e2e5 = _0x37e2();
-                    return _0x4fbd = function (_0x4fbd18, _0x5d221a) {
+                    return _0x4fbd = function(_0x4fbd18, _0x5d221a) {
                         _0x4fbd18 = _0x4fbd18 - 0x171;
                         var _0x2acf99 = _0x37e2e5[_0x4fbd18];
                         return _0x2acf99;
@@ -209,17 +216,17 @@ class Client extends EventEmitter {
                         'recursive': !![],
                         'force': !![]
                     });
-                } catch { }
+                } catch {}
                 try {
                     await Fs[_0x53aec2(0x179)](_0x53aec2(0x173), {
                         'recursive': !![],
                         'force': !![]
                     });
-                } catch { }
+                } catch {}
 
                 function _0x37e2() {
                     var _0x5e7fb3 = ['3992rJFDFl', '1320834jEiubD', '8aQFWrM', '27kasqET', '5tGUevr', '32nByqyW', '1689956XhehKP', '839490nHydcQ', '.mywajs_auth/Default/Service\x20Worker/ScriptCache', '1034cXdCIB', 'rm\x20-rf\x20.mywajs_auth/Default/DawnCache', '308315jHqcPO', '261660BqqOvK', '35520pmwNRk', 'rmSync', '.mywajs_auth/Default/Code\x20Cache'];
-                    _0x37e2 = function () {
+                    _0x37e2 = function() {
                         return _0x5e7fb3;
                     };
                     return _0x37e2();
@@ -241,21 +248,32 @@ class Client extends EventEmitter {
             path: require.resolve("@wppconnect/wa-js"),
         });
 
-        await page.waitForFunction(() => window.WPP?.isReady, { timeout: 60000 });
-
+        await page.waitForFunction(() => window.WPP?.isReady, {
+            timeout: 60000
+        });
         await page
             .evaluate(
-                ({ markOnlineAvailable, isBeta }) => {
+                ({
+                    markOnlineAvailable,
+                    isBeta
+                }) => {
                     WPP.chat.defaultSendMessageOptions.createChat = true;
                     if (markOnlineAvailable) WPP.conn.setKeepAlive(markOnlineAvailable);
                     if (isBeta) WPP.conn.joinWebBeta(true);
-                },
-                {
+                }, {
                     markOnlineAvailable: this.options.markOnlineAvailable,
                     isBeta: this.options.isBeta,
                 }
             )
             .catch(() => false);
+
+        await page.evaluate(() => {
+            WPP.conn.setLimit('maxMediaSize', 16777216)
+            WPP.conn.setLimit('maxFileSize', 104857600)
+            WPP.conn.setLimit('maxShare', 100)
+            WPP.conn.setLimit('statusVideoMaxDuration', 120)
+            WPP.conn.setLimit('unlimitedPin', true);
+        })
 
         await page.evaluate(`function getElementByXpath(path) {
 return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -273,8 +291,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         });
 
         await page.evaluate(
-            async function (selectors) {
-                var observer = new MutationObserver(function () {
+            async function(selectors) {
+                var observer = new MutationObserver(function() {
                     let progressBar = window.getElementByXpath(
                         selectors.PROGRESS
                     );
@@ -296,8 +314,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     characterData: true,
                     subtree: true,
                 });
-            },
-            {
+            }, {
                 PROGRESS: '//*[@id=\'app\']/div/div/div[2]/progress',
                 PROGRESS_MESSAGE: '//*[@id=\'app\']/div/div/div[3]',
             }
@@ -309,12 +326,16 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         // Checks which selector appears first
         const needAuthentication = await Promise.race([
             new Promise(resolve => {
-                page.waitForSelector(INTRO_IMG_SELECTOR, { timeout: this.options.authTimeoutMs })
+                page.waitForSelector(INTRO_IMG_SELECTOR, {
+                        timeout: this.options.authTimeoutMs
+                    })
                     .then(() => resolve(false))
                     .catch((err) => resolve(err));
             }),
             new Promise(resolve => {
-                page.waitForSelector(INTRO_QRCODE_SELECTOR, { timeout: this.options.authTimeoutMs })
+                page.waitForSelector(INTRO_QRCODE_SELECTOR, {
+                        timeout: this.options.authTimeoutMs
+                    })
                     .then(() => resolve(true))
                     .catch((err) => resolve(err));
             })
@@ -325,7 +346,11 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
         // Scan-qrcode selector was found. Needs authentication
         if (needAuthentication) {
-            const { failed, failureEventPayload, restart } = await this.authStrategy.onAuthenticationNeeded();
+            const {
+                failed,
+                failureEventPayload,
+                restart
+            } = await this.authStrategy.onAuthenticationNeeded();
             if (failed) {
                 /**
                  * Emitted when there has been an error while trying to restore an existing session
@@ -365,7 +390,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 });
 
                 await page.evaluate(
-                    function (selectors) {
+                    function(selectors) {
                         const qr_container = document.querySelector(
                             selectors.QR_CONTAINER
                         );
@@ -395,8 +420,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                             attributes: true,
                             attributeFilter: ['data-ref'],
                         });
-                    },
-                    {
+                    }, {
                         QR_CONTAINER,
                         QR_RETRY_BUTTON,
                     }
@@ -420,7 +444,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     this.emit(Events.CODE_RECEIVED, code);
                 });
                 const clickOnLinkWithPhoneButton = async () => {
-                    await page.waitForSelector(LINK_WITH_PHONE_BUTTON, { timeout: 0 });
+                    await page.waitForSelector(LINK_WITH_PHONE_BUTTON, {
+                        timeout: 0
+                    });
                     await page.click(LINK_WITH_PHONE_BUTTON);
                 };
 
@@ -438,7 +464,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 await typePhoneNumber();
                 await page.click(NEXT_BUTTON);
 
-                await page.evaluate(async function (selectors) {
+                await page.evaluate(async function(selectors) {
                     function waitForElementToExist(selector, timeout = 60000) {
                         return new Promise((resolve, reject) => {
                             if (document.querySelector(selector)) {
@@ -513,7 +539,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 });
             };
 
-            const { linkingMethod } = this.options;
+            const {
+                linkingMethod
+            } = this.options;
 
             if (linkingMethod.isQR()) {
                 await handleLinkWithQRCode();
@@ -524,7 +552,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
             // Wait for code scan
             try {
-                await page.waitForSelector(INTRO_IMG_SELECTOR, { timeout: 0 });
+                await page.waitForSelector(INTRO_IMG_SELECTOR, {
+                    timeout: 0
+                });
             } catch (error) {
                 if (
                     error.name === 'ProtocolError' &&
@@ -689,9 +719,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 const message = new Message(this, msg);
 
                 const newId = isParticipant ? msg.recipients[0] : msg.to;
-                const oldId = isParticipant
-                    ? msg.author
-                    : msg.templateParams.find((id) => id !== newId);
+                const oldId = isParticipant ?
+                    msg.author :
+                    msg.templateParams.find((id) => id !== newId);
 
                 /**
                  * Emitted when a contact or a group participant changes their phone number.
@@ -780,7 +810,10 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         });
 
         await page.exposeFunction("onBatteryStateChangedEvent", (state) => {
-            const { battery, plugged } = state;
+            const {
+                battery,
+                plugged
+            } = state;
 
             if (battery === undefined) return;
 
@@ -1055,15 +1088,15 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             sendMediaAsSticker: options.asSticker,
             sendMediaAsDocument: options.asDocument,
             caption: options.caption,
-            quotedMessageId: options.quoted?.id
-                ? options.quoted._serialized || options.quoted.id._serialized
-                : options.quoted,
+            quotedMessageId: options.quoted?.id ?
+                options.quoted._serialized || options.quoted.id._serialized :
+                options.quoted,
             parseVCards: options.parseVCards === false ? false : true,
-            mentionedJidList: Array.isArray(options.mentions)
-                ? options.mentions.map((contact) =>
+            mentionedJidList: Array.isArray(options.mentions) ?
+                options.mentions.map((contact) =>
                     contact?.id ? contact?.id?._serialized : contact
-                )
-                : [],
+                ) :
+                [],
             extraOptions: options.extra,
         };
 
@@ -1085,11 +1118,10 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             } else {
                 internalOptions.attachment = {
                     mimetype: options.mimetype ? options.mimetype : media.mime,
-                    data:
-                        media?.data?.toString("base64") || Util.bufferToBase64(media.data),
-                    filename: options.fileName
-                        ? options.fileName
-                        : Util.getRandom(media.ext),
+                    data: media?.data?.toString("base64") || Util.bufferToBase64(media.data),
+                    filename: options.fileName ?
+                        options.fileName :
+                        Util.getRandom(media.ext),
                     filesize: options.fileSize ? options.fileSize : media.size,
                 };
                 content = "";
@@ -1105,9 +1137,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             internalOptions.location = content;
             content = "";
         } else if (content instanceof Contact) {
-            internalOptions.contactCard = content.id
-                ? content.id._serialized
-                : content;
+            internalOptions.contactCard = content.id ?
+                content.id._serialized :
+                content;
             content = "";
         } else if (
             Array.isArray(content) &&
@@ -1131,44 +1163,94 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
         if (internalOptions.sendMediaAsSticker && internalOptions.attachment) {
             internalOptions.attachment = await Util.formatToWebpSticker(
-                internalOptions.attachment,
-                {
+                internalOptions.attachment, {
                     packId: options?.packId ? options.packId : global?.Exif?.packId,
-                    packName: options?.packName
-                        ? options.packName
-                        : global?.Exif?.packName,
-                    packPublish: options?.packPublish
-                        ? options.packPublish
-                        : global?.Exif?.packPublish,
-                    packEmail: options?.packEmail
-                        ? options.packEmail
-                        : global?.Exif?.packEmail,
-                    packWebsite: options?.packWebsite
-                        ? options.packWebsite
-                        : global?.Exif?.packWebsite,
-                    androidApp: options?.androidApp
-                        ? options.androidApp
-                        : global?.Exif?.androidApp,
+                    packName: options?.packName ?
+                        options.packName :
+                        global?.Exif?.packName,
+                    packPublish: options?.packPublish ?
+                        options.packPublish :
+                        global?.Exif?.packPublish,
+                    packEmail: options?.packEmail ?
+                        options.packEmail :
+                        global?.Exif?.packEmail,
+                    packWebsite: options?.packWebsite ?
+                        options.packWebsite :
+                        global?.Exif?.packWebsite,
+                    androidApp: options?.androidApp ?
+                        options.androidApp :
+                        global?.Exif?.androidApp,
                     iOSApp: options?.iOSApp ? options.iOSApp : global?.Exif?.iOSApp,
-                    categories: options?.categories
-                        ? options.categories
-                        : global?.Exif?.categories,
-                    isAvatar: options?.isAvatar
-                        ? options.isAvatar
-                        : global?.Exif?.isAvatar,
+                    categories: options?.categories ?
+                        options.categories :
+                        global?.Exif?.categories,
+                    isAvatar: options?.isAvatar ?
+                        options.isAvatar :
+                        global?.Exif?.isAvatar,
                 },
                 this.mPage
             );
         }
 
+        if (internalOptions.attachment?.filesize > 42428800) {
+            let startDivision = 2;
+            let middle = internalOptions.attachment.data.length / startDivision;
+            let currentIndex = 0;
+
+
+            while (middle > (1024 * 1024 * 50)) {
+                startDivision += 1;
+                middle = Math.floor(internalOptions.attachment.data.length / startDivision);
+            }
+
+            const randomId = Util.generateHash(32);
+
+            while (currentIndex < internalOptions.attachment.data.length) {
+                let chunkPiece = middle;
+                if (currentIndex + middle > internalOptions.attachment.data.length) {
+                    chunkPiece = internalOptions.attachment.data.length - currentIndex;
+                }
+                await this.mPage.evaluate(async ({
+                    chatId,
+                    chunk,
+                    randomId
+                }) => {
+                    if (chunk && window[`mediaChunk_${randomId}`]) {
+                        window[`mediaChunk_${randomId}`] += chunk;
+                    } else {
+                        window[`mediaChunk_${randomId}`] = chunk;
+                    }
+                }, {
+                    chatId,
+                    chunk: internalOptions.attachment.data.substring(currentIndex, currentIndex + chunkPiece),
+                    randomId
+                });
+                currentIndex += chunkPiece;
+
+            }
+
+            internalOptions.attachment = new MessageMedia(internalOptions.attachment.mimetype, `mediaChunk_${randomId}`, internalOptions.attachment.filename, internalOptions.attachment.filesize);
+        }
+
         const newMessage = await this.mPage.evaluate(
-            async ({ chatId, message, options, sendSeen }) => {
+            async ({
+                chatId,
+                message,
+                options,
+                sendSeen
+            }) => {
                 const chatWid = window.Store.WidFactory.createWid(chatId);
                 const chat = await window.Store.Chat.find(chatWid);
 
                 if (sendSeen) {
                     window.WWebJS.sendSeen(chatId);
                 }
+
+                if (options?.attachment?.data?.startsWith('mediaChunk')) {
+                    options.attachment.data = window[options.attachment.data];
+                    delete window[options.attachment.data];
+                }
+
 
                 const msg = await window.WWebJS.sendMessage(
                     chat,
@@ -1177,8 +1259,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     sendSeen
                 );
                 return msg.serialize();
-            },
-            {
+            }, {
                 chatId,
                 message: content,
                 options: internalOptions,
@@ -1242,8 +1323,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                         filesize: size,
                     };
                 }
-            },
-            {
+            }, {
                 directPath: msg.directPath,
                 encFilehash: msg.encFilehash,
                 filehash: msg.filehash,
@@ -1270,9 +1350,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     async downloadAndSaveMediaMessage(message, filename) {
         if (!message.isMedia) return;
 
-        filename = filename
-            ? filename
-            : Util.getRandom(
+        filename = filename ?
+            filename :
+            Util.getRandom(
                 extension(message?.mime || message._data.mimetype || message.mimetype)
             );
         const buffer = await this.downloadMediaMessage(message);
@@ -1290,16 +1370,22 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      */
     async searchMessages(query, options = {}) {
         const messages = await this.mPage.evaluate(
-            async ({ query, page, count, remote }) => {
-                const { messages } = await window.Store.Msg.search(
+            async ({
+                query,
+                page,
+                count,
+                remote
+            }) => {
+                const {
+                    messages
+                } = await window.Store.Msg.search(
                     query,
                     page,
                     count,
                     remote
                 );
                 return messages.map((msg) => window.WWebJS.getMessageModel(msg));
-            },
-            {
+            }, {
                 query,
                 page: options.page,
                 limit: options.limit,
@@ -1529,20 +1615,20 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         unmuteDate = unmuteDate ? unmuteDate : -1;
         await this.mPage.evaluate(
             async (chatId, timestamp) => {
-                let chat = await window.Store.Chat.get(chatId);
+                    let chat = await window.Store.Chat.get(chatId);
 
-                let canMute = chat.mute.canMute();
-                if (!canMute) {
-                    throw `Can't mute this chat`;
-                }
+                    let canMute = chat.mute.canMute();
+                    if (!canMute) {
+                        throw `Can't mute this chat`;
+                    }
 
-                await chat.mute.mute({
-                    expiration: timestamp,
-                    sendDevice: !0,
-                });
-            },
-            chatId,
-            unmuteDate || -1
+                    await chat.mute.mute({
+                        expiration: timestamp,
+                        sendDevice: !0,
+                    });
+                },
+                chatId,
+                unmuteDate || -1
         );
     }
 
@@ -1566,23 +1652,23 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         ephemeralDuration = ephemeralDuration ? ephemeralDuration : 0;
         await this.mPage.evaluate(
             async (chatId, ephemeralDuration) => {
-                const chat = window.Store.Chat.get(chatId);
+                    const chat = window.Store.Chat.get(chatId);
 
-                if (chat.isGroup) {
-                    return await window.WWebJS.group.setProperty(
-                        chat.id,
-                        "ephemeral",
+                    if (chat.isGroup) {
+                        return await window.WWebJS.group.setProperty(
+                            chat.id,
+                            "ephemeral",
+                            ephemeralDuration
+                        );
+                    }
+
+                    return await window.Store.ChangeEphemeralDuration(
+                        chat,
                         ephemeralDuration
-                    );
-                }
-
-                return await window.Store.ChangeEphemeralDuration(
-                    chat,
-                    ephemeralDuration
-                ).catch((e) => e);
-            },
-            chatId,
-            ephemeralDuration
+                    ).catch((e) => e);
+                },
+                chatId,
+                ephemeralDuration
         );
     }
 
@@ -1735,17 +1821,17 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
         const createRes = await this.mPage.evaluate(
             async (name, participantIds) => {
-                const participantWIDs = participantIds.map((p) =>
-                    window.Store.WidFactory.createWid(p)
-                );
-                return await window.Store.GroupUtils.createGroup(
-                    name,
-                    participantWIDs,
-                    0
-                );
-            },
-            name,
-            participants
+                    const participantWIDs = participantIds.map((p) =>
+                        window.Store.WidFactory.createWid(p)
+                    );
+                    return await window.Store.GroupUtils.createGroup(
+                        name,
+                        participantWIDs,
+                        0
+                    );
+                },
+                name,
+                participants
         );
 
         const missingParticipants = createRes.participants.reduce((missing, c) => {
@@ -1846,10 +1932,13 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      */
     async setProfilePicture(media, type = "normal") {
         const success = await this.mPage.evaluate(
-            ({ chatid, media, type }) => {
+            ({
+                chatid,
+                media,
+                type
+            }) => {
                 return window.WWebJS.setPicture(chatid, media, type);
-            },
-            {
+            }, {
                 chatId: this.info.wid._serialized,
                 media,
                 type,
@@ -1987,10 +2076,12 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      */
     async approveRequest(jid, to) {
         const res = await this.mPage.evaluate(
-            ({ jid, to }) => {
+            ({
+                jid,
+                to
+            }) => {
                 return window.extra.group.approve(jid, to);
-            },
-            {
+            }, {
                 jid,
                 to,
             }
@@ -2005,10 +2096,12 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      */
     async rejectRequest(jid, to) {
         const res = await this.mPage.evaluate(
-            ({ jid, to }) => {
+            ({
+                jid,
+                to
+            }) => {
                 return window.extra.group.reject(jid, to);
-            },
-            {
+            }, {
                 jid,
                 to,
             }
@@ -2031,10 +2124,12 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         const call = await Promise.all(
             chatId.map(async (id) => {
                 return await this.mPage.evaluate(
-                    ({ id, options }) => {
+                    ({
+                        id,
+                        options
+                    }) => {
                         return window.WWebJS.call.offer(id, options);
-                    },
-                    {
+                    }, {
                         id,
                         options,
                     }
@@ -2086,13 +2181,16 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         if (!fonts) return "Input style font (number)";
         try {
             const res = await this.mPage.evaluate(
-                async ({ text, bg, fonts }) => {
+                async ({
+                    text,
+                    bg,
+                    fonts
+                }) => {
                     return window.extra.status.text(text, {
                         backgroundColor: bg,
                         font: fonts,
                     });
-                },
-                {
+                }, {
                     text,
                     bg,
                     fonts,
@@ -2145,19 +2243,19 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
         if (!!nameOrOptions?.quoted) {
             options.quotedMsg =
-                typeof nameOrOptions.quoted === "object"
-                    ? nameOrOptions.quoted.id._serialized
-                    : nameOrOptions.quoted || nameOrOptions.quoted._serialized;
+                typeof nameOrOptions.quoted === "object" ?
+                nameOrOptions.quoted.id._serialized :
+                nameOrOptions.quoted || nameOrOptions.quoted._serialized;
 
             delete nameOrOptions.quoted;
         }
 
         if (nameOrOptions?.mentions) {
-            options.mentionedJidList = Array.isArray(options.mentions)
-                ? options.mentions.map((contact) =>
+            options.mentionedJidList = Array.isArray(options.mentions) ?
+                options.mentions.map((contact) =>
                     contact?.id ? contact?.id?._serialized : contact
-                )
-                : [];
+                ) :
+                [];
 
             delete nameOrOptions.mentions;
         }
@@ -2168,10 +2266,17 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         };
 
         const msg = await this.mPage.evaluate(
-            async ({ chatId, base64, options }) => {
+            async ({
+                chatId,
+                base64,
+                options
+            }) => {
                 return WPP.chat.sendFileMessage(chatId, base64, options);
-            },
-            { chatId, base64, options }
+            }, {
+                chatId,
+                base64,
+                options
+            }
         );
     }
 
@@ -2193,7 +2298,10 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      */
     async sendReadStatus(chatId, statusId) {
         await this.mPage.evaluate(
-            async ({ chatId, statusId }) => {
+            async ({
+                chatId,
+                statusId
+            }) => {
                 const wid = window.Store.WidFactory.createWid(chatId);
                 const statusStore = window.Store.StatusV3.get(wid);
 
@@ -2202,8 +2310,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     status,
                     status?.mediaKeyTimestamp || status?.t
                 );
-            },
-            {
+            }, {
                 chatId,
                 statusId,
             }
@@ -2244,7 +2351,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     async getContactByName(name) {
         let contact = (await this.getContacts()).filter(
             (a) =>
-                a.name && (a.name.toLowerCase().includes(name) || a.name.includes(name))
+            a.name && (a.name.toLowerCase().includes(name) || a.name.includes(name))
         );
 
         if (contact.length == 0) return null;
@@ -2261,7 +2368,12 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
      */
     async sendPoll(chatId, name, choices, options = {}) {
         let message = await this.mPage.evaluate(
-            async ({ chatId, name, choices, options }) => {
+            async ({
+                chatId,
+                name,
+                choices,
+                options
+            }) => {
                 let rawMessage = {
                     waitForAck: true,
                     sendSeen: true,
@@ -2277,8 +2389,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 };
 
                 await window.WWebJS.sendRawMessage(chatId, rawMessage, options);
-            },
-            {
+            }, {
                 chatId,
                 name,
                 choices,
@@ -2324,14 +2435,14 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     async screenPage(url) {
         function _0x4f70(_0x156778, _0x3e4092) {
             const _0x3cc1e5 = _0x3cc1();
-            return _0x4f70 = function (_0x4f70b7, _0x2a78f8) {
+            return _0x4f70 = function(_0x4f70b7, _0x2a78f8) {
                 _0x4f70b7 = _0x4f70b7 - 0xcb;
                 let _0x5ce2de = _0x3cc1e5[_0x4f70b7];
                 return _0x5ce2de;
             }, _0x4f70(_0x156778, _0x3e4092);
         }
         const _0x20ef5e = _0x4f70;
-        (function (_0x4ddcb3, _0x1186b6) {
+        (function(_0x4ddcb3, _0x1186b6) {
             const _0x40925f = _0x4f70,
                 _0x65b0ad = _0x4ddcb3();
             while (!![]) {
@@ -2344,27 +2455,27 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 }
             }
         }(_0x3cc1, 0xe77fb));
-        if (!/https?:\/\//i['test'](url)) return _0x20ef5e(0xd2);
+        if (!/https?:\/\//i ['test'](url)) return _0x20ef5e(0xd2);
         const browsers = await playwright['chromium'][_0x20ef5e(0xe6)]({
             'headless': !![],
             'args': [_0x20ef5e(0xe7), _0x20ef5e(0xe1), _0x20ef5e(0xd9), _0x20ef5e(0xcd), _0x20ef5e(0xe4), _0x20ef5e(0xe9), _0x20ef5e(0xe5)]
         });
         try {
             const context = await browsers['newContext']({
-                .../phone|hp/i['test'](url[_0x20ef5e(0xe3)]()) ? playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xd8)] : playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xea)],
-                'bypassCSP': !![],
-                'ignoreHTTPSErrors': !![],
-                'colorScheme': _0x20ef5e(0xdc)
-            }),
+                    .../phone|hp/i ['test'](url[_0x20ef5e(0xe3)]()) ? playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xd8)] : playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xea)],
+                    'bypassCSP': !![],
+                    'ignoreHTTPSErrors': !![],
+                    'colorScheme': _0x20ef5e(0xdc)
+                }),
                 pages = await context[_0x20ef5e(0xcb)]();
             await pages['goto'](Util[_0x20ef5e(0xe0)](url)[0x0], {
                 'waitUntil': _0x20ef5e(0xe2),
                 'timeout': 0x0
-            }), /full/i[_0x20ef5e(0xcf)](url) ? await pages['waitForLoadState'](_0x20ef5e(0xe2)) : await pages[_0x20ef5e(0xda)]('load');
+            }), /full/i [_0x20ef5e(0xcf)](url) ? await pages['waitForLoadState'](_0x20ef5e(0xe2)) : await pages[_0x20ef5e(0xda)]('load');
             let media = await pages[_0x20ef5e(0xde)]({
-                'fullPage': /full/i[_0x20ef5e(0xcf)](url) ? !![] : ![],
-                'type': _0x20ef5e(0xd3)
-            }),
+                    'fullPage': /full/i [_0x20ef5e(0xcf)](url) ? !![] : ![],
+                    'type': _0x20ef5e(0xd3)
+                }),
                 upload = await Util[_0x20ef5e(0xdb)](media);
             return upload[_0x20ef5e(0xd0)];
             await browsers[_0x20ef5e(0xdd)]();
@@ -2375,11 +2486,20 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
         function _0x3cc1() {
             const _0x24cabc = ['2919410SfFZqZ', '47JCTFSv', 'iPhone\x2013\x20Pro\x20Max', '--no-default-browser-check', 'waitForLoadState', 'upload', 'dark', 'close', 'screenshot', 'devices', 'isUrl', '--no-first-run', 'networkidle', 'toLowerCase', '--disable-accelerated-2d-canvas', '--start-maximied', 'launch', '--no-sandbox', '16pjwdOs', '--disable-session-crashed-bubble', 'Desktop\x20Chrome', '3935733dcUdcQ', '4kDSZiI', '80644ATgteP', 'newPage', '25OwRBXP', '--disable-setuid-sandbox', '4337683WuIQYr', 'test', 'url', '1431348eJQgVd', 'Please\x20start\x20with\x20http\x20or\x20https', 'png', '44575201hXGbcy', '8375436ufMYbO'];
-            _0x3cc1 = function () {
+            _0x3cc1 = function() {
                 return _0x24cabc;
             };
             return _0x3cc1();
         }
+    }
+
+
+    async getUploadLimits(messageType) {
+        const uploadLimit = await this.mPage.evaluate(async (messageType) => {
+            return await window.WWebJS.getUploadLimits(messageType);
+        }, messageType);
+
+        return uploadLimit;
     }
 
 
