@@ -167,7 +167,7 @@ class Util {
             `${Crypto.randomBytes(6).readUIntLE(0, 6).toString(36)}.webp`
         );
 
-        const stream = new(require('stream').Readable)();
+        const stream = new Readable();
         const buffer = Buffer.from(
             media.data.replace(`data:${media.mimetype};base64,`, ''),
             'base64'
