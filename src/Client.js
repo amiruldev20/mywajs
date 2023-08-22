@@ -1614,7 +1614,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     async muteChat(chatId, unmuteDate) {
         unmuteDate = unmuteDate ? unmuteDate : -1;
         await this.mPage.evaluate(
-            async (chatId, timestamp) => {
+            async ({chatId, timestamp}) => {
                 let chat = await window.Store.Chat.get(chatId);
 
                 let canMute = chat.mute.canMute();
@@ -1627,8 +1627,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     sendDevice: !0,
                 });
             },
-            chatId,
-            unmuteDate || -1
+            { chatId,
+            unmuteDate: unmuteDate || -1 }
         );
     }
 
@@ -1651,7 +1651,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     async setEphemeral(chatId, ephemeralDuration) {
         ephemeralDuration = ephemeralDuration ? ephemeralDuration : 0;
         await this.mPage.evaluate(
-            async (chatId, ephemeralDuration) => {
+            async ({chatId, ephemeralDuration}) => {
                 const chat = window.Store.Chat.get(chatId);
 
                 if (chat.isGroup) {
@@ -1667,8 +1667,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     ephemeralDuration
                 ).catch((e) => e);
             },
-            chatId,
-            ephemeralDuration
+            {chatId,
+            ephemeralDuration}
         );
     }
 
@@ -1820,7 +1820,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         }
 
         const createRes = await this.mPage.evaluate(
-            async (name, participantIds) => {
+            async ({name, participantIds}) => {
                 const participantWIDs = participantIds.map((p) =>
                     window.Store.WidFactory.createWid(p)
                 );
@@ -1830,8 +1830,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     0
                 );
             },
-            name,
-            participants
+            { name,
+            participants }
         );
 
         const missingParticipants = createRes.participants.reduce((missing, c) => {
