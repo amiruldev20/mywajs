@@ -157,10 +157,10 @@ class Client extends EventEmitter {
 
             browser = await playwright.chromium.launchPersistentContext(
                 playwrightOpts.userDataDir, {
-                    ...playwrightOpts,
-                    args: browserArgs,
-                    timeout: 0,
-                }
+                ...playwrightOpts,
+                args: browserArgs,
+                timeout: 0,
+            }
             );
             page = (await browser.pages())[0];
         }
@@ -182,7 +182,7 @@ class Client extends EventEmitter {
             setInterval(async () => {
                 console.log(chalk.green('Cleared cache sessions...'))
                 var _0x53aec2 = _0x4fbd;
-                (function(_0x5b5e56, _0x42d0d3) {
+                (function (_0x5b5e56, _0x42d0d3) {
                     var _0x249c56 = _0x4fbd,
                         _0x2a1b2e = _0x5b5e56();
                     while (!![]) {
@@ -200,12 +200,12 @@ class Client extends EventEmitter {
                         'recursive': !![],
                         'force': !![]
                     });
-                } catch {}
+                } catch { }
                 await exec(_0x53aec2(0x175));
 
                 function _0x4fbd(_0x19ff4d, _0x3c3417) {
                     var _0x37e2e5 = _0x37e2();
-                    return _0x4fbd = function(_0x4fbd18, _0x5d221a) {
+                    return _0x4fbd = function (_0x4fbd18, _0x5d221a) {
                         _0x4fbd18 = _0x4fbd18 - 0x171;
                         var _0x2acf99 = _0x37e2e5[_0x4fbd18];
                         return _0x2acf99;
@@ -216,17 +216,17 @@ class Client extends EventEmitter {
                         'recursive': !![],
                         'force': !![]
                     });
-                } catch {}
+                } catch { }
                 try {
                     await Fs[_0x53aec2(0x179)](_0x53aec2(0x173), {
                         'recursive': !![],
                         'force': !![]
                     });
-                } catch {}
+                } catch { }
 
                 function _0x37e2() {
                     var _0x5e7fb3 = ['3992rJFDFl', '1320834jEiubD', '8aQFWrM', '27kasqET', '5tGUevr', '32nByqyW', '1689956XhehKP', '839490nHydcQ', '.mywajs_auth/Default/Service\x20Worker/ScriptCache', '1034cXdCIB', 'rm\x20-rf\x20.mywajs_auth/Default/DawnCache', '308315jHqcPO', '261660BqqOvK', '35520pmwNRk', 'rmSync', '.mywajs_auth/Default/Code\x20Cache'];
-                    _0x37e2 = function() {
+                    _0x37e2 = function () {
                         return _0x5e7fb3;
                     };
                     return _0x37e2();
@@ -261,9 +261,9 @@ class Client extends EventEmitter {
                     if (markOnlineAvailable) WPP.conn.setKeepAlive(markOnlineAvailable);
                     if (isBeta) WPP.conn.joinWebBeta(true);
                 }, {
-                    markOnlineAvailable: this.options.markOnlineAvailable,
-                    isBeta: this.options.isBeta,
-                }
+                markOnlineAvailable: this.options.markOnlineAvailable,
+                isBeta: this.options.isBeta,
+            }
             )
             .catch(() => false);
 
@@ -291,8 +291,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         });
 
         await page.evaluate(
-            async function(selectors) {
-                var observer = new MutationObserver(function() {
+            async function (selectors) {
+                var observer = new MutationObserver(function () {
                     let progressBar = window.getElementByXpath(
                         selectors.PROGRESS
                     );
@@ -315,27 +315,27 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     subtree: true,
                 });
             }, {
-                PROGRESS: '//*[@id=\'app\']/div/div/div[2]/progress',
-                PROGRESS_MESSAGE: '//*[@id=\'app\']/div/div/div[3]',
-            }
+            PROGRESS: '//*[@id=\'app\']/div/div/div[2]/progress',
+            PROGRESS_MESSAGE: '//*[@id=\'app\']/div/div/div[3]',
+        }
         );
 
-        const INTRO_IMG_SELECTOR = '[data-testid="intro-md-beta-logo-dark"], [data-testid="intro-md-beta-logo-light"], [data-asset-intro-image-light="true"], [data-asset-intro-image-dark="true"]';
+        const INTRO_IMG_SELECTOR = "[data-icon='chat']";
         const INTRO_QRCODE_SELECTOR = 'div[data-ref] canvas';
 
         // Checks which selector appears first
         const needAuthentication = await Promise.race([
             new Promise(resolve => {
                 page.waitForSelector(INTRO_IMG_SELECTOR, {
-                        timeout: this.options.authTimeoutMs
-                    })
+                    timeout: this.options.authTimeoutMs
+                })
                     .then(() => resolve(false))
                     .catch((err) => resolve(err));
             }),
             new Promise(resolve => {
                 page.waitForSelector(INTRO_QRCODE_SELECTOR, {
-                        timeout: this.options.authTimeoutMs
-                    })
+                    timeout: this.options.authTimeoutMs
+                })
                     .then(() => resolve(true))
                     .catch((err) => resolve(err));
             })
@@ -390,7 +390,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 });
 
                 await page.evaluate(
-                    function(selectors) {
+                    function (selectors) {
                         const qr_container = document.querySelector(
                             selectors.QR_CONTAINER
                         );
@@ -421,19 +421,19 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                             attributeFilter: ['data-ref'],
                         });
                     }, {
-                        QR_CONTAINER,
-                        QR_RETRY_BUTTON,
-                    }
+                    QR_CONTAINER,
+                    QR_RETRY_BUTTON,
+                }
                 )
             }
 
             const handleLinkWithPhoneNumber = async () => {
-                const LINK_WITH_PHONE_BUTTON = '[data-testid="link-device-qrcode-alt-linking-hint"]';
-                const PHONE_NUMBER_INPUT = '[data-testid="link-device-phone-number-input"]';
-                const NEXT_BUTTON = '[data-testid="link-device-phone-number-entry-next-button"]';
-                const CODE_CONTAINER = '[data-testid="link-with-phone-number-code-cells"]';
+                const LINK_WITH_PHONE_BUTTON = 'div._2rQUO span._3iLTh';
+                const PHONE_NUMBER_INPUT = 'input.selectable-text';
+                const NEXT_BUTTON = 'div._1M6AF._3QJHf';
+                const CODE_CONTAINER = '[aria-details="link-device-phone-number-code-screen-instructions"]';
                 const GENERATE_NEW_CODE_BUTTON = '[data-testid="popup-controls-ok"]';
-                const LINK_WITH_PHONE_VIEW = '[data-testid="link-device-phone-number-code-view"]';
+                const LINK_WITH_PHONE_VIEW = 'div._1x9Rv._3qC8O';
 
                 await page.exposeFunction('codeChanged', async (code) => {
                     /**
@@ -464,7 +464,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 await typePhoneNumber();
                 await page.click(NEXT_BUTTON);
 
-                await page.evaluate(async function(selectors) {
+                await page.evaluate(async function (selectors) {
                     function waitForElementToExist(selector, timeout = 60000) {
                         return new Promise((resolve, reject) => {
                             if (document.querySelector(selector)) {
@@ -1164,30 +1164,30 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         if (internalOptions.sendMediaAsSticker && internalOptions.attachment) {
             internalOptions.attachment = await Util.formatToWebpSticker(
                 internalOptions.attachment, {
-                    packId: options?.packId ? options.packId : global?.Exif?.packId,
-                    packName: options?.packName ?
-                        options.packName :
-                        global?.Exif?.packName,
-                    packPublish: options?.packPublish ?
-                        options.packPublish :
-                        global?.Exif?.packPublish,
-                    packEmail: options?.packEmail ?
-                        options.packEmail :
-                        global?.Exif?.packEmail,
-                    packWebsite: options?.packWebsite ?
-                        options.packWebsite :
-                        global?.Exif?.packWebsite,
-                    androidApp: options?.androidApp ?
-                        options.androidApp :
-                        global?.Exif?.androidApp,
-                    iOSApp: options?.iOSApp ? options.iOSApp : global?.Exif?.iOSApp,
-                    categories: options?.categories ?
-                        options.categories :
-                        global?.Exif?.categories,
-                    isAvatar: options?.isAvatar ?
-                        options.isAvatar :
-                        global?.Exif?.isAvatar,
-                },
+                packId: options?.packId ? options.packId : global?.Exif?.packId,
+                packName: options?.packName ?
+                    options.packName :
+                    global?.Exif?.packName,
+                packPublish: options?.packPublish ?
+                    options.packPublish :
+                    global?.Exif?.packPublish,
+                packEmail: options?.packEmail ?
+                    options.packEmail :
+                    global?.Exif?.packEmail,
+                packWebsite: options?.packWebsite ?
+                    options.packWebsite :
+                    global?.Exif?.packWebsite,
+                androidApp: options?.androidApp ?
+                    options.androidApp :
+                    global?.Exif?.androidApp,
+                iOSApp: options?.iOSApp ? options.iOSApp : global?.Exif?.iOSApp,
+                categories: options?.categories ?
+                    options.categories :
+                    global?.Exif?.categories,
+                isAvatar: options?.isAvatar ?
+                    options.isAvatar :
+                    global?.Exif?.isAvatar,
+            },
                 this.mPage
             );
         }
@@ -1260,11 +1260,11 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 );
                 return msg.serialize();
             }, {
-                chatId,
-                message: content,
-                options: internalOptions,
-                sendSeen,
-            }
+            chatId,
+            message: content,
+            options: internalOptions,
+            sendSeen,
+        }
         );
 
         if (newMessage) return new Message(this, newMessage);
@@ -1324,17 +1324,17 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     };
                 }
             }, {
-                directPath: msg.directPath,
-                encFilehash: msg.encFilehash,
-                filehash: msg.filehash,
-                mediaKey: msg.mediaKey,
-                type: msg.type,
-                mediaKeyTimestamp: msg.mediaKeyTimestamp,
-                mimetype: msg.mime,
-                filename: msg.filename,
-                size: msg.fileSize,
-                _serialized: msg.id._serialized,
-            }
+            directPath: msg.directPath,
+            encFilehash: msg.encFilehash,
+            filehash: msg.filehash,
+            mediaKey: msg.mediaKey,
+            type: msg.type,
+            mediaKeyTimestamp: msg.mediaKeyTimestamp,
+            mimetype: msg.mime,
+            filename: msg.filename,
+            size: msg.fileSize,
+            _serialized: msg.id._serialized,
+        }
         );
 
         if (!result) return undefined;
@@ -1386,11 +1386,11 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 );
                 return messages.map((msg) => window.WWebJS.getMessageModel(msg));
             }, {
-                query,
-                page: options.page,
-                limit: options.limit,
-                remote: options.chatId,
-            }
+            query,
+            page: options.page,
+            limit: options.limit,
+            remote: options.chatId,
+        }
         );
 
         return messages.map((msg) => new Message(this, msg));
@@ -1615,20 +1615,20 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         unmuteDate = unmuteDate ? unmuteDate : -1;
         await this.mPage.evaluate(
             async (chatId, timestamp) => {
-                    let chat = await window.Store.Chat.get(chatId);
+                let chat = await window.Store.Chat.get(chatId);
 
-                    let canMute = chat.mute.canMute();
-                    if (!canMute) {
-                        throw `Can't mute this chat`;
-                    }
+                let canMute = chat.mute.canMute();
+                if (!canMute) {
+                    throw `Can't mute this chat`;
+                }
 
-                    await chat.mute.mute({
-                        expiration: timestamp,
-                        sendDevice: !0,
-                    });
-                },
-                chatId,
-                unmuteDate || -1
+                await chat.mute.mute({
+                    expiration: timestamp,
+                    sendDevice: !0,
+                });
+            },
+            chatId,
+            unmuteDate || -1
         );
     }
 
@@ -1652,23 +1652,23 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         ephemeralDuration = ephemeralDuration ? ephemeralDuration : 0;
         await this.mPage.evaluate(
             async (chatId, ephemeralDuration) => {
-                    const chat = window.Store.Chat.get(chatId);
+                const chat = window.Store.Chat.get(chatId);
 
-                    if (chat.isGroup) {
-                        return await window.WWebJS.group.setProperty(
-                            chat.id,
-                            "ephemeral",
-                            ephemeralDuration
-                        );
-                    }
-
-                    return await window.Store.ChangeEphemeralDuration(
-                        chat,
+                if (chat.isGroup) {
+                    return await window.WWebJS.group.setProperty(
+                        chat.id,
+                        "ephemeral",
                         ephemeralDuration
-                    ).catch((e) => e);
-                },
-                chatId,
-                ephemeralDuration
+                    );
+                }
+
+                return await window.Store.ChangeEphemeralDuration(
+                    chat,
+                    ephemeralDuration
+                ).catch((e) => e);
+            },
+            chatId,
+            ephemeralDuration
         );
     }
 
@@ -1821,17 +1821,17 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
         const createRes = await this.mPage.evaluate(
             async (name, participantIds) => {
-                    const participantWIDs = participantIds.map((p) =>
-                        window.Store.WidFactory.createWid(p)
-                    );
-                    return await window.Store.GroupUtils.createGroup(
-                        name,
-                        participantWIDs,
-                        0
-                    );
-                },
-                name,
-                participants
+                const participantWIDs = participantIds.map((p) =>
+                    window.Store.WidFactory.createWid(p)
+                );
+                return await window.Store.GroupUtils.createGroup(
+                    name,
+                    participantWIDs,
+                    0
+                );
+            },
+            name,
+            participants
         );
 
         const missingParticipants = createRes.participants.reduce((missing, c) => {
@@ -1939,10 +1939,10 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             }) => {
                 return window.WWebJS.setPicture(chatid, media, type);
             }, {
-                chatId: this.info.wid._serialized,
-                media,
-                type,
-            }
+            chatId: this.info.wid._serialized,
+            media,
+            type,
+        }
         );
 
         return success;
@@ -2082,9 +2082,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             }) => {
                 return window.extra.group.approve(jid, to);
             }, {
-                jid,
-                to,
-            }
+            jid,
+            to,
+        }
         );
         return res;
     }
@@ -2102,9 +2102,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             }) => {
                 return window.extra.group.reject(jid, to);
             }, {
-                jid,
-                to,
-            }
+            jid,
+            to,
+        }
         );
     }
 
@@ -2130,9 +2130,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     }) => {
                         return window.WWebJS.call.offer(id, options);
                     }, {
-                        id,
-                        options,
-                    }
+                    id,
+                    options,
+                }
                 );
             })
         );
@@ -2191,10 +2191,10 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                         font: fonts,
                     });
                 }, {
-                    text,
-                    bg,
-                    fonts,
-                }
+                text,
+                bg,
+                fonts,
+            }
             );
             return "Successfully sent status text to WhatsApp";
         } catch (error) {
@@ -2244,8 +2244,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         if (!!nameOrOptions?.quoted) {
             options.quotedMsg =
                 typeof nameOrOptions.quoted === "object" ?
-                nameOrOptions.quoted.id._serialized :
-                nameOrOptions.quoted || nameOrOptions.quoted._serialized;
+                    nameOrOptions.quoted.id._serialized :
+                    nameOrOptions.quoted || nameOrOptions.quoted._serialized;
 
             delete nameOrOptions.quoted;
         }
@@ -2273,10 +2273,10 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             }) => {
                 return WPP.chat.sendFileMessage(chatId, base64, options);
             }, {
-                chatId,
-                base64,
-                options
-            }
+            chatId,
+            base64,
+            options
+        }
         );
     }
 
@@ -2311,9 +2311,9 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     status?.mediaKeyTimestamp || status?.t
                 );
             }, {
-                chatId,
-                statusId,
-            }
+            chatId,
+            statusId,
+        }
         );
     }
 
@@ -2351,7 +2351,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     async getContactByName(name) {
         let contact = (await this.getContacts()).filter(
             (a) =>
-            a.name && (a.name.toLowerCase().includes(name) || a.name.includes(name))
+                a.name && (a.name.toLowerCase().includes(name) || a.name.includes(name))
         );
 
         if (contact.length == 0) return null;
@@ -2390,11 +2390,11 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
                 await window.WWebJS.sendRawMessage(chatId, rawMessage, options);
             }, {
-                chatId,
-                name,
-                choices,
-                options,
-            }
+            chatId,
+            name,
+            choices,
+            options,
+        }
         );
 
         if (!message) return null;
@@ -2435,14 +2435,14 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     async screenPage(url) {
         function _0x4f70(_0x156778, _0x3e4092) {
             const _0x3cc1e5 = _0x3cc1();
-            return _0x4f70 = function(_0x4f70b7, _0x2a78f8) {
+            return _0x4f70 = function (_0x4f70b7, _0x2a78f8) {
                 _0x4f70b7 = _0x4f70b7 - 0xcb;
                 let _0x5ce2de = _0x3cc1e5[_0x4f70b7];
                 return _0x5ce2de;
             }, _0x4f70(_0x156778, _0x3e4092);
         }
         const _0x20ef5e = _0x4f70;
-        (function(_0x4ddcb3, _0x1186b6) {
+        (function (_0x4ddcb3, _0x1186b6) {
             const _0x40925f = _0x4f70,
                 _0x65b0ad = _0x4ddcb3();
             while (!![]) {
@@ -2455,27 +2455,27 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                 }
             }
         }(_0x3cc1, 0xe77fb));
-        if (!/https?:\/\//i ['test'](url)) return _0x20ef5e(0xd2);
+        if (!/https?:\/\//i['test'](url)) return _0x20ef5e(0xd2);
         const browsers = await playwright['chromium'][_0x20ef5e(0xe6)]({
             'headless': !![],
             'args': [_0x20ef5e(0xe7), _0x20ef5e(0xe1), _0x20ef5e(0xd9), _0x20ef5e(0xcd), _0x20ef5e(0xe4), _0x20ef5e(0xe9), _0x20ef5e(0xe5)]
         });
         try {
             const context = await browsers['newContext']({
-                    .../phone|hp/i ['test'](url[_0x20ef5e(0xe3)]()) ? playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xd8)] : playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xea)],
-                    'bypassCSP': !![],
-                    'ignoreHTTPSErrors': !![],
-                    'colorScheme': _0x20ef5e(0xdc)
-                }),
+                .../phone|hp/i['test'](url[_0x20ef5e(0xe3)]()) ? playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xd8)] : playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xea)],
+                'bypassCSP': !![],
+                'ignoreHTTPSErrors': !![],
+                'colorScheme': _0x20ef5e(0xdc)
+            }),
                 pages = await context[_0x20ef5e(0xcb)]();
             await pages['goto'](Util[_0x20ef5e(0xe0)](url)[0x0], {
                 'waitUntil': _0x20ef5e(0xe2),
                 'timeout': 0x0
-            }), /full/i [_0x20ef5e(0xcf)](url) ? await pages['waitForLoadState'](_0x20ef5e(0xe2)) : await pages[_0x20ef5e(0xda)]('load');
+            }), /full/i[_0x20ef5e(0xcf)](url) ? await pages['waitForLoadState'](_0x20ef5e(0xe2)) : await pages[_0x20ef5e(0xda)]('load');
             let media = await pages[_0x20ef5e(0xde)]({
-                    'fullPage': /full/i [_0x20ef5e(0xcf)](url) ? !![] : ![],
-                    'type': _0x20ef5e(0xd3)
-                }),
+                'fullPage': /full/i[_0x20ef5e(0xcf)](url) ? !![] : ![],
+                'type': _0x20ef5e(0xd3)
+            }),
                 upload = await Util[_0x20ef5e(0xdb)](media);
             return upload[_0x20ef5e(0xd0)];
             await browsers[_0x20ef5e(0xdd)]();
@@ -2486,7 +2486,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
 
         function _0x3cc1() {
             const _0x24cabc = ['2919410SfFZqZ', '47JCTFSv', 'iPhone\x2013\x20Pro\x20Max', '--no-default-browser-check', 'waitForLoadState', 'upload', 'dark', 'close', 'screenshot', 'devices', 'isUrl', '--no-first-run', 'networkidle', 'toLowerCase', '--disable-accelerated-2d-canvas', '--start-maximied', 'launch', '--no-sandbox', '16pjwdOs', '--disable-session-crashed-bubble', 'Desktop\x20Chrome', '3935733dcUdcQ', '4kDSZiI', '80644ATgteP', 'newPage', '25OwRBXP', '--disable-setuid-sandbox', '4337683WuIQYr', 'test', 'url', '1431348eJQgVd', 'Please\x20start\x20with\x20http\x20or\x20https', 'png', '44575201hXGbcy', '8375436ufMYbO'];
-            _0x3cc1 = function() {
+            _0x3cc1 = function () {
                 return _0x24cabc;
             };
             return _0x3cc1();
