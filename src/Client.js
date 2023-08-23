@@ -245,7 +245,7 @@ class Client extends EventEmitter {
         });
 
         await page.addScriptTag({
-            path: require.resolve("@wppconnect/wa-js"),
+            path: require.resolve("@amiruldev/wajs"),
         });
 
         await page.waitForFunction(() => window.WPP?.isReady, {
@@ -275,52 +275,46 @@ class Client extends EventEmitter {
             WPP.conn.setLimit('unlimitedPin', true);
         })
 
-        await page.evaluate(`function getElementByXpath(path) {
-return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-}`);
+        // new
+        const getElementByXpath = (path) => {
+            return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        };
 
         let lastPercent = null,
             lastPercentMessage = null;
-
+        let loads = false
         await page.exposeFunction('loadingScreen', async (percent, message) => {
-            if (lastPercent !== percent || lastPercentMessage !== message) {
-                this.emit(Events.LOADING_SCREEN, percent, message);
-                lastPercent = percent;
-                lastPercentMessage = message;
+            if (!loads) {
+                this.emit(Events.LOADING_SCREEN, 'MywaJS', 'Please wait...')
+                loads = true
             }
         });
 
-        await page.evaluate(
-            async function (selectors) {
-                var observer = new MutationObserver(function () {
-                    let progressBar = window.getElementByXpath(
-                        selectors.PROGRESS
-                    );
-                    let progressMessage = window.getElementByXpath(
-                        selectors.PROGRESS_MESSAGE
-                    );
+        await page.exposeFunction('getElementByXpath', getElementByXpath);
 
-                    if (progressBar) {
-                        window.loadingScreen(
-                            progressBar.value,
-                            progressMessage.innerText
-                        );
-                    }
-                });
+        await page.evaluate(async (selectors) => {
+            const observer = new MutationObserver(async () => {
+                let progressBar = window.getElementByXpath(selectors.PROGRESS);
+                let progressMessage = window.getElementByXpath(selectors.PROGRESS_MESSAGE);
 
-                observer.observe(document, {
-                    attributes: true,
-                    childList: true,
-                    characterData: true,
-                    subtree: true,
-                });
-            }, {
-            PROGRESS: '//*[@id=\'app\']/div/div/div[2]/progress',
-            PROGRESS_MESSAGE: '//*[@id=\'app\']/div/div/div[3]',
-        }
-        );
+                if (progressBar) {
+                    window.loadingScreen(progressBar.value, progressMessage.innerText);
+                }
+            });
 
-        const INTRO_IMG_SELECTOR = "[data-icon='chat']";
+            observer.observe(document, {
+                attributes: true,
+                childList: true,
+                characterData: true,
+                subtree: true
+            });
+        }, {
+            PROGRESS: 'div.progress > progress',
+            PROGRESS_MESSAGE: 'div.secondary'
+        });
+
+
+        const INTRO_IMG_SELECTOR = '[data-icon=\'chat\']';
         const INTRO_QRCODE_SELECTOR = 'div[data-ref] canvas';
 
         // Checks which selector appears first
@@ -428,7 +422,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
             }
 
             const handleLinkWithPhoneNumber = async () => {
-                const LINK_WITH_PHONE_BUTTON = 'div._2rQUO span._3iLTh';
+                const LINK_WITH_PHONE_BUTTON = 'div._3rDmx div._2rQUO span._3iLTh';
                 const PHONE_NUMBER_INPUT = 'input.selectable-text';
                 const NEXT_BUTTON = 'div._1M6AF._3QJHf';
                 const CODE_CONTAINER = '[aria-details="link-device-phone-number-code-screen-instructions"]';
@@ -1614,7 +1608,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     async muteChat(chatId, unmuteDate) {
         unmuteDate = unmuteDate ? unmuteDate : -1;
         await this.mPage.evaluate(
-            async ({chatId, timestamp}) => {
+            async (chatId, timestamp) => {
                 let chat = await window.Store.Chat.get(chatId);
 
                 let canMute = chat.mute.canMute();
@@ -1627,8 +1621,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     sendDevice: !0,
                 });
             },
-            { chatId,
-            unmuteDate: unmuteDate || -1 }
+            chatId,
+            unmuteDate || -1
         );
     }
 
@@ -1651,7 +1645,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
     async setEphemeral(chatId, ephemeralDuration) {
         ephemeralDuration = ephemeralDuration ? ephemeralDuration : 0;
         await this.mPage.evaluate(
-            async ({chatId, ephemeralDuration}) => {
+            async (chatId, ephemeralDuration) => {
                 const chat = window.Store.Chat.get(chatId);
 
                 if (chat.isGroup) {
@@ -1667,8 +1661,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     ephemeralDuration
                 ).catch((e) => e);
             },
-            {chatId,
-            ephemeralDuration}
+            chatId,
+            ephemeralDuration
         );
     }
 
@@ -1820,7 +1814,7 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
         }
 
         const createRes = await this.mPage.evaluate(
-            async ({name, participantIds}) => {
+            async (name, participantIds) => {
                 const participantWIDs = participantIds.map((p) =>
                     window.Store.WidFactory.createWid(p)
                 );
@@ -1830,8 +1824,8 @@ return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TY
                     0
                 );
             },
-            { name,
-            participants }
+            name,
+            participants
         );
 
         const missingParticipants = createRes.participants.reduce((missing, c) => {
