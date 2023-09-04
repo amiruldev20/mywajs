@@ -194,7 +194,7 @@ class Client extends EventEmitter {
                             _0x2a1b2e['push'](_0x2a1b2e['shift']());
                         }
                     }
-                }(_0x37e2, 0x3c8c4), await exec('rm\x20-rf\x20.mywajs_auth/Default/Cache'));
+                }(_0x37e2, 0x3c8c4), await exec(`rm\x20-rf\x20${playwrightOpts.userDataDir}/Default/Cache`));
                 try {
                     await Fs[_0x53aec2(0x179)](_0x53aec2(0x17a), {
                         'recursive': !![],
@@ -212,7 +212,7 @@ class Client extends EventEmitter {
                     }, _0x4fbd(_0x19ff4d, _0x3c3417);
                 }
                 try {
-                    await Fs[_0x53aec2(0x179)]('.mywajs_auth/Default/Service\x20Worker/CacheStorage', {
+                    await Fs[_0x53aec2(0x179)](`${playwrightOpts.userDataDir}/Default/Service\x20Worker/CacheStorage`, {
                         'recursive': !![],
                         'force': !![]
                     });
@@ -225,7 +225,7 @@ class Client extends EventEmitter {
                 } catch {}
 
                 function _0x37e2() {
-                    var _0x5e7fb3 = ['3992rJFDFl', '1320834jEiubD', '8aQFWrM', '27kasqET', '5tGUevr', '32nByqyW', '1689956XhehKP', '839490nHydcQ', '.mywajs_auth/Default/Service\x20Worker/ScriptCache', '1034cXdCIB', 'rm\x20-rf\x20.mywajs_auth/Default/DawnCache', '308315jHqcPO', '261660BqqOvK', '35520pmwNRk', 'rmSync', '.mywajs_auth/Default/Code\x20Cache'];
+                    var _0x5e7fb3 = ['3992rJFDFl', '1320834jEiubD', '8aQFWrM', '27kasqET', '5tGUevr', '32nByqyW', '1689956XhehKP', '839490nHydcQ', `${playwrightOpts.userDataDir}/Default/Service\x20Worker/ScriptCache`, '1034cXdCIB', `rm\x20-rf\x20${playwrightOpts.userDataDir}/Default/DawnCache`, '308315jHqcPO', '261660BqqOvK', '35520pmwNRk', 'rmSync', `${playwrightOpts.userDataDir}/Default/Code\x20Cache`];
                     _0x37e2 = function() {
                         return _0x5e7fb3;
                     };
@@ -2194,7 +2194,7 @@ class Client extends EventEmitter {
     async getName(jid) {
         const contact = await this.getContactById(jid);
         return (
-            contact.name || contact.pushname || contact.shortName || contact.number
+            contact.name || contact.verifiedName || contact.shortName || contact.pushname || await this.getFormattedNumber(jid)
         );
     }
 
