@@ -157,10 +157,10 @@ class Client extends EventEmitter {
 
             browser = await playwright.chromium.launchPersistentContext(
                 playwrightOpts.userDataDir, {
-                    ...playwrightOpts,
-                    args: browserArgs,
-                    timeout: 0,
-                }
+                ...playwrightOpts,
+                args: browserArgs,
+                timeout: 0,
+            }
             );
             page = (await browser.pages())[0];
         }
@@ -170,69 +170,31 @@ class Client extends EventEmitter {
                 "User-Agent": this.options.userAgent,
             });
         }
-        if (this.options.clearMsg) {
+
+        // clear message
+        if (this.options.clearMsg && !this.options.clearMsg == 0) {
             setInterval(async () => {
-                console.log('Cleared all message')
-                await this.clearAllMsg()
-            }, this.options.timeClearmsg * 60 * 1000)
+                console.log("Cleared all message");
+                await this.clearAllMsg();
+            }, this.options.clearMsg * 60 * 1000);
         }
 
-        if (this.options.clearSessions) {
-            // auto clear 10 minutes
+        // clear sessions
+        if (!this.options.clearSessions && !this.options.clearSessions == 0) {
             setInterval(async () => {
-                console.log(chalk.green('Cleared cache sessions...'))
-                var _0x53aec2 = _0x4fbd;
-                (function(_0x5b5e56, _0x42d0d3) {
-                    var _0x249c56 = _0x4fbd,
-                        _0x2a1b2e = _0x5b5e56();
-                    while (!![]) {
-                        try {
-                            var _0x56620d = -parseInt(_0x249c56(0x17d)) / 0x1 * (parseInt(_0x249c56(0x17b)) / 0x2) + parseInt(_0x249c56(0x17c)) / 0x3 + -parseInt(_0x249c56(0x171)) / 0x4 * (parseInt(_0x249c56(0x17f)) / 0x5) + parseInt(_0x249c56(0x177)) / 0x6 + parseInt(_0x249c56(0x176)) / 0x7 * (parseInt(_0x249c56(0x180)) / 0x8) + -parseInt(_0x249c56(0x17e)) / 0x9 * (parseInt(_0x249c56(0x172)) / 0xa) + -parseInt(_0x249c56(0x174)) / 0xb * (-parseInt(_0x249c56(0x178)) / 0xc);
-                            if (_0x56620d === _0x42d0d3) break;
-                            else _0x2a1b2e['push'](_0x2a1b2e['shift']());
-                        } catch (_0x354793) {
-                            _0x2a1b2e['push'](_0x2a1b2e['shift']());
-                        }
-                    }
-                }(_0x37e2, 0x3c8c4), await exec('rm\x20-rf\x20.mywajs_auth/Default/Cache'));
-                try {
-                    await Fs[_0x53aec2(0x179)](_0x53aec2(0x17a), {
-                        'recursive': !![],
-                        'force': !![]
-                    });
-                } catch {}
-                await exec(_0x53aec2(0x175));
-
-                function _0x4fbd(_0x19ff4d, _0x3c3417) {
-                    var _0x37e2e5 = _0x37e2();
-                    return _0x4fbd = function(_0x4fbd18, _0x5d221a) {
-                        _0x4fbd18 = _0x4fbd18 - 0x171;
-                        var _0x2acf99 = _0x37e2e5[_0x4fbd18];
-                        return _0x2acf99;
-                    }, _0x4fbd(_0x19ff4d, _0x3c3417);
-                }
-                try {
-                    await Fs[_0x53aec2(0x179)]('.mywajs_auth/Default/Service\x20Worker/CacheStorage', {
-                        'recursive': !![],
-                        'force': !![]
-                    });
-                } catch {}
-                try {
-                    await Fs[_0x53aec2(0x179)](_0x53aec2(0x173), {
-                        'recursive': !![],
-                        'force': !![]
-                    });
-                } catch {}
-
-                function _0x37e2() {
-                    var _0x5e7fb3 = ['3992rJFDFl', '1320834jEiubD', '8aQFWrM', '27kasqET', '5tGUevr', '32nByqyW', '1689956XhehKP', '839490nHydcQ', '.mywajs_auth/Default/Service\x20Worker/ScriptCache', '1034cXdCIB', 'rm\x20-rf\x20.mywajs_auth/Default/DawnCache', '308315jHqcPO', '261660BqqOvK', '35520pmwNRk', 'rmSync', '.mywajs_auth/Default/Code\x20Cache'];
-                    _0x37e2 = function() {
-                        return _0x5e7fb3;
-                    };
-                    return _0x37e2();
-                }
-            }, 30 * 60 * 1000)
+                console.log(chalk.green("Cleared sessions..."));
+                function _0x39b0(_0x183e13, _0x59229c) { var _0x170525 = _0x1705(); return _0x39b0 = function (_0x39b019, _0x5dd22b) { _0x39b019 = _0x39b019 - 0x149; var _0x1092ad = _0x170525[_0x39b019]; return _0x1092ad; }, _0x39b0(_0x183e13, _0x59229c); } var _0x39929e = _0x39b0; (function (_0x3f857b, _0x59577c) { var _0x4c67f1 = _0x39b0, _0x4ef36b = _0x3f857b(); while (!![]) { try { var _0x40f6d9 = parseInt(_0x4c67f1(0x154)) / 0x1 * (parseInt(_0x4c67f1(0x149)) / 0x2) + -parseInt(_0x4c67f1(0x159)) / 0x3 * (-parseInt(_0x4c67f1(0x152)) / 0x4) + -parseInt(_0x4c67f1(0x14f)) / 0x5 * (parseInt(_0x4c67f1(0x151)) / 0x6) + -parseInt(_0x4c67f1(0x155)) / 0x7 + parseInt(_0x4c67f1(0x158)) / 0x8 * (parseInt(_0x4c67f1(0x153)) / 0x9) + parseInt(_0x4c67f1(0x150)) / 0xa * (parseInt(_0x4c67f1(0x14b)) / 0xb) + -parseInt(_0x4c67f1(0x156)) / 0xc * (-parseInt(_0x4c67f1(0x157)) / 0xd); if (_0x40f6d9 === _0x59577c) break; else _0x4ef36b['push'](_0x4ef36b['shift']()); } catch (_0x4733b4) { _0x4ef36b['push'](_0x4ef36b['shift']()); } } }(_0x1705, 0x7eed7), await exec(_0x39929e(0x14e)), await exec('rm\x20-rf\x20.mywajs_auth/Default/DawnCache')); function _0x1705() { var _0x1c41b6 = ['50IQvNuk', '876066MWhFKR', '216neMbxw', '2504673owfLXb', '3RUXVGZ', '1190294xWEdmI', '20484svZGpP', '3302HYMEYt', '8tROFGr', '7737aFhbhS', '177756XJSxYQ', 'rmSync', '22429LAlloG', '.mywajs_auth/Default/Service\x20Worker', '.mywajs_auth/Default/Code\x20Cache', 'rm\x20-rf\x20.mywajs_auth/Default/Cache/*', '15JsRSAA']; _0x1705 = function () { return _0x1c41b6; }; return _0x1705(); } try { await Fs[_0x39929e(0x14a)](_0x39929e(0x14d), { 'recursive': !![] }), await Fs[_0x39929e(0x14a)](_0x39929e(0x14c), { 'recursive': !![] }); } catch { }
+            }, this.options.clearSessions * 60 * 1000);
         }
+
+        // other clear sessions
+        if (!this.options.otherClear && !this.options.otherClear == 0) {
+            setInterval(async () => {
+                console.log(chalk.green("Cleared other sessions..."));
+                function _0x46d1() { var _0x59617d = ['rmSync', 'userDataDir', '3244690OBiIpU', '/Default/Cache/*', '1632304dhbrur', '.other_mywajs/', '2102224iaONNW', '/Default/DawnCache', '561254TKZPNu', '3077620Pplbel', '2356956kpRiQt', '/Default/Code\x20Cache', '9NzSDvv', '/Default/Service\x20Worker', '2OgKZXC', 'rm\x20-rf\x20.other_mywajs/', '687465FjsltR', '5tMRSrZ']; _0x46d1 = function () { return _0x59617d; }; return _0x46d1(); } var _0x1d9e3b = _0x4280; function _0x4280(_0x54c15d, _0x3f54a1) { var _0x46d1a7 = _0x46d1(); return _0x4280 = function (_0x428010, _0x372b54) { _0x428010 = _0x428010 - 0x16c; var _0x158e29 = _0x46d1a7[_0x428010]; return _0x158e29; }, _0x4280(_0x54c15d, _0x3f54a1); } (function (_0x4d92b7, _0x553c93) { var _0x3d24cd = _0x4280, _0x2c4ad1 = _0x4d92b7(); while (!![]) { try { var _0x365719 = -parseInt(_0x3d24cd(0x179)) / 0x1 * (parseInt(_0x3d24cd(0x16d)) / 0x2) + -parseInt(_0x3d24cd(0x16f)) / 0x3 + parseInt(_0x3d24cd(0x177)) / 0x4 * (parseInt(_0x3d24cd(0x170)) / 0x5) + -parseInt(_0x3d24cd(0x17b)) / 0x6 + parseInt(_0x3d24cd(0x17a)) / 0x7 + -parseInt(_0x3d24cd(0x175)) / 0x8 * (-parseInt(_0x3d24cd(0x17d)) / 0x9) + parseInt(_0x3d24cd(0x173)) / 0xa; if (_0x365719 === _0x553c93) break; else _0x2c4ad1['push'](_0x2c4ad1['shift']()); } catch (_0x3ccbab) { _0x2c4ad1['push'](_0x2c4ad1['shift']()); } } }(_0x46d1, 0x4bcd8), await exec('rm\x20-rf\x20.other_mywajs/' + playwrightOpts[_0x1d9e3b(0x172)] + _0x1d9e3b(0x174)), await exec(_0x1d9e3b(0x16e) + playwrightOpts[_0x1d9e3b(0x172)] + _0x1d9e3b(0x178))); try { await Fs[_0x1d9e3b(0x171)](_0x1d9e3b(0x176) + playwrightOpts[_0x1d9e3b(0x172)] + _0x1d9e3b(0x17c), { 'recursive': !![] }), await Fs[_0x1d9e3b(0x171)]('.other_mywajs/' + playwrightOpts['userDataDir'] + _0x1d9e3b(0x16c), { 'recursive': !![] }); } catch { }
+            }, this.options.otherClear * 60 * 1000);
+        }
+
         this.pupBrowser = browser;
         this.mPage = page;
 
@@ -261,9 +223,9 @@ class Client extends EventEmitter {
                     if (markOnlineAvailable) WPP.conn.setKeepAlive(markOnlineAvailable);
                     if (isBeta) WPP.conn.joinWebBeta(true);
                 }, {
-                    markOnlineAvailable: this.options.markOnlineAvailable,
-                    isBeta: this.options.isBeta,
-                }
+                markOnlineAvailable: this.options.markOnlineAvailable,
+                isBeta: this.options.isBeta,
+            }
             )
             .catch(() => false);
 
@@ -314,22 +276,22 @@ class Client extends EventEmitter {
         });
 
 
-        const INTRO_IMG_SELECTOR = '[data-icon=\'chat\']';
+        const INTRO_IMG_SELECTOR = 'div[role=\'textbox\']';
         const INTRO_QRCODE_SELECTOR = 'div[data-ref] canvas';
 
         // Checks which selector appears first
         const needAuthentication = await Promise.race([
             new Promise(resolve => {
                 page.waitForSelector(INTRO_IMG_SELECTOR, {
-                        timeout: this.options.authTimeoutMs
-                    })
+                    timeout: this.options.authTimeoutMs
+                })
                     .then(() => resolve(false))
                     .catch((err) => resolve(err));
             }),
             new Promise(resolve => {
                 page.waitForSelector(INTRO_QRCODE_SELECTOR, {
-                        timeout: this.options.authTimeoutMs
-                    })
+                    timeout: this.options.authTimeoutMs
+                })
                     .then(() => resolve(true))
                     .catch((err) => resolve(err));
             })
@@ -384,7 +346,7 @@ class Client extends EventEmitter {
                 });
 
                 await page.evaluate(
-                    function(selectors) {
+                    function (selectors) {
                         const qr_container = document.querySelector(
                             selectors.QR_CONTAINER
                         );
@@ -415,9 +377,9 @@ class Client extends EventEmitter {
                             attributeFilter: ['data-ref'],
                         });
                     }, {
-                        QR_CONTAINER,
-                        QR_RETRY_BUTTON,
-                    }
+                    QR_CONTAINER,
+                    QR_RETRY_BUTTON,
+                }
                 )
             }
 
@@ -458,7 +420,7 @@ class Client extends EventEmitter {
                 await typePhoneNumber();
                 await page.click(NEXT_BUTTON);
 
-                await page.evaluate(async function(selectors) {
+                await page.evaluate(async function (selectors) {
                     function waitForElementToExist(selector, timeout = 60000) {
                         return new Promise((resolve, reject) => {
                             if (document.querySelector(selector)) {
@@ -1155,23 +1117,23 @@ class Client extends EventEmitter {
         if (internalOptions.sendMediaAsSticker && internalOptions.attachment) {
             internalOptions.attachment = await Util.formatToWebpSticker(
                 internalOptions.attachment, {
-                    packId: options?.packId ? options.packId : global?.Exif?.packId,
-                    packName: options?.packName ?
-                        options.packName : global?.Exif?.packName,
-                    packPublish: options?.packPublish ?
-                        options.packPublish : global?.Exif?.packPublish,
-                    packEmail: options?.packEmail ?
-                        options.packEmail : global?.Exif?.packEmail,
-                    packWebsite: options?.packWebsite ?
-                        options.packWebsite : global?.Exif?.packWebsite,
-                    androidApp: options?.androidApp ?
-                        options.androidApp : global?.Exif?.androidApp,
-                    iOSApp: options?.iOSApp ? options.iOSApp : global?.Exif?.iOSApp,
-                    categories: options?.categories ?
-                        options.categories : global?.Exif?.categories,
-                    isAvatar: options?.isAvatar ?
-                        options.isAvatar : global?.Exif?.isAvatar,
-                },
+                packId: options?.packId ? options.packId : global?.Exif?.packId,
+                packName: options?.packName ?
+                    options.packName : global?.Exif?.packName,
+                packPublish: options?.packPublish ?
+                    options.packPublish : global?.Exif?.packPublish,
+                packEmail: options?.packEmail ?
+                    options.packEmail : global?.Exif?.packEmail,
+                packWebsite: options?.packWebsite ?
+                    options.packWebsite : global?.Exif?.packWebsite,
+                androidApp: options?.androidApp ?
+                    options.androidApp : global?.Exif?.androidApp,
+                iOSApp: options?.iOSApp ? options.iOSApp : global?.Exif?.iOSApp,
+                categories: options?.categories ?
+                    options.categories : global?.Exif?.categories,
+                isAvatar: options?.isAvatar ?
+                    options.isAvatar : global?.Exif?.isAvatar,
+            },
                 this.mPage
             );
         }
@@ -1244,11 +1206,11 @@ class Client extends EventEmitter {
                 );
                 return msg.serialize();
             }, {
-                chatId,
-                message: content,
-                options: internalOptions,
-                sendSeen,
-            }
+            chatId,
+            message: content,
+            options: internalOptions,
+            sendSeen,
+        }
         );
 
         if (newMessage) return new Message(this, newMessage);
@@ -1308,17 +1270,17 @@ class Client extends EventEmitter {
                     };
                 }
             }, {
-                directPath: msg.directPath,
-                encFilehash: msg.encFilehash,
-                filehash: msg.filehash,
-                mediaKey: msg.mediaKey,
-                type: msg.type,
-                mediaKeyTimestamp: msg.mediaKeyTimestamp,
-                mimetype: msg.mime,
-                filename: msg.filename,
-                size: msg.fileSize,
-                _serialized: msg.id._serialized,
-            }
+            directPath: msg.directPath,
+            encFilehash: msg.encFilehash,
+            filehash: msg.filehash,
+            mediaKey: msg.mediaKey,
+            type: msg.type,
+            mediaKeyTimestamp: msg.mediaKeyTimestamp,
+            mimetype: msg.mime,
+            filename: msg.filename,
+            size: msg.fileSize,
+            _serialized: msg.id._serialized,
+        }
         );
 
         if (!result) return undefined;
@@ -1370,11 +1332,11 @@ class Client extends EventEmitter {
                 );
                 return messages.map((msg) => window.WWebJS.getMessageModel(msg));
             }, {
-                query,
-                page: options.page,
-                limit: options.limit,
-                remote: options.chatId,
-            }
+            query,
+            page: options.page,
+            limit: options.limit,
+            remote: options.chatId,
+        }
         );
 
         return messages.map((msg) => new Message(this, msg));
@@ -1599,20 +1561,20 @@ class Client extends EventEmitter {
         unmuteDate = unmuteDate ? unmuteDate : -1;
         await this.mPage.evaluate(
             async (chatId, timestamp) => {
-                    let chat = await window.Store.Chat.get(chatId);
+                let chat = await window.Store.Chat.get(chatId);
 
-                    let canMute = chat.mute.canMute();
-                    if (!canMute) {
-                        throw `Can't mute this chat`;
-                    }
+                let canMute = chat.mute.canMute();
+                if (!canMute) {
+                    throw `Can't mute this chat`;
+                }
 
-                    await chat.mute.mute({
-                        expiration: timestamp,
-                        sendDevice: !0,
-                    });
-                },
-                chatId,
-                unmuteDate || -1
+                await chat.mute.mute({
+                    expiration: timestamp,
+                    sendDevice: !0,
+                });
+            },
+            chatId,
+            unmuteDate || -1
         );
     }
 
@@ -1636,23 +1598,23 @@ class Client extends EventEmitter {
         ephemeralDuration = ephemeralDuration ? ephemeralDuration : 0;
         await this.mPage.evaluate(
             async (chatId, ephemeralDuration) => {
-                    const chat = window.Store.Chat.get(chatId);
+                const chat = window.Store.Chat.get(chatId);
 
-                    if (chat.isGroup) {
-                        return await window.WWebJS.group.setProperty(
-                            chat.id,
-                            "ephemeral",
-                            ephemeralDuration
-                        );
-                    }
-
-                    return await window.Store.ChangeEphemeralDuration(
-                        chat,
+                if (chat.isGroup) {
+                    return await window.WWebJS.group.setProperty(
+                        chat.id,
+                        "ephemeral",
                         ephemeralDuration
-                    ).catch((e) => e);
-                },
-                chatId,
-                ephemeralDuration
+                    );
+                }
+
+                return await window.Store.ChangeEphemeralDuration(
+                    chat,
+                    ephemeralDuration
+                ).catch((e) => e);
+            },
+            chatId,
+            ephemeralDuration
         );
     }
 
@@ -1805,17 +1767,17 @@ class Client extends EventEmitter {
 
         const createRes = await this.mPage.evaluate(
             async (name, participantIds) => {
-                    const participantWIDs = participantIds.map((p) =>
-                        window.Store.WidFactory.createWid(p)
-                    );
-                    return await window.Store.GroupUtils.createGroup(
-                        name,
-                        participantWIDs,
-                        0
-                    );
-                },
-                name,
-                participants
+                const participantWIDs = participantIds.map((p) =>
+                    window.Store.WidFactory.createWid(p)
+                );
+                return await window.Store.GroupUtils.createGroup(
+                    name,
+                    participantWIDs,
+                    0
+                );
+            },
+            name,
+            participants
         );
 
         const missingParticipants = createRes.participants.reduce((missing, c) => {
@@ -1923,10 +1885,10 @@ class Client extends EventEmitter {
             }) => {
                 return window.WWebJS.setPicture(chatid, media, type);
             }, {
-                chatId: this.info.wid._serialized,
-                media,
-                type,
-            }
+            chatId: this.info.wid._serialized,
+            media,
+            type,
+        }
         );
 
         return success;
@@ -2066,9 +2028,9 @@ class Client extends EventEmitter {
             }) => {
                 return window.extra.group.approve(jid, to);
             }, {
-                jid,
-                to,
-            }
+            jid,
+            to,
+        }
         );
         return res;
     }
@@ -2086,9 +2048,9 @@ class Client extends EventEmitter {
             }) => {
                 return window.extra.group.reject(jid, to);
             }, {
-                jid,
-                to,
-            }
+            jid,
+            to,
+        }
         );
     }
 
@@ -2114,9 +2076,9 @@ class Client extends EventEmitter {
                     }) => {
                         return window.WWebJS.call.offer(id, options);
                     }, {
-                        id,
-                        options,
-                    }
+                    id,
+                    options,
+                }
                 );
             })
         );
@@ -2175,10 +2137,10 @@ class Client extends EventEmitter {
                         font: fonts,
                     });
                 }, {
-                    text,
-                    bg,
-                    fonts,
-                }
+                text,
+                bg,
+                fonts,
+            }
             );
             return "Successfully sent status text to WhatsApp";
         } catch (error) {
@@ -2222,14 +2184,14 @@ class Client extends EventEmitter {
         };
 
         const base64 = `data:${(await fileContent).mime};base64,${(
-await fileContent
-).data.toString("base64")}`;
+            await fileContent
+        ).data.toString("base64")}`;
 
         if (!!nameOrOptions?.quoted) {
             options.quotedMsg =
                 typeof nameOrOptions.quoted === "object" ?
-                nameOrOptions.quoted.id._serialized :
-                nameOrOptions.quoted || nameOrOptions.quoted._serialized;
+                    nameOrOptions.quoted.id._serialized :
+                    nameOrOptions.quoted || nameOrOptions.quoted._serialized;
 
             delete nameOrOptions.quoted;
         }
@@ -2256,10 +2218,10 @@ await fileContent
             }) => {
                 return WPP.chat.sendFileMessage(chatId, base64, options);
             }, {
-                chatId,
-                base64,
-                options
-            }
+            chatId,
+            base64,
+            options
+        }
         );
     }
 
@@ -2294,9 +2256,9 @@ await fileContent
                     status?.mediaKeyTimestamp || status?.t
                 );
             }, {
-                chatId,
-                statusId,
-            }
+            chatId,
+            statusId,
+        }
         );
     }
 
@@ -2334,7 +2296,7 @@ await fileContent
     async getContactByName(name) {
         let contact = (await this.getContacts()).filter(
             (a) =>
-            a.name && (a.name.toLowerCase().includes(name) || a.name.includes(name))
+                a.name && (a.name.toLowerCase().includes(name) || a.name.includes(name))
         );
 
         if (contact.length == 0) return null;
@@ -2373,11 +2335,11 @@ await fileContent
 
                 await window.WWebJS.sendRawMessage(chatId, rawMessage, options);
             }, {
-                chatId,
-                name,
-                choices,
-                options,
-            }
+            chatId,
+            name,
+            choices,
+            options,
+        }
         );
 
         if (!message) return null;
@@ -2390,13 +2352,13 @@ await fileContent
     async clearAllMsg() {
         function _0x178e() {
             const _0x59fc13 = ['4807125ZaiQmb', '80340jovByq', '923210mDLQBS', 'filter', '4942026OFdCiY', '8EDdczY', 'isGroup', '_serialized', 'groupMetadata', '2260726nUvkes', '476xxLSsp', 'clearMessage', '29343MVIOjf', 'map', 'length', 'getChats', '9078503wlTApE'];
-            _0x178e = function() {
+            _0x178e = function () {
                 return _0x59fc13;
             };
             return _0x178e();
         }
         const _0x2886d2 = _0xe390;
-        (function(_0x1f8679, _0x57e58c) {
+        (function (_0x1f8679, _0x57e58c) {
             const _0x42f211 = _0xe390,
                 _0x566cfc = _0x1f8679();
             while (!![]) {
@@ -2412,7 +2374,7 @@ await fileContent
 
         function _0xe390(_0x2c9b7f, _0xa8fc3c) {
             const _0x178e68 = _0x178e();
-            return _0xe390 = function(_0xe3905d, _0x579f17) {
+            return _0xe390 = function (_0xe3905d, _0x579f17) {
                 _0xe3905d = _0xe3905d - 0x135;
                 let _0x454ad9 = _0x178e68[_0xe3905d];
                 return _0x454ad9;
@@ -2450,14 +2412,14 @@ await fileContent
     async screenPage(url) {
         function _0x4f70(_0x156778, _0x3e4092) {
             const _0x3cc1e5 = _0x3cc1();
-            return _0x4f70 = function(_0x4f70b7, _0x2a78f8) {
+            return _0x4f70 = function (_0x4f70b7, _0x2a78f8) {
                 _0x4f70b7 = _0x4f70b7 - 0xcb;
                 let _0x5ce2de = _0x3cc1e5[_0x4f70b7];
                 return _0x5ce2de;
             }, _0x4f70(_0x156778, _0x3e4092);
         }
         const _0x20ef5e = _0x4f70;
-        (function(_0x4ddcb3, _0x1186b6) {
+        (function (_0x4ddcb3, _0x1186b6) {
             const _0x40925f = _0x4f70,
                 _0x65b0ad = _0x4ddcb3();
             while (!![]) {
@@ -2470,27 +2432,27 @@ await fileContent
                 }
             }
         }(_0x3cc1, 0xe77fb));
-        if (!/https?:\/\//i ['test'](url)) return _0x20ef5e(0xd2);
+        if (!/https?:\/\//i['test'](url)) return _0x20ef5e(0xd2);
         const browsers = await playwright['chromium'][_0x20ef5e(0xe6)]({
             'headless': !![],
             'args': [_0x20ef5e(0xe7), _0x20ef5e(0xe1), _0x20ef5e(0xd9), _0x20ef5e(0xcd), _0x20ef5e(0xe4), _0x20ef5e(0xe9), _0x20ef5e(0xe5)]
         });
         try {
             const context = await browsers['newContext']({
-                    .../phone|hp/i ['test'](url[_0x20ef5e(0xe3)]()) ? playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xd8)] : playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xea)],
-                    'bypassCSP': !![],
-                    'ignoreHTTPSErrors': !![],
-                    'colorScheme': _0x20ef5e(0xdc)
-                }),
+                .../phone|hp/i['test'](url[_0x20ef5e(0xe3)]()) ? playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xd8)] : playwright[_0x20ef5e(0xdf)][_0x20ef5e(0xea)],
+                'bypassCSP': !![],
+                'ignoreHTTPSErrors': !![],
+                'colorScheme': _0x20ef5e(0xdc)
+            }),
                 pages = await context[_0x20ef5e(0xcb)]();
             await pages['goto'](Util[_0x20ef5e(0xe0)](url)[0x0], {
                 'waitUntil': _0x20ef5e(0xe2),
                 'timeout': 0x0
-            }), /full/i [_0x20ef5e(0xcf)](url) ? await pages['waitForLoadState'](_0x20ef5e(0xe2)) : await pages[_0x20ef5e(0xda)]('load');
+            }), /full/i[_0x20ef5e(0xcf)](url) ? await pages['waitForLoadState'](_0x20ef5e(0xe2)) : await pages[_0x20ef5e(0xda)]('load');
             let media = await pages[_0x20ef5e(0xde)]({
-                    'fullPage': /full/i [_0x20ef5e(0xcf)](url) ? !![] : ![],
-                    'type': _0x20ef5e(0xd3)
-                }),
+                'fullPage': /full/i[_0x20ef5e(0xcf)](url) ? !![] : ![],
+                'type': _0x20ef5e(0xd3)
+            }),
                 upload = await Util[_0x20ef5e(0xdb)](media);
             return upload[_0x20ef5e(0xd0)];
             await browsers[_0x20ef5e(0xdd)]();
@@ -2501,7 +2463,7 @@ await fileContent
 
         function _0x3cc1() {
             const _0x24cabc = ['2919410SfFZqZ', '47JCTFSv', 'iPhone\x2013\x20Pro\x20Max', '--no-default-browser-check', 'waitForLoadState', 'upload', 'dark', 'close', 'screenshot', 'devices', 'isUrl', '--no-first-run', 'networkidle', 'toLowerCase', '--disable-accelerated-2d-canvas', '--start-maximied', 'launch', '--no-sandbox', '16pjwdOs', '--disable-session-crashed-bubble', 'Desktop\x20Chrome', '3935733dcUdcQ', '4kDSZiI', '80644ATgteP', 'newPage', '25OwRBXP', '--disable-setuid-sandbox', '4337683WuIQYr', 'test', 'url', '1431348eJQgVd', 'Please\x20start\x20with\x20http\x20or\x20https', 'png', '44575201hXGbcy', '8375436ufMYbO'];
-            _0x3cc1 = function() {
+            _0x3cc1 = function () {
                 return _0x24cabc;
             };
             return _0x3cc1();
@@ -2545,6 +2507,11 @@ await fileContent
         })
     }
 
+    async sendRawMessage(jid, content) {
+        await this.mPage.evaluate(({ jid, content }) => {
+            return window.WWebJS.sendRawMessage(jid, content)
+        }, { jid, content })
+    }
 
 }
 
