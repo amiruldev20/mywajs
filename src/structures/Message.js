@@ -431,7 +431,7 @@ class Message extends Base {
             return undefined;
         }
 
-        const result = await this.mPage.evaluate(
+        const result = await this.client.mPage.evaluate(
             async ({
                 directPath,
                 encFilehash,
