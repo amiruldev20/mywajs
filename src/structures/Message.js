@@ -25,7 +25,9 @@ import PollVote from "./PollVote.js";
 class Message extends Base {
     constructor(client, data) {
         super(client);
-
+        if (!data.author) {
+            data.author = data.from.endsWith('c.us') ? data.from : data.author;
+        }
         if (data) this._patch(data);
     }
 
