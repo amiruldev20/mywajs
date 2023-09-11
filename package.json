@@ -39,7 +39,7 @@
     "chalk": "^5.2.0",
     "cheerio": "^1.0.0-rc.12",
     "fluent-ffmpeg": "^2.1.2",
-    "file-type": "^18.5.0",
+    "file-type": "^17.1.1",
     "link-preview-js": "^3.0.4",
     "mime-types": "^2.1.35",
     "mime": "latest",
