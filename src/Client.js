@@ -434,20 +434,13 @@ class Client extends EventEmitter {
     // Checks which selector appears first
     const needAuthentication = await Promise.race([
       new Promise((resolve) => {
-        page.waitForFunction(() => {
-        document.querySelector('body > div > div > .landing-wrapper');
-    // Kode selanjutnya akan ditulis di sini
-  })
-  /*
         page
           .waitForSelector(INTRO_IMG_SELECTOR, {
             timeout: this.options.authTimeoutMs,
           })
           .then(() => resolve(false))
           .catch((err) => resolve(err));
-    */
       }),
-      
       new Promise((resolve) => {
         page
           .waitForSelector(INTRO_QRCODE_SELECTOR, {
