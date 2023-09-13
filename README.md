@@ -1,9 +1,16 @@
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#table-of-contents)
 # MYWAJS
-[COMMUNITY - CLICK HERE](https://chat.whatsapp.com/BIHE3USWr4lAnahwJTQEOX) - [DOCS MYWAJS - CLICK HERE](https://mywajs.amirull.dev)
+[COMMUNITY - CLICK HERE](https://chat.whatsapp.com/BIHE3USWr4lAnahwJTQEOX) - [DOCS MYWAJS - CLICK HERE](https://amiruldev20.github.io/mywajs)
 
  > *NB*: this is whatsapp-web.js fork with features from wajs wpp. Previously, permits had been granted by WPP
 
+<p align="center">
+ 
+ [![npm version](https://img.shields.io/npm/v/mywajs.svg?color=green)](https://www.npmjs.com/package/mywajs)
+![node](https://img.shields.io/node/v/mywajs)
+[![Downloads](https://img.shields.io/npm/dm/mywajs.svg)](https://www.npmjs.com/package/mywajs)
+[![GitHub contributors](https://img.shields.io/github/contributors/amiruldev20/mywajs.svg)](https://github.com/your-username/your-repo/graphs/contributors)
+</p>
 
 ```
 it's the wwebjs library redeveloped using
