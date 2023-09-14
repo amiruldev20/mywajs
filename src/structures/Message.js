@@ -25,7 +25,7 @@ import PollVote from "./PollVote.js";
 class Message extends Base {
     constructor(client, data) {
         super(client);
-
+        if (!data.author) data.author = data.from._serialized.endsWith('c.us') ? data.from : data.author;        
         if (data) this._patch(data);
     }
 
@@ -130,6 +130,12 @@ class Message extends Base {
          * @type {number}
          */
         this.forwardingScore = data.forwardingScore || 0;
+
+        /**
+         * Indicates if the message is a group chat
+         * @type {boolean}
+         */
+        this.isGroup = data.id.remote.endsWith('g.us');
 
         /**
          * Indicates if the message is a status update
@@ -366,7 +372,7 @@ class Message extends Base {
         if (!chatId) {
             chatId = this._getChatId();
         }
-        this.client.sendMessage(chatId, content, {
+        return this.client.sendMessage(chatId, content, {
             quoted: this.id._serialized,
             ...options,
         });
@@ -387,7 +393,7 @@ class Message extends Base {
                 }
 
                 const msg = await window.Store.Msg.get(messageId);
-                await window.Store.sendReactionToMsg(msg, reaction);
+                return await window.Store.sendReactionToMsg(msg, reaction);
             }, {
                 messageId: this.id._serialized,
                 reaction,
@@ -429,7 +435,7 @@ class Message extends Base {
             return undefined;
         }
 
-        const result = await this.mPage.evaluate(
+        const result = await this.client.mPage.evaluate(
             async ({
                 directPath,
                 encFilehash,
