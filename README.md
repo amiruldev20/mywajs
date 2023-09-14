@@ -21,8 +21,10 @@ doesn't mean it's anti-banned.
 use accordingly, don't overspend
 
 for example check folder example
-docs? check folder docs
 ```
+
+> [NOTE]
+> if you want to fix something, you can do homework. This project is public, anyone can help develop it
 
 ## Supported features
 
