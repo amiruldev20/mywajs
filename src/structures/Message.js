@@ -135,7 +135,7 @@ class Message extends Base {
          * Indicates if the message is a group chat
          * @type {boolean}
          */
-        this.isGroup = data.id.remote.endsWith('g.us') || false;
+        this.isGroup = /g.us/.test(data.id.remote || this.fromMe ? this.to : this.from);
 
         /**
          * Indicates if the message is a status update
