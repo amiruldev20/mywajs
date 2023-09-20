@@ -446,21 +446,12 @@ class Client extends EventEmitter {
             }
         );
 
-        const INTRO_IMG_SELECTOR = 'div[role='textbox']';
+        const INTRO_IMG_SELECTOR = "div[role='textbox']";
         const INTRO_QRCODE_SELECTOR = "div[data-ref] canvas";
 
 
         const needAuthentication = await Promise.race([
             new Promise(async (resolve) => {
-                const hat = await page.content();
-                fs.writeFile('select.txt', hat, (err) => {
-                    if (err) {
-                        console.error('Error writing to file:', err);
-                    } else {
-                        console.log('Successfully wrote htmlContent to file.txt');
-                    }
-                });
-                fs.unlink('select.txt')
                 page
                     .waitForSelector(INTRO_IMG_SELECTOR, {
                         timeout: this.options.authTimeoutMs,
