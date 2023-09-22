@@ -368,7 +368,7 @@ class Client extends EventEmitter {
         });
 
         await page.addScriptTag({
-            path: require.resolve("@amiruldev/wajs"),
+            path: require.resolve("@wppconnect/wa-js"),
         });
 
         await page.waitForFunction(() => window.WPP?.isReady, {
