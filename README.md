@@ -17,7 +17,7 @@ This project is a wwebjs fork with more features imported from WPP, developed us
 This is an unofficial whatsapp library.
 You can get banned for using this library.
 Im not responsible if you got banned.
-If you need example you can find in on the example folder 
+If you need example you can find in on the examples folder 
 
 Why am I using playwright?
 In my opinion playwright is faster than puppeteer
