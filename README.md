@@ -2,29 +2,29 @@
 # MYWAJS
 [COMMUNITY - CLICK HERE](https://chat.whatsapp.com/BIHE3USWr4lAnahwJTQEOX) - [DOCS MYWAJS - CLICK HERE](https://amiruldev20.github.io/mywajs)
 
- > *NB*: this is whatsapp-web.js fork with features from wajs wpp. Previously, permits had been granted by WPP
+ > *NB*: this is whatsapp-web.js fork with features added from wajs wpp. permits had been granted by WPP
 
 <p align="center">
  
- [![npm version](https://img.shields.io/npm/v/mywajs.svg?color=green)](https://www.npmjs.com/package/mywajs)
+[![npm version](https://img.shields.io/npm/v/mywajs.svg?color=green)](https://www.npmjs.com/package/mywajs)
 ![node](https://img.shields.io/node/v/mywajs)
 [![Downloads](https://img.shields.io/npm/dm/mywajs.svg)](https://www.npmjs.com/package/mywajs)
 [![GitHub contributors](https://img.shields.io/github/contributors/amiruldev20/mywajs.svg)](https://github.com/your-username/your-repo/graphs/contributors)
 </p>
 
 ```
-it's the wwebjs library redeveloped using
-playwright and wajs.
-because in my opinion playwright is lighter.
-This is an unofficial library,
-doesn't mean it's anti-banned.
-use accordingly, don't overspend
+This project is a wwebjs fork with more features imported from WPP, developed using playwright and wajs.
+This is an unofficial whatsapp library.
+You can get banned for using this library.
+Im not responsible if you got banned.
+If you need example you can find in on the example folder 
 
-for example check folder example
+Why am I using playwright?
+In my opinion playwright is faster than puppeteer
 ```
 
 > [NOTE]
-> if you want to fix something, you can do homework. This project is public, anyone can help develop it
+> If you want to add/fix a feature in this project, feel free to edit this project code and make a new PR
 
 ## Supported features
 
