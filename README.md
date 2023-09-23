@@ -23,7 +23,7 @@ Why am I using playwright?
 In my opinion playwright is faster than puppeteer
 ```
 
-> [NOTE]
+> [!NOTE]
 > If you want to add/fix a feature in this project, feel free to edit this project code and make a new PR
 
 ## Supported features
