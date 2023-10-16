@@ -1,30 +1,31 @@
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#table-of-contents)
 # MYWAJS
-[COMMUNITY - CLICK HERE](https://chat.whatsapp.com/BIHE3USWr4lAnahwJTQEOX) - [DOCS MYWAJS - CLICK HERE](https://amiruldev20.github.io/mywajs)
+[COMMUNITY - CLICK HERE](https://chat.whatsapp.com/BIHE3USWr4lAnahwJTQEOX) - [DOCS MYWAJS - CLICK HERE](https://mywajs.amirull.dev)
 
- > *NB*: this is whatsapp-web.js fork with features added from wajs wpp. permits had been granted by WPP
-
-<p align="center">
+ > *NB*: this is whatsapp-web.js fork with features from wajs wpp. Previously, permits had been granted by WPP
  
+ <p align="center">
+<img width="" src="https://img.shields.io/github/repo-size/amiruldev20/mywajs?color=green&label=Repo%20Size&style=for-the-badge&logo=appveyor">
+
 [![npm version](https://img.shields.io/npm/v/mywajs.svg?color=green)](https://www.npmjs.com/package/mywajs)
 ![node](https://img.shields.io/node/v/mywajs)
 [![Downloads](https://img.shields.io/npm/dm/mywajs.svg)](https://www.npmjs.com/package/mywajs)
-[![GitHub contributors](https://img.shields.io/github/contributors/amiruldev20/mywajs.svg)](https://github.com/your-username/your-repo/graphs/contributors)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/amiruldev20/mywajs.svg)](http://isitmaintained.com/project/amiruldev20/mywajs "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/amiruldev20/mywajs.svg)](http://isitmaintained.com/project/amiruldev20/mywajs "Percentage of issues still open")
+
 </p>
 
 ```
-This project is a wwebjs fork with more features imported from WPP, developed using playwright and wajs.
-This is an unofficial whatsapp library.
-You can get banned for using this library.
-Im not responsible if you got banned.
-If you need example you can find in on the examples folder 
+it's the wwebjs library redeveloped using
+playwright and wajs.
+because in my opinion playwright is lighter.
+This is an unofficial library,
+doesn't mean it's anti-banned.
+use accordingly, don't overspend
 
-Why am I using playwright?
-In my opinion playwright is faster than puppeteer
+for example check folder example
+docs? check folder docs
 ```
-
-> [!NOTE]
-> If you want to add/fix a feature in this project, feel free to edit this project code and make a new PR
 
 ## Supported features
 
@@ -32,6 +33,7 @@ In my opinion playwright is faster than puppeteer
 | ------------- | ------------- |
 | Login via phone | ✅ |
 | Multi Device | ✅ |
+| Creae Channel | ✅ |
 | Join Wa Beta | ✅ |
 | Change theme | ✅ |
 | Send polling | ✅ |

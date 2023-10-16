@@ -7,29 +7,21 @@
  * ig: amirul.dev
  */
 'use strict';
-
-import path from 'path';
-import Crypto from "crypto";
-import {
-    tmpdir
-} from 'os';
-import ffmpeg from 'fluent-ffmpeg';
-import webp from 'node-webpmux';
-import {
-    Readable
-} from 'stream'
-import fs from 'fs/promises';
-import Fs from 'fs';
-import axios from 'axios';
-import BodyForm from "form-data";
-import {
-    fileTypeFromBuffer
-} from "file-type"
-import mimes from "mime-types"
+const path = require('path');
+const Crypto = require('crypto');
+const { tmpdir } = require('os');
+const ffmpeg = require('fluent-ffmpeg');
+const webp = require('node-webpmux');
+const fs = require('fs').promises;
+const sharp = require('sharp')
+const { Readable } = require('stream')
+const Fs = require('fs')
+const axios = require('axios')
+const BodyForm = require('form-data')
+const fileType = require('file-type')
+const mimes = require('mime-types')
 
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
-
-
 /**
  * Utility methods
  */
@@ -303,9 +295,9 @@ class Util {
                         responseType: "arraybuffer",
                         ...options,
                     })
-                    let buffer = await data?.data
-                    let name = /filename/i.test(data.headers?.get("content-disposition")) ? data.headers?.get("content-disposition")?.match(/filename=(.*)/)?.[1]?.replace(/["';]/g, '') : ''
-                    let mime = mimes.lookup(name) || data.headers.get("content-type") || (await fileTypeFromBuffer(buffer))?.mime
+                    let buffer = await data ?.data
+                    let name = /filename/i.test(data.headers ?.get("content-disposition")) ? data.headers ?.get("content-disposition") ?.match(/filename=(.*)/) ?.[1] ?.replace(/["';]/g, '') : ''
+                    let mime = mimes.lookup(name) || data.headers.get("content-type") || (await fileType.fromBuffer(buffer)) ?.mime
                     resolve({
                         data: buffer,
                         size: Buffer.byteLength(buffer),
@@ -315,13 +307,13 @@ class Util {
                         ext: mimes.extension(mime)
                     });
                 } else if (/^data:.*?\/.*?;base64,/i.test(string)) {
-                    let data = Buffer.from(string.split`,` [1], "base64")
+                    let data = Buffer.from(string.split`,`[1], "base64")
                     let size = Buffer.byteLength(data)
                     resolve({
                         data,
                         size,
                         sizeH: this.formatSize(size),
-                        ...((await fileTypeFromBuffer(data)) || {
+                        ...((await fileType.fromBuffer(data)) || {
                             mime: "application/octet-stream",
                             ext: ".bin"
                         })
@@ -333,18 +325,18 @@ class Util {
                         data,
                         size,
                         sizeH: this.formatSize(size),
-                        ...((await fileTypeFromBuffer(data)) || {
+                        ...((await fileType.fromBuffer(data)) || {
                             mime: "application/octet-stream",
                             ext: ".bin"
                         })
                     });
                 } else if (Buffer.isBuffer(string)) {
-                    let size = Buffer?.byteLength(string) || 0
+                    let size = Buffer ?.byteLength(string) || 0
                     resolve({
                         data: string,
                         size,
                         sizeH: this.formatSize(size),
-                        ...((await fileTypeFromBuffer(string)) || {
+                        ...((await fileType.fromBuffer(string)) || {
                             mime: "application/octet-stream",
                             ext: ".bin"
                         })
@@ -356,7 +348,7 @@ class Util {
                         data,
                         size,
                         sizeH: this.formatSize(size),
-                        ...((await fileTypeFromBuffer(data)) || {
+                        ...((await fileType.fromBuffer(data)) || {
                             mime: "application/octet-stream",
                             ext: ".bin"
                         })
@@ -368,14 +360,14 @@ class Util {
                         data: buffer,
                         size,
                         sizeH: this.formatSize(size),
-                        ...((await fileTypeFromBuffer(buffer)) || {
+                        ...((await fileType.fromBuffer(buffer)) || {
                             mime: "application/octet-stream",
                             ext: ".bin"
                         })
                     });
                 }
             } catch (e) {
-                reject(new Error(e?.message || e))
+                reject(new Error(e ?.message || e))
             }
         });
     }
@@ -385,45 +377,64 @@ class Util {
         try {
             options = !!options.headers ? options.headers : {}
             let filename = null;
-            let data = (await this.fetchBuffer(PATH, { headers: {
-                referer: 'https://y2mate.com'
-                }}))
+            let data = (await this.fetchBuffer(PATH, {
+                headers: {
+                    referer: 'https://y2mate.com'
+                }
+            }))
 
-            if (data?.data && save) {
+            if (data ?.data && save) {
                 filename = `../../temp/${Date.now()}.${data.ext}`
-                Fs.promises.writeFile(filename, data?.data);
+                Fs.promises.writeFile(filename, data ?.data);
             }
             return {
-                filename: data?.name ? data.name : filename,
+                filename: data ?.name ? data.name : filename,
                 ...data
             };
         } catch (e) {
             throw e
         }
     }
-    
+
     /* upload media */
     static upload(buffer, exts) {
-		return new Promise(async (resolve, reject) => {
-			const { ext, data: buffers } = await this.getFile(buffer)
-			const form = new BodyForm();
-			form.append("files[]", buffers, this.getRandom(exts || ext))
-			await axios({
-				url: "https://pomf.lain.la/upload.php",
-				method: "POST",
-				headers: {
-					"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
-					...form.getHeaders()
-				},
-				data: form
-			}).then((data) => {
-				resolve(data.data.files[0])
-			}).catch((err) => resolve(err))
-		})
-	}
+        return new Promise(async (resolve, reject) => {
+            const { ext, data: buffers } = await this.getFile(buffer)
+            const form = new BodyForm();
+            form.append("files[]", buffers, this.getRandom(exts || ext))
+            await axios({
+                url: "https://pomf.lain.la/upload.php",
+                method: "POST",
+                headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+                    ...form.getHeaders()
+                },
+                data: form
+            }).then((data) => {
+                resolve(data.data.files[0])
+            }).catch((err) => resolve(err))
+        })
+    }
 
+    /* resize image */
+    static async resizeImage(buffer, height) {
+        buffer = (await this.getFile(buffer)).data
+        /**
+         * @param {Sharp} img
+         * @param {number} maxSize
+         * @return {Promise<Sharp>}
+         */
+        const resizeByMax = async (img, maxSize) => {
+            const metadata = await img.metadata();
+            const outputRatio = maxSize / Math.max(metadata.height, metadata.width);
+            return img.resize(Math.floor(metadata.width * outputRatio), Math.floor(metadata.height * outputRatio));
+        };
 
+        const img = await sharp(buffer)
+
+        return (await resizeByMax(img, height)).toFormat('jpg').toBuffer()
+    }
 
 }
 
-export default Util;
+module.exports = Util;
