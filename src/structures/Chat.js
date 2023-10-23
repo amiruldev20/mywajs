@@ -1,12 +1,3 @@
-/*
- * MywaJS 2023
- * re-developed wwebjs
- * using with playwright & wajs
- * contact:
- * wa: 085157489446
- * ig: amirul.dev
- */
-
 "use strict";
 
 const Base = require("./Base");
@@ -194,7 +185,7 @@ class Chat extends Base {
    */
   async fetchMessages(searchOptions) {
     let messages = await this.client.mPage.evaluate(
-      async (chatId, searchOptions) => {
+      async ({ chatId, searchOptions }) => {
         const msgFilter = (m) => {
           if (m.isNotification) {
             return false; // dont include notification messages
@@ -228,8 +219,7 @@ class Chat extends Base {
 
         return msgs.map((m) => window.WWebJS.getMessageModel(m));
       },
-      this.id._serialized,
-      searchOptions
+      { chatId: this.id._serialized, searchOptions }
     );
 
     return messages.map((m) => new Message(this.client, m));

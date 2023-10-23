@@ -1,12 +1,3 @@
-/*
- * MywaJS 2023
- * re-developed wwebjs
- * using with playwright & wajs
- * contact:
- * wa: 085157489446
- * ig: amirul.dev
- */
-
 'use strict';
 
 /* Require Optional Dependencies */
@@ -49,8 +40,8 @@ class RemoteAuth extends BaseAuthStrategy {
         this.store = store;
         this.clientId = clientId;
         this.backupSyncIntervalMs = backupSyncIntervalMs;
-        this.dataPath = path.resolve(dataPath || './.mywa_auth/');
-        this.tempDir = `${this.dataPath}/mywa_temp_session_${this.clientId}`;
+        this.dataPath = path.resolve(dataPath || './.wwebjs_auth/');
+        this.tempDir = `${this.dataPath}/wwebjs_temp_session_${this.clientId}`;
         this.requiredDirs = ['Default', 'IndexedDB', 'Local Storage']; /* => Required Files & Dirs in WWebJS to restore session */
     }
 
