@@ -178,15 +178,15 @@ class Client extends EventEmitter {
             timeout: 60000,
         });
         /*
-                const inject = async () => {
-                    await page.evaluate(ExposeStore, moduleRaid.toString()).catch(async error => {
-                        if (error.message.includes('call')) {
-                            await inject();
-                        }
-                    });
-                };
-                await inject();
-                */
+        const inject = async () => {
+        await page.evaluate(ExposeStore, moduleRaid.toString()).catch(async error => {
+        if (error.message.includes('call')) {
+        await inject();
+        }
+        });
+        };
+        await inject();
+        */
         // new
         const getElementByXpath = (path) => {
             return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -486,57 +486,6 @@ class Client extends EventEmitter {
             }
         }
 
-        await page.evaluate(() => {
-            /**
-             * Helper function that compares between two WWeb versions. Its purpose is to help the developer to choose the correct code implementation depending on the comparison value and the WWeb version.
-             * @param {string} lOperand The left operand for the WWeb version string to compare with
-             * @param {string} operator The comparison operator
-             * @param {string} rOperand The right operand for the WWeb version string to compare with
-             * @returns {boolean} Boolean value that indicates the result of the comparison
-             */
-            window.compareWwebVersions = (lOperand, operator, rOperand) => {
-                if (![">", ">=", "<", "<=", "="].includes(operator)) {
-                    throw new (class _ extends Error {
-                        constructor(m) {
-                            super(m);
-                            this.name = "CompareWwebVersionsError";
-                        }
-                    })("Invalid comparison operator is provided");
-                }
-                if (typeof lOperand !== "string" || typeof rOperand !== "string") {
-                    throw new (class _ extends Error {
-                        constructor(m) {
-                            super(m);
-                            this.name = "CompareWwebVersionsError";
-                        }
-                    })("A non-string WWeb version type is provided");
-                }
-
-                lOperand = lOperand.replace(/-beta$/, "");
-                rOperand = rOperand.replace(/-beta$/, "");
-
-                while (lOperand.length !== rOperand.length) {
-                    lOperand.length > rOperand.length
-                        ? (rOperand = rOperand.concat("0"))
-                        : (lOperand = lOperand.concat("0"));
-                }
-
-                lOperand = Number(lOperand.replace(/\./g, ""));
-                rOperand = Number(rOperand.replace(/\./g, ""));
-
-                return operator === ">"
-                    ? lOperand > rOperand
-                    : operator === ">="
-                        ? lOperand >= rOperand
-                        : operator === "<"
-                            ? lOperand < rOperand
-                            : operator === "<="
-                                ? lOperand <= rOperand
-                                : operator === "="
-                                    ? lOperand === rOperand
-                                    : false;
-            };
-        });
 
         // await page.evaluate(ExposeStore, moduleRaid.toString());
         const inject = async () => {
@@ -556,7 +505,14 @@ class Client extends EventEmitter {
         this.emit(Events.AUTHENTICATED, authEventPayload);
 
         // Check window.Store Injection
-        await page.waitForFunction("window.Store != undefined");
+        await page
+            .waitForFunction(() => {
+                return (
+                    typeof window.WWebJS !== "undefined" &&
+                    typeof window.Store !== "undefined"
+                );
+            })
+            .catch(() => false);
 
         await page.evaluate(async () => {
             // safely unregister service workers
@@ -1132,8 +1088,11 @@ class Client extends EventEmitter {
                     contact?.id ? contact?.id?._serialized : contact
                 ) :
                 [],
+            groupMentions: options.groupMentions,
             extraOptions: options.extra,
         };
+
+        options.groupMentions && !Array.isArray(options.groupMentions) && (options.groupMentions = [options.groupMentions]);
 
         if (options.caption) internalOptions.caption = options.caption;
         const sendSeen =
@@ -2090,10 +2049,10 @@ class Client extends EventEmitter {
 
     /* new functiom by amirul dev */
     /**
-         * get name whatsapp
-         * @param {*} jid 
-         * @returns 
-         */
+     * get name whatsapp
+     * @param {*} jid 
+     * @returns 
+     */
     async getName(jid) {
         const contact = await this.getContactById(jid);
         return (
@@ -2102,10 +2061,10 @@ class Client extends EventEmitter {
     }
 
     /**
-        * group metadata
-        * @param {*} chatId 
-        * @returns 
-        */
+    * group metadata
+    * @param {*} chatId 
+    * @returns 
+    */
     async groupMetadata(chatId) {
         let chat = await this.mPage.evaluate(async (chatId) => {
             let chatWid = await window.Store.WidFactory.createWid(chatId);
@@ -2119,10 +2078,10 @@ class Client extends EventEmitter {
     }
 
     /**
-        * download media message
-        * @param {*} msg 
-        * @returns 
-        */
+    * download media message
+    * @param {*} msg 
+    * @returns 
+    */
     async downloadMediaMessage(msg) {
         if (!Boolean(msg.mediaKey && msg.directPath))
             throw new Error("Not Media Message");
@@ -2263,9 +2222,9 @@ class Client extends EventEmitter {
     }
 
     /**
-        * get detail host
-        * @returns 
-        */
+    * get detail host
+    * @returns 
+    */
     getHost() {
         return this.mPage.evaluate(() => {
             return WPP.whatsapp.Conn.attributes;
@@ -2430,11 +2389,11 @@ class Client extends EventEmitter {
     }
 
     /**
-         * send file
-         * @param {sen} chatId 
-         * @param {*} pathOrBase64 
-         * @param {*} nameOrOptions 
-         */
+     * send file
+     * @param {sen} chatId 
+     * @param {*} pathOrBase64 
+     * @param {*} nameOrOptions 
+     */
     async sendFile(chatId, pathOrBase64, nameOrOptions) {
         if (typeof nameOrOptions === "string") {
             options.filename = nameOrOptions;
@@ -2573,8 +2532,8 @@ class Client extends EventEmitter {
     }
 
     /**
-        * clear all messages
-        */
+    * clear all messages
+    */
     async clearAllMsg() {
         function _0x178e() {
             const _0x59fc13 = ['4807125ZaiQmb', '80340jovByq', '923210mDLQBS', 'filter', '4942026OFdCiY', '8EDdczY', 'isGroup', '_serialized', 'groupMetadata', '2260726nUvkes', '476xxLSsp', 'clearMessage', '29343MVIOjf', 'map', 'length', 'getChats', '9078503wlTApE'];

@@ -1,4 +1,3 @@
-
 import { EventEmitter } from 'events'
 import { RequestInit } from 'node-fetch'
 import * as playwright from 'playwright-chromium'
@@ -333,8 +332,8 @@ declare namespace WAWebJS {
             qr: string
         ) => void): this
 
-         /** Emitted when the linkingMethod is phone and code is received */
-         on(event: 'code', listener: (
+        /** Emitted when the linkingMethod is phone and code is received */
+        on(event: 'code', listener: (
             /** code string
              *  @example ```Q1EW-R2ET``` */
             code: string
@@ -841,6 +840,15 @@ declare namespace WAWebJS {
         mediaKey?: string,
         /** Indicates the mentions in the message body. */
         mentionedIds: [],
+        /** Indicates whether there are group mentions in the message body */
+        groupMentions: {
+            groupSubject: string;
+            groupJid: {
+                server: string;
+                user: string;
+                _serialized: string;
+            };
+        }[],
         /** Unix timestamp for when the message was created */
         timestamp: number,
         /**
@@ -900,6 +908,8 @@ declare namespace WAWebJS {
         getContact: () => Promise<Contact>,
         /** Returns the Contacts mentioned in this message */
         getMentions: () => Promise<Contact[]>,
+        /** Returns groups mentioned in this message */
+        getGroupMentions: () => Promise<GroupChat[] | []>,
         /** Returns the quoted message, if any */
         getQuotedMessage: () => Promise<Message>,
         /** 

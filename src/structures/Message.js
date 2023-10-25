@@ -105,8 +105,8 @@ class Message extends Base {
       typeof data.id.id === "string" && data.id.id.length > 21
         ? "android"
         : typeof data.id.id === "string" && data.id.id.substring(0, 2) === "3A"
-        ? "ios"
-        : "web";
+          ? "ios"
+          : "web";
     /**
      * Indicates if the message was forwarded
      * @type {boolean}
@@ -191,8 +191,8 @@ class Message extends Base {
       data.type === MessageTypes.CONTACT_CARD_MULTI
         ? data.vcardList.map((c) => c.vcard)
         : data.type === MessageTypes.CONTACT_CARD
-        ? [data.body]
-        : [];
+          ? [data.body]
+          : [];
 
     /**
      * Group Invite Data
@@ -201,14 +201,14 @@ class Message extends Base {
     this.inviteV4 =
       data.type === MessageTypes.GROUP_INVITE
         ? {
-            inviteCode: data.inviteCode,
-            inviteCodeExp: data.inviteCodeExp,
-            groupId: data.inviteGrp,
-            groupName: data.inviteGrpName,
-            fromId:
-              "_serialized" in data.from ? data.from._serialized : data.from,
-            toId: "_serialized" in data.to ? data.to._serialized : data.to,
-          }
+          inviteCode: data.inviteCode,
+          inviteCodeExp: data.inviteCodeExp,
+          groupId: data.inviteGrp,
+          groupName: data.inviteGrpName,
+          fromId:
+            "_serialized" in data.from ? data.from._serialized : data.from,
+          toId: "_serialized" in data.to ? data.to._serialized : data.to,
+        }
         : undefined;
 
     /**
@@ -220,6 +220,8 @@ class Message extends Base {
     if (data.mentionedJidList) {
       this.mentionedIds = data.mentionedJidList;
     }
+
+    this.groupMentions = data.groupMentions || [];
 
     /**
      * Order ID for message type ORDER
@@ -373,6 +375,14 @@ class Message extends Base {
   }
 
   /**
+    * Returns groups mentioned in this message
+    * @returns {Promise<GroupChat[]|[]>}
+    */
+  async getGroupMentions() {
+    return await Promise.all(this.groupMentions.map(async (m) => await this.client.getChatById(m.groupJid._serialized)));
+  }
+
+  /**
    * Returns the quoted message, if any
    * @returns {Promise<Message>}
    */
@@ -399,17 +409,17 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   async reply(content, chatId, options = {}) {
-        if (!chatId) {
-            chatId = this._getChatId();
-        }
-
-        options = {
-            ...options,
-            quoted: this.id._serialized
-        };
-
-        return this.client.sendMessage(chatId, content, options);
+    if (!chatId) {
+      chatId = this._getChatId();
     }
+
+    options = {
+      ...options,
+      quoted: this.id._serialized
+    };
+
+    return this.client.sendMessage(chatId, content, options);
+  }
 
   /**
    * React to this message with an emoji
