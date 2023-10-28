@@ -883,6 +883,7 @@ class Client extends EventEmitter {
                     prevBody
                 );
             });
+            window.Store.Msg.on('change:caption', (msg, newBody, prevBody) => { window.onEditMessageEvent(window.WWebJS.getMessageModel(msg), newBody, prevBody); });
             window.Store.AppState.on("change:state", (_AppState, state) => {
                 window.onAppStateChangedEvent(state);
             });
