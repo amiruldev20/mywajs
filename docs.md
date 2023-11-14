@@ -175,5 +175,60 @@ ex:
 
 // send text
 client.sendMessage("xx@c.us", "MywaJS Bot Active")
+
+// send text with quoted
+client.sendMessage("xx@c.us", "Hello", { quoted: m })
+
+// send media
+client.sendMessage("xx@c.us", url/buffer, { caption: "hello" })
+
+// send document
+client.sendMessage("xx@x.us", url/buffer, { asDocument: true })
+
+// send sticker
+client.sendMessage("xx@c.us", url/buffer, { asSticker: true })
+
+*list options*
+- quoted (object)
+- mentions (array)
+- externalAdReply (object)
+- caption (string)
 ```
 </details>
+
+<details><summary><b>Search Messages</b></summary>
+    
+> **INFO**
+> This function is used to search messages
+
+```javascript
+client.searchMessages(text, options)
+
+ex:
+client.searchMessages("hello", { page: 1 })
+
+*List Options*
+- page (number)
+- count (number)
+- remote (string)
+```
+</details>
+
+<details><summary><b>Get All Chats</b></summary>
+    
+> **INFO**
+> This function is used to get all chats
+
+```javascript
+client.getChats()
+```
+</details>
+
+<details><summary><b>Get Chat From ID</b></summary>
+    
+> **INFO**
+> This function is used to get chat from id
+
+```javascript
+client.getChatById("xx@c.us")
+```
