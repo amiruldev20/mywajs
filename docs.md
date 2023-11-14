@@ -313,3 +313,33 @@ client.setStatus("hello world")
 client.setName("Mywa BOT")
 ```
 </details>
+
+<details><summary><b>Get State Whatsapp</b></summary>
+    
+> **INFO**
+> This function is used to get state
+
+```javascript
+client.getState()
+```
+</details>
+
+<details><summary><b>Presence Online</b></summary>
+    
+> **INFO**
+> This function is used to set presence online
+
+```javascript
+client.sendPresenceAvailable()
+```
+</details>
+
+<details><summary><b>Presence Offline</b></summary>
+    
+> **INFO**
+> This function is used to set presence offline
+
+```javascript
+client.sendPresenceUnavailable()
+```
+</details>
