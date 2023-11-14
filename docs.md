@@ -126,5 +126,54 @@
     ```
 
    for test after connecting. Please type `.ping` in your WhatsApp bot
+</details>
 
+<details><summary><b>Logout Session</b></summary>
+    
+> **INFO**
+> This function is used to logout the session
 
+```javascript
+client.logout()
+```
+</details>
+
+<details><summary><b>Get Detail WWEB</b></summary>
+    
+> **INFO**
+> This function is used to get detail wweb
+
+```javascript
+client.getWWeb()
+```
+</details>
+
+<details><summary><b>Read Chat</b></summary>
+    
+> **INFO**
+> This function is used to read chat
+
+```javascript
+client.sendSeen(chatID)
+
+ex:
+client.sendSeen("1278xx@g.us")
+
+support chatId xx@g.us or xx@c.us
+```
+</details>
+
+<details><summary><b>Send Message</b></summary>
+    
+> **INFO**
+> This function is used to send message
+
+```javascript
+client.sendMessage(chatId, content, options)
+
+ex:
+
+// send text
+client.sendMessage("xx@c.us", "MywaJS Bot Active")
+```
+</details>
