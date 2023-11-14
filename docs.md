@@ -232,3 +232,84 @@ client.getChats()
 ```javascript
 client.getChatById("xx@c.us")
 ```
+</details>
+
+<details><summary><b>Get All Contacts</b></summary>
+    
+> **INFO**
+> This function is used to get all contacts
+
+```javascript
+client.getContacts()
+```
+</details>
+
+<details><summary><b>Get Contact From ID</b></summary>
+    
+> **INFO**
+> This function is used to get contact from id
+
+```javascript
+client.gefContactById("xx@c.us")
+```
+</details>
+
+<details><summary><b>Get Message From ID</b></summary>
+    
+> **INFO**
+> This function is used to get message from id
+
+```javascript
+client.getMessageById(msgID)
+```
+</details>
+
+<details><summary><b>Get Invite Info</b></summary>
+    
+> **INFO**
+> This function is used to get detail code invite
+
+```javascript
+client.getInviteInfo(codeinvite)
+```
+</details>
+
+<details><summary><b>Accept Invite Code</b></summary>
+    
+> **INFO**
+> This function is used to accept code invite
+
+```javascript
+client.acceptInvite(code)
+```
+</details>
+
+<details><summary><b>Accept V4 Invite</b></summary>
+    
+> **INFO**
+> This function is used to accept v4 invite
+
+```javascript
+client.acceptV4Invite(message)
+```
+</details>
+
+<details><summary><b>Change Status BIO</b></summary>
+    
+> **INFO**
+> This function is used to change status bio
+
+```javascript
+client.setStatus("hello world")
+```
+</details>
+
+<details><summary><b>Change Name</b></summary>
+    
+> **INFO**
+> This function is used to change name wa bot
+
+```javascript
+client.setName("Mywa BOT")
+```
+</details>
