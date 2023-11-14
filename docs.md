@@ -1,12 +1,16 @@
 # MywaJS Documentation
 
-<details><summary><b>Create Client (login phone)</b></summary>
+<details><summary><b>Create Client</b></summary>
 
 1. for commonjs (CJS)
 
     ```javascript
-    const { Client, LinkingMethod } = require("mywajs")
+    const { Client, LinkingMethod, LocalAuth } = require("mywajs")
     const client = new Client({
+    /* for local auth */
+    // authStrategy: new LocalAuth(),
+
+    /* for login phone */
     linkingMethod: new LinkingMethod({
                     phone: {
                         number: "62851xx",
@@ -26,6 +30,12 @@
     console.log('Loading screen', percent, message)
     })
 
+    /* for qr code */
+    // client.on('qr', (qr) => {
+    // console.log("Qr Code: ", qr)
+    // })
+
+    /* for login code */
     client.on('code', (code) => {
     console.log("Your code: ", code)
    })
@@ -58,8 +68,12 @@
 2. for ECMAscript Module (ESM)
 
     ```javascript
-    const { Client, LinkingMethod } = (await import("mywajs")).default
+    const { Client, LinkingMethod, LocalAuth } = (await import("mywajs")).default
     const client = new Client({
+    /* for local auth */
+    // authStrategy: new LocalAuth(),
+
+    /* for login phone */
     linkingMethod: new LinkingMethod({
                     phone: {
                         number: "62851xx",
@@ -79,6 +93,12 @@
     console.log('Loading screen', percent, message)
     })
 
+    /* for qr code */
+    // client.on('qr', (qr) => {
+    // console.log("Qr Code: ", qr)
+    // })
+
+    /* for login code */
     client.on('code', (code) => {
     console.log("Your code: ", code)
    })
