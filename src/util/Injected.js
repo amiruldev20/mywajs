@@ -164,7 +164,7 @@ exports.LoadUtils = () => {
         return false;
 
     };
-
+/*
     window.WWebJS.sendMessage = async (chat, content, options = {}) => {
         let attOptions = {};
         if (options.attachment) {
@@ -367,7 +367,206 @@ exports.LoadUtils = () => {
 
         await window.Store.SendMessage.addAndSendMsgToChat(chat, message);
         return window.Store.Msg.get(newMsgId._serialized);
+    };*/
+     window.WWebJS.sendMessage = async (chat, content, options = {}) => {
+        let attOptions = {};
+        if (options.attachment) {
+            attOptions = options.sendMediaAsSticker ?
+                await window.WWebJS.processStickerData(options.attachment) :
+                await window.WWebJS.processMediaData(options.attachment, {
+                    forceVoice: options.sendAudioAsVoice,
+                    forceDocument: options.sendMediaAsDocument,
+                    forceGif: options.sendVideoAsGif,
+                    isViewOnce: options.isViewOnce
+                });
+
+            attOptions.caption = options.caption ? options.caption : "";
+            content = options.sendMediaAsSticker ? undefined : attOptions.preview;
+
+            delete options.attachment;
+            delete options.sendMediaAsSticker;
+        }
+        let quotedMsgOptions = {};
+        if (options.quotedMessageId) {
+            let quotedMessage = window.Store.Msg.get(options.quotedMessageId);
+
+            // TODO remove .canReply() once all clients are updated to >= v2.2241.6
+            const canReply = window.Store.ReplyUtils ?
+                window.Store.ReplyUtils.canReplyMsg(quotedMessage.unsafe()) :
+                quotedMessage.canReply();
+
+            if (canReply) {
+                quotedMsgOptions = quotedMessage.msgContextInfo(chat);
+            }
+            delete options.quotedMessageId;
+        }
+
+        if (options.mentionedJidList) {
+            options.mentionedJidList = options.mentionedJidList.map(
+                (cId) => window.Store.Contact.get(cId).id
+            );
+        }
+
+        let locationOptions = {};
+        if (options.location) {
+            locationOptions = {
+                type: "location",
+                loc: options.location.description,
+                lat: options.location.latitude,
+                lng: options.location.longitude,
+            };
+            delete options.location;
+        }
+
+        let vcardOptions = {};
+        if (options.contactCard) {
+            let contact = window.Store.Contact.get(options.contactCard);
+            vcardOptions = {
+                body: window.Store.VCard.vcardFromContactModel(contact).vcard,
+                type: "vcard",
+                vcardFormattedName: contact.formattedName,
+            };
+            delete options.contactCard;
+        } else if (options.contactCardList) {
+            let contacts = options.contactCardList.map((c) =>
+                window.Store.Contact.get(c)
+            );
+            let vcards = contacts.map((c) =>
+                window.Store.VCard.vcardFromContactModel(c)
+            );
+            vcardOptions = {
+                type: "multi_vcard",
+                vcardList: vcards,
+                body: undefined,
+            };
+            delete options.contactCardList;
+        } else if (
+            options.parseVCards &&
+            typeof content === "string" &&
+            content.startsWith("BEGIN:VCARD")
+        ) {
+            delete options.parseVCards;
+            try {
+                const parsed = window.Store.VCardParse.parseVcard(content);
+                if (parsed) {
+                    vcardOptions = {
+                        type: "vcard",
+                        vcardFormattedName: window.Store.VCardParse.vcardGetNameFromParsed(parsed),
+                    };
+                }
+            } catch (_) {
+                // not a vcard
+            }
+        }
+
+        if (options.linkPreview) {
+            const ovverride =
+                typeof options.linkPreview === "object" ? options.linkPreview : {};
+
+            const link = window.Store.Validators.findLink(content);
+            if (link) {
+                const preview = await window.WWebJS.whatsapp.functions.fetchLinkPreview(
+                    link.url
+                );
+                preview.preview = true;
+                preview.subtype = "url";
+                options = {
+                    ...options,
+                    ...preview.data,
+                    ...ovverride
+                };
+            }
+
+            if (typeof options.linkPreview === "object") {
+                options.subtype = "url";
+                options = {
+                    ...options,
+                    ...options.linkPreview,
+                };
+            }
+
+            delete options.linkPreview;
+        }
+
+        let buttonOptions = {};
+        if (options.buttons) {
+            let caption;
+            if (options.buttons.type === "chat") {
+                content = options.buttons.body;
+                caption = content;
+            } else {
+                caption = options.caption ? options.caption : " "; //Caption can't be empty
+            }
+
+            buttonOptions = window.WWebJS.prepareMessageButtons(options.buttons);
+            buttonOptions = {
+                ...buttonOptions,
+                caption: caption,
+            };
+            delete options.buttons;
+        }
+
+        let listOptions = {};
+        if (options.list) {
+            listOptions = {
+                type: "list",
+                footer: options.list.footer,
+                list: {
+                    ...options.list,
+                    listType: 1,
+                },
+                body: options.list.description,
+            };
+            delete options.list;
+            delete listOptions.list.footer;
+        }
+
+        const meUser = window.Store.User.getMaybeMeUser();
+        const isMD = window.Store.MDBackend;
+        const newId = await window.Store.MsgKey.newId();
+        
+        const newMsgId = new window.Store.MsgKey({
+            from: meUser,
+            to: chat.id,
+            id: newId,
+            participant: isMD && chat.id.isGroup() ? meUser : undefined,
+            selfDir: 'out',
+        });
+
+
+        const extraOptions = options.extraOptions || {};
+        delete options.extraOptions;
+
+        const ephemeralFields =
+            window.Store.EphemeralFields.getEphemeralFields(chat);
+
+        const message = {
+            ...options,
+            id: newMsgId,
+            ack: 0,
+            body: content,
+            from: meUser,
+            to: chat.id,
+            local: true,
+            self: "out",
+            t: parseInt(new Date().getTime() / 1000),
+            isNewMsg: true,
+            type: "chat",
+            createChat: true,
+            ...ephemeralFields,
+            ...locationOptions,
+            ...attOptions,
+            ...quotedMsgOptions,
+            ...vcardOptions,
+            ...buttonOptions,
+            ...listOptions,
+            ...extraOptions,
+        };
+
+        await window.Store.SendMessage.addAndSendMsgToChat(chat, message);
+        return window.Store.Msg.get(newMsgId._serialized);
     };
+
 
     window.WWebJS.editMessage = async (msg, content, options = {}) => {
 
