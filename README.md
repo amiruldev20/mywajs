@@ -1,6 +1,7 @@
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#table-of-contents)
 # MYWAJS
 [JOIN CHANNEL](https://whatsapp.com/channel/0029VaDrbKSKgsNuVe1a3N2h)
+[DOCS MYWAJS](https://github.com/amiruldev20/mywajs/blob/beta/docs.md)
 
  > *NB*: this is whatsapp-web.js fork with features from wajs wpp. Previously, permits had been granted by WPP
  
