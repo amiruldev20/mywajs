@@ -404,3 +404,43 @@ client.unmuteChat(chatId)
 ```
 </details>
 
+<details><summary><b>Mark Chat Unread</b></summary>
+    
+> **INFO**
+> This function is used to mark chat unread
+
+```javascript
+client.markChatUnread(chatId)
+```
+</details>
+
+<details><summary><b>Get Profile Picture</b></summary>
+    
+> **INFO**
+> This function is used to get profile picture
+
+```javascript
+client.getProfilePict(id)
+```
+</details>
+
+<details><summary><b>Get Common Groups</b></summary>
+    
+> **INFO**
+> This function is used to get common groups
+
+```javascript
+client.getCommonGroups(contactID)
+```
+</details>
+
+<details><summary><b>Reset State</b></summary>
+    
+> **INFO**
+> This function is used to reset state
+
+```javascript
+client.resetState()
+```
+</details>
+
