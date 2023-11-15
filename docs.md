@@ -444,3 +444,22 @@ client.resetState()
 ```
 </details>
 
+<details><summary><b>Check Registered Whatsapp User</b></summary>
+    
+> **INFO**
+> This function is used to check registered user in whatsapp
+
+```javascript
+client.isRegisteredUser(jid)
+```
+</details>
+
+<details><summary><b>Create Group</b></summary>
+    
+> **INFO**
+> This function is used to create group whatsapp
+
+```javascript
+client.createGroup(name, [participants], options)
+```
+</details>
