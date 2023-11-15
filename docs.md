@@ -343,3 +343,64 @@ client.sendPresenceAvailable()
 client.sendPresenceUnavailable()
 ```
 </details>
+
+<details><summary><b>Archive Chat</b></summary>
+    
+> **INFO**
+> This function is used to archive chat
+
+```javascript
+client.archiveChat(chatId)
+```
+</details>
+
+<details><summary><b>Unarvhive Chat</b></summary>
+    
+> **INFO**
+> This function is used to unarchive chat
+
+```javascript
+client.unarchiveChat(chatid)
+```
+</details>
+
+<details><summary><b>Pin Chat</b></summary>
+    
+> **INFO**
+> This function is used to pin chat
+
+```javascript
+client.pinChat(chatId)
+```
+</details>
+
+<details><summary><b>Unpin Chat</b></summary>
+    
+> **INFO**
+> This function is used to unpin chat
+
+```javascript
+client.unpinChat(chatId)
+```
+</details>
+
+<details><summary><b>Mute Chat</b></summary>
+    
+> **INFO**
+> This function is used to mute chat
+
+```javascript
+client.muteChat(chatId, time)
+```
+</details>
+
+<details><summary><b>Unmute Chat</b></summary>
+    
+> **INFO**
+> This function is used to unmute chat
+
+```javascript
+client.unmuteChat(chatId)
+```
+</details>
+
