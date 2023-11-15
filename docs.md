@@ -463,3 +463,63 @@ client.isRegisteredUser(jid)
 client.createGroup(name, [participants], options)
 ```
 </details>
+
+<details><summary><b>Get All Labels (Business)</b></summary>
+    
+> **INFO**
+> This function is used to get all labels in whatsapp business
+
+```javascript
+client.getLabels()
+```
+</details>
+
+<details><summary><b>Get Label From ID (Business)</b></summary>
+    
+> **INFO**
+> This function is used to get label from id
+
+```javascript
+client.getLabelById(id)
+```
+</details>
+
+<details><summary><b>Get All Label In Chat (Business)</b></summary>
+    
+> **INFO**
+> This function is used to get all label in chat
+
+```javascript
+client.getChatLabels(chatId)
+```
+</details>
+
+<details><summary><b>Get Chat By Label ID (Business)</b></summary>
+    
+> **INFO**
+> This function is used to get chat by label
+
+```javascript
+client.getChatsByLabelId(id)
+```
+</details>
+
+<details><summary><b>Get Blocked Contacts</b></summary>
+    
+> **INFO**
+> This function is used to get blocked contacts
+
+```javascript
+client.getBlockedContacts()
+```
+</details>
+
+<details><summary><b>Delete Profile Picture</b></summary>
+    
+> **INFO**
+> This function is used to delete profile picture
+
+```javascript
+client.deleteProfilePict()
+```
+</details>
