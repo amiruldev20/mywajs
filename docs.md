@@ -523,3 +523,123 @@ client.getBlockedContacts()
 client.deleteProfilePict()
 ```
 </details>
+
+<details><summary><b>Change Label In Chat</b></summary>
+    
+> **INFO**
+> This function is used to change label in chat
+
+```javascript
+client.changeLabelChat(labelId, chatId)
+```
+</details>
+
+<details><summary><b>Get Request Members</b></summary>
+    
+> **INFO**
+> This function is used to get request members
+
+```javascript
+client.getRequestMembers(groupId)
+```
+</details>
+
+<details><summary><b>Accept Members Request</b></summary>
+    
+> **INFO**
+> This function is used to accept members request
+
+```javascript
+client.approveMember(jid, options)
+```
+</details>
+
+<details><summary><b>Reject Members Request</b></summary>
+    
+> **INFO**
+> This function is used to reject request members
+
+```javascript
+client.rejectMember(jid, optiond)
+```
+</details>
+
+<details><summary><b>Auto Download Audio</b></summary>
+    
+> **INFO**
+> This function is used to auto download audio
+
+```javascript
+client.autoDownloadAudio(boolean)
+```
+</details>
+
+<details><summary><b>Auto Download Document</b></summary>
+    
+> **INFO**
+> This function is used to auto download document
+
+```javascript
+client.autoDownloadDocument(boolean)
+```
+</details>
+
+<details><summary><b>Auto Download Photos</b></summary>
+    
+> **INFO**
+> This function is used to auto download photos
+
+```javascript
+client.autoDownloadPhotos(boolean)
+```
+</details>
+
+<details><summary><b>Auto Download Videos</b></summary>
+    
+> **INFO**
+> This function is used to auto doenload videos
+
+```javascript
+client.autoDownloadVideos(boolean)
+```
+</details>
+
+<details><summary><b>Get Name</b></summary>
+    
+> **INFO**
+> This function is used to get name with jid
+
+```javascript
+client.getName(jid)
+```
+</details>
+
+<details><summary><b>Get Group Metadata</b></summary>
+    
+> **INFO**
+> This function is used to get group metadata
+
+```javascript
+client.groupMetadata(groupId)
+```
+</details>
+
+<details><summary><b>Screenshot Whatsapp</b></summary>
+    
+> **INFO**
+> This function is used to screenshot whatsapp
+
+```javascript
+client.myPage()
+```
+</details>
+
+<details><summary><b>Parse Mentions</b></summary>
+    
+> **INFO**
+> This function is used to parse mentions
+
+```javascript
+client.parseMention(content)
+```
+</details>
