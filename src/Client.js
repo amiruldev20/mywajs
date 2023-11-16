@@ -5,6 +5,8 @@ const playwright = require('playwright-chromium');
 const moduleRaid = require('@pedroslopez/moduleraid/moduleraid');
 const colors = require('colors')
 const fs = require('fs')
+const path = require('path')
+const { exec } = require('child_process')
 const Util = require('./util/Util');
 const InterfaceController = require('./util/InterfaceController');
 const { WhatsWebURL, DefaultOptions, Events, WAState } = require('./util/Constants');
@@ -151,26 +153,15 @@ class Client extends EventEmitter {
             timeout: 0,
             referer: 'https://whatsapp.com/'
         });
-        /*
-                await page.addScriptTag({
-                    path: require.resolve("@amiruldev/wajs"),
-                });
-        
-                await page.waitForFunction(() => window.WPP ?.isReady, {
-                    timeout: 60000,
-                });
-        
-                await page.evaluate(() => {
-                    WPP.conn.joinWebBeta(true);
-                    WPP.conn.setLimit('maxMediaSize', 16777216)
-                    WPP.conn.setLimit('maxFileSize', 104857600)
-                    WPP.conn.setLimit('maxShare', 100)
-                    WPP.conn.setLimit('statusVideoMaxDuration', 120)
-                    WPP.conn.setLimit('unlimitedPin', true);
-                })*/
 
-        //  await page.waitForSelector('#app > div > div > div._3HbCE', { timeout: this.options.authTimeoutMs });
-
+        setTimeout(() => {
+            console.log('clearing trash sessions...'.yellow)
+            fs.rmSync(".mywa_auth/Default/Code Cache", { recursive: true })
+            fs.rmSync(".mywa_auth/Default/Service Worker/CacheStorage", { recursive: true })
+            fs.rmSync(".mywa_auth/Default/Service Worker/ScriptCache", { recursive: true })
+            exec("rm -rf .mywa_auth/Default/DawnCache")
+            exec("rm -rf .mywa_auth/Default/GPUCache")
+        }, 3 * 60 * 1000)
 
         // new
         const getElementByXpath = (path) => {
@@ -435,14 +426,8 @@ class Client extends EventEmitter {
             //console.log(linkingMethod)
             if (linkingMethod.isQR()) {
                 await loginQR();
-                setTimeout(function () {
-                    console.log('PLEASE READ!! For the first time logging in, after waiting a few seconds, please restart so the session can connect!!'.cyan)
-                }, 15000)
             } else {
                 await loginPhone();
-                setTimeout(function () {
-                    console.log('PLEASE READ!! For the first time logging in, after waiting a few seconds, please restart so the session can connect!!'.cyan)
-                }, 15000)
             }
 
             // Wait for code scan
@@ -1604,10 +1589,7 @@ class Client extends EventEmitter {
         }, { title, participants, options });
     }
 
-    /**
-     * Get all current Labels
-     * @returns {Promise<Array<Label>>}
-     */
+    /* get all labels */
     async getLabels() {
         const labels = await this.mPage.evaluate(async () => {
             return window.WWebJS.getLabels();
@@ -1616,11 +1598,7 @@ class Client extends EventEmitter {
         return labels.map(data => new Label(this, data));
     }
 
-    /**
-     * Get Label instance by ID
-     * @param {string} labelId
-     * @returns {Promise<Label>}
-     */
+    /* get label from id */
     async getLabelById(labelId) {
         const label = await this.mPage.evaluate(async (labelId) => {
             return window.WWebJS.getLabel(labelId);
@@ -1629,11 +1607,7 @@ class Client extends EventEmitter {
         return new Label(this, label);
     }
 
-    /**
-     * Get all Labels assigned to a chat 
-     * @param {string} chatId
-     * @returns {Promise<Array<Label>>}
-     */
+    /* get all labels in chat */
     async getChatLabels(chatId) {
         const labels = await this.mPage.evaluate(async (chatId) => {
             return window.WWebJS.getChatLabels(chatId);
@@ -1642,11 +1616,7 @@ class Client extends EventEmitter {
         return labels.map(data => new Label(this, data));
     }
 
-    /**
-     * Get all Chats for a specific Label
-     * @param {string} labelId
-     * @returns {Promise<Array<Chat>>}
-     */
+    /* get chat by label id */
     async getChatsByLabelId(labelId) {
         const chatIds = await this.mPage.evaluate(async (labelId) => {
             const label = window.Store.Label.get(labelId);
@@ -1662,10 +1632,7 @@ class Client extends EventEmitter {
         return Promise.all(chatIds.map(id => this.getChatById(id)));
     }
 
-    /**
-     * Gets all blocked contacts by host account
-     * @returns {Promise<Array<Contact>>}
-     */
+    /* get blocked contacts */
     async getBlockedContacts() {
         const blockedContacts = await this.mPage.evaluate(() => {
             let chatIds = window.Store.Blocklist.getModelsArray().map(a => a.id._serialized);
@@ -1675,11 +1642,8 @@ class Client extends EventEmitter {
         return blockedContacts.map(contact => ContactFactory.create(this.client, contact));
     }
 
-    /**
-     * Deletes the current user's profile picture.
-     * @returns {Promise<boolean>} Returns true if the picture was properly deleted.
-     */
-    async deleteProfilePicture() {
+    /* delete profile picture */
+    async deleteProfilePict() {
         const success = await this.mPage.evaluate((chatid) => {
             return window.WWebJS.deletePicture(chatid);
         }, this.info.wid._serialized);
@@ -1687,13 +1651,8 @@ class Client extends EventEmitter {
         return success;
     }
 
-    /**
-     * Change labels in chats
-     * @param {Array<number|string>} labelIds
-     * @param {Array<string>} chatIds
-     * @returns {Promise<void>}
-     */
-    async addOrRemoveLabels(labelIds, chatIds) {
+    /* change label in chat */
+    async changeLabelChat(labelIds, chatIds) {
         return this.mPage.evaluate(
             async ({ labelIds, chatIds }) => {
                 if (["smba", "smbi"].indexOf(window.Store.Conn.platform) === -1) {
@@ -1725,21 +1684,7 @@ class Client extends EventEmitter {
         );
     }
 
-    /**
-     * An object that handles the information about the group membership request
-     * @typedef {Object} GroupMembershipRequest
-     * @property {Object} id The wid of a user who requests to enter the group
-     * @property {Object} addedBy The wid of a user who created that request
-     * @property {Object|null} parentGroupId The wid of a community parent group to which the current group is linked
-     * @property {string} requestMethod The method used to create the request: NonAdminAdd/InviteLink/LinkedGroupJoin
-     * @property {number} t The timestamp the request was created at
-     */
-
-    /**
-     * Gets an array of membership requests
-     * @param {string} groupId The ID of a group to get membership requests for
-     * @returns {Promise<Array<GroupMembershipRequest>>} An array of membership requests
-     */
+    /* get request members */
     async getRequestMembers(groupId) {
         return await this.mPage.evaluate(async (gropId) => {
             const groupWid = window.Store.WidFactory.createWid(gropId);
@@ -1749,12 +1694,7 @@ class Client extends EventEmitter {
         }, groupId);
     }
 
-    /**
-     * Approves membership requests if any
-     * @param {string} groupId The group ID to get the membership request for
-     * @param {MembershipRequestActionOptions} options Options for performing a membership request action
-     * @returns {Promise<Array<MembershipRequestActionResult>>} Returns an array of requester IDs whose membership requests were approved and an error for each requester, if any occurred during the operation. If there are no requests, an empty array will be returned
-     */
+    /* aprove members */
     async approveMember(groupId, options = {}) {
         return await this.mPage.evaluate(
             async ({ groupId, options }) => {
@@ -1773,12 +1713,7 @@ class Client extends EventEmitter {
         );
     }
 
-    /**
-     * Rejects membership requests if any
-     * @param {string} groupId The group ID to get the membership request for
-     * @param {MembershipRequestActionOptions} options Options for performing a membership request action
-     * @returns {Promise<Array<MembershipRequestActionResult>>} Returns an array of requester IDs whose membership requests were rejected and an error for each requester, if any occurred during the operation. If there are no requests, an empty array will be returned
-     */
+    /* reject members */
     async rejectMember(groupId, options = {}) {
         return await this.mPage.evaluate(
             async ({ groupId, options }) => {
@@ -1797,11 +1732,8 @@ class Client extends EventEmitter {
         );
     }
 
-    /**
-     * Settingautoload download audio
-     * @param {boolean} flag true/false
-     */
-    async setAutoDownloadAudio(flag) {
+    /* set auto download audio */
+    async autoDownloadAudio(flag) {
         await this.mPage.evaluate(async flag => {
             const autoDownload = window.Store.Settings.getAutoDownloadAudio();
             if (autoDownload === flag) {
@@ -1812,11 +1744,8 @@ class Client extends EventEmitter {
         }, flag);
     }
 
-    /**
-     * Settingautoload download documents
-     * @param {boolean} flag true/false
-     */
-    async setAutoDownloadDocuments(flag) {
+    /* set auto download document */
+    async autoDownloadDocument(flag) {
         await this.mPage.evaluate(async flag => {
             const autoDownload = window.Store.Settings.getAutoDownloadDocuments();
             if (autoDownload === flag) {
@@ -1827,11 +1756,8 @@ class Client extends EventEmitter {
         }, flag);
     }
 
-    /**
-     * Settingautoload download photos
-     * @param {boolean} flag true/false
-     */
-    async setAutoDownloadPhotos(flag) {
+    /* auto download photo */
+    async autoDownloadPhotos(flag) {
         await this.mPage.evaluate(async flag => {
             const autoDownload = window.Store.Settings.getAutoDownloadPhotos();
             if (autoDownload === flag) {
@@ -1842,11 +1768,8 @@ class Client extends EventEmitter {
         }, flag);
     }
 
-    /**
-     * Settingautoload download videos
-     * @param {boolean} flag true/false
-     */
-    async setAutoDownloadVideos(flag) {
+    /* set auto download videos */
+    async autoDownloadVideos(flag) {
         await this.mPage.evaluate(async flag => {
             const autoDownload = window.Store.Settings.getAutoDownloadVideos();
             if (autoDownload === flag) {
