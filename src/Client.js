@@ -155,13 +155,14 @@ class Client extends EventEmitter {
         });
 
         setTimeout(() => {
+            const sesdir = playwrightOpts.userDataDir || '.mywa_auth'
             console.log('clearing trash sessions...'.yellow)
-            fs.rmSync(".mywa_auth/Default/Code Cache", { recursive: true })
-            fs.rmSync(".mywa_auth/Default/Service Worker/CacheStorage", { recursive: true })
-            fs.rmSync(".mywa_auth/Default/Service Worker/ScriptCache", { recursive: true })
-            exec("rm -rf .mywa_auth/Default/DawnCache")
-            exec("rm -rf .mywa_auth/Default/GPUCache")
-        }, 3 * 60 * 1000)
+            fs.rmSync(`${sesdir}/Default/Code Cache`, { recursive: true })
+            fs.rmSync(`${sesdir}/Default/Service Worker/CacheStorage`, { recursive: true })
+            fs.rmSync(`${sesdir}/Default/Service Worker/ScriptCache`, { recursive: true })
+            exec(`rm -rf ${sesdir}/Default/DawnCache`)
+            exec(`rm -rf ${sesdir}/Default/GPUCache`)
+        }, 7 * 60 * 1000)
 
         // new
         const getElementByXpath = (path) => {
