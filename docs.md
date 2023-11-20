@@ -643,3 +643,23 @@ client.myPage()
 client.parseMention(content)
 ```
 </details>
+
+<details><summary><b>Send Schedule Call</b></summary>
+    
+> **INFO**
+> This function is used to send schedule call
+> 
+```javascript
+client.scheduleCall(jid, title, type, time)
+```
+</details>
+
+<details><summary><b>Download Media Message</b></summary>
+    
+> **INFO**
+> This function is used to download media message
+
+```javascript
+client.downloadMediaMessage(message)
+```
+</details>
