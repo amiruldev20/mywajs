@@ -1,6 +1,6 @@
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#table-of-contents)
 # MYWAJS - MAINTENANCE
-[JOIN CHANNEL]([https://whatsapp.com/channel/0029VaDrbKSKgsNuVe1a3N2h](https://whatsapp.com/channel/0029VaF1UTpJ3jv1GsFYi302)
+[JOIN CHANNEL](https://whatsapp.com/channel/0029VaF1UTpJ3jv1GsFYi302)
 [DOCS MYWAJS](https://github.com/amiruldev20/mywajs/blob/beta/docs.md)
 
  
