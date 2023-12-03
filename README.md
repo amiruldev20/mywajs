@@ -1,9 +1,8 @@
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#table-of-contents)
-# MYWAJS
+# MYWAJS - MAINTENANCE
 [JOIN CHANNEL](https://whatsapp.com/channel/0029VaDrbKSKgsNuVe1a3N2h)
 [DOCS MYWAJS](https://github.com/amiruldev20/mywajs/blob/beta/docs.md)
 
- > *NB*: this is whatsapp-web.js fork with features from wajs wpp. Previously, permits had been granted by WPP
  
  <p align="center">
 <img width="" src="https://img.shields.io/github/repo-size/amiruldev20/mywajs?color=green&label=Repo%20Size&style=for-the-badge&logo=appveyor">
@@ -17,34 +16,5 @@
 </p>
 
 ```
-it's the wwebjs library redeveloped using
-playwright and wajs.
-because in my opinion playwright is lighter.
-This is an unofficial library,
-doesn't mean it's anti-banned.
-use accordingly, don't overspend
-
-for example check folder example
-docs? check folder docs
+this library is being rebuild without whatsapp-web.js
 ```
-
-## Supported features
-
-| Feature  | Status |
-| ------------- | ------------- |
-| Login via phone | ✅ |
-| Multi Device | ✅ |
-| Create Channel | ✅ |
-| Join Wa Beta | ✅ |
-| Change theme | ✅ |
-| Send polling | ✅ |
-| Read story | ✅ |
-| Get story | ✅ |
-| Send call | ✅ |
-| Accept call | ✅ |
-| Reject call | ✅ |
-| Screenshot whatsapp web | ✅ |
-| Screenshot custom url | ✅ |
-| Get member request | ✅ |
-| Accept member request | ✅ |
-| Reject member request | ✅ |
